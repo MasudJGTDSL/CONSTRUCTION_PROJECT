@@ -1,0 +1,72 @@
+{% load static %}
+{% load i18n %}
+
+<style>
+  .hello-msg{
+    font-size: 18px;
+    color: #fff;
+    margin-right: 20px;
+    text-decoration: inherit;
+  }
+  a:hover {
+  color: rgb(7, 240, 96);
+}
+
+</style>
+
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'Accounts:index' %}"><img style="border-radius: 8px;width: 38px; height: 38px;" src="{% static 'images/SamprityTowerLogo.png' %}">
+      <span class="hello-msg BalletRegular fs-3">&nbsp; Shamprity Tower</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'Accounts:index' %}"><i class="bu bi-house"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Features</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pricing</a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        {% if user.is_authenticated %}
+
+  <span class="hello-msg nav-item">Hello, {{request.user|title}}</span>
+        <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'logout' %}">{% trans "Log out" %}</a>|
+        <a class="hello-msg" href="{% url 'password_change' %}"> {% trans "Change password" %}</a></span>
+    {% else %}
+       <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'login' %}">{% trans "Log in" %}</a></span>
+  {% endif %}
+      </span>
+    </div>
+  </div>
+</nav>
+
+<!-- <nav class="navbar fixed-top navbar-dark bg-dark">
+  &nbsp;<img style="border-radius: 8px;width: 38px; height: 38px;" src="{% static 'images/samprityTower.png' %}">
+  <span class="hello-msg BalletRegular fs-3">&nbsp; Shamprity Tower</span>
+
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Products</a>
+      </li>
+    </ul>
+  </div>
+  <div class="navbar">
+ 
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</ul>
+</div>
+
+</nav> -->

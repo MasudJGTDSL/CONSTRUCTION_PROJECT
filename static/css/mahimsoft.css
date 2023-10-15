@@ -1,0 +1,53 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: CompanyNameFont;
+  src: url("./fonts/RussoOne-Regular.ttf");
+}
+
+@font-face {
+  font-family: BalletRegular;
+  src: url("./fonts/Ballet-Regular-VariableFont_opsz.ttf");
+}
+
+@font-face {
+  font-family: GrechenFuemen;
+  src: url("./fonts/GrechenFuemen-Regular.ttf");
+}
+
+@font-face {
+  font-family: LoversQuarrel;
+  src: url("./fonts/LoversQuarrel-Regular.ttf");
+}
+@font-face {
+  font-family: MrsSheppards;
+  src: url("./fonts/MrsSheppards-Regular.ttf");
+}
+@font-face {
+  font-family: NothingYouCouldDo;
+  src: url("./fonts/NothingYouCouldDo-Regular.ttf");
+}
+
+.CompanyNameFont {
+    font-family: CompanyNameFont;
+  }
+
+.BalletRegular {
+    font-family: BalletRegular;
+  }
+
+.GrechenFuemen {
+    font-family: GrechenFuemen;
+  }
+
+.LoversQuarrel {
+    font-family: LoversQuarrel;
+  }
+
+.MrsSheppards {
+    font-family: MrsSheppards;
+  }
+
+.NothingYouCouldDo {
+    font-family: NothingYouCouldDo;
+  }
