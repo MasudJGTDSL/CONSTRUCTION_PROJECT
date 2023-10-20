@@ -4,72 +4,85 @@ from django.utils import timezone
 
 # from fdr.models import CurrentFiscal
 
-anonymous_company = True
+#! Setup ===================
+anonymous_company = False
+language = "en"
+
+font_en_banner = "BalletRegular"
+font_bn_banner = "b_fontkero"
+
+font_en_other = "CompanyNameFont"
+font_bn_other = "b_fontpadmo"
+
+font_size_en_banner = "fs-3"
+font_size_bn_banner = "fs-1"
 
 
 def company_info_settings(request):
     if anonymous_company:
-        company_name_bn = "প্রতিষ্ঠান/কোম্পানির পূর্ন নাম"
-        company_name_en = "Name of The Institution"
-        copy_right_bn = "মাহিম সফ্‌ট | "
-        copy_right_en = "Mahim Soft | "
-        company_abr_bn = "এক্সটিডিসিএল"
-        company_abr_en = "XTDCL"
-        company_head_office_bn = "প্রতিষ্ঠানের প্রধান কার্যালয়"
-        company_head_office_en = "Head Office"
-        company_address_bn = (
-            "প্রতিষ্ঠানের ঠিকানা (হাউজ নং-###, এলাকার নাম, শহরের নাম, পোস্ট কোড-####)"
-        )
-        company_address_en = (
-            "Address (House No.###, Street, City, State, Postcode, County, Country)"
-        )
+        if language == "en":
+            company_name = "Name of The Institution"
+            company_head_office = "Head Office"
+            company_abr = "XTDCL"
+            copy_right = "Mahim Soft | "
+            company_address = (
+                "Address (House No.###, Street, City, State, Postcode, County, Country)"
+            )
+            font_banner = font_en_banner
+            font_other = font_en_other
+            font_size_banner = font_size_en_banner
+        else:
+            company_name = "প্রতিষ্ঠান/কোম্পানির পূর্ন নাম"
+            copy_right = "মাহিম সফ্‌ট | "
+            company_abr = "এক্সটিডিসিএল"
+            company_head_office = "প্রতিষ্ঠানের প্রধান কার্যালয়"
+            company_address = "প্রতিষ্ঠানের ঠিকানা (হাউজ নং-###, এলাকার নাম, শহরের নাম, পোস্ট কোড-####)"
+            font_banner = font_bn_banner
+            font_other = font_bn_other
+            font_size_banner = font_size_bn_banner
         # From static/icons Folder ===========
-        company_logo_fevicon = "company_logo_fevicon_1.png"
-        company_logo_sm = "company_logo_sm_5.png"
-        company_logo_lg = "company_logo_lg.png"
-
+        company_logo_fevicon = "anonymous_logo_fevicon.png"
+        company_logo_sm = "anonymous_logo_sm.png"
+        company_logo_lg = "anonymous_logo_lg.png"
     else:
-        company_name_bn = "‌জালালাবাদ গ্যাস টি এ্যান্ড ডি সিস্টেম লিঃ"
-        company_name_en = "Jalalabad Gas T & D System Ltd."
-        copy_right_bn = "মাহিম সফ্‌ট | "
-        copy_right_en = "Mahim Soft | "
-        company_abr_bn = "জেজিটিডিএসএল"
-        company_abr_en = "JGTDSL"
-        company_head_office_bn = "পেট্রোবাংলার একটি কোম্পানি"
-        company_head_office_en = "A Company of Petrobangla"
-        company_address_bn = "গ্যাস ভবন, মেন্দিবাগ, সিলেট-৩১০০"
-        company_address_en = "Gasbhaban, Mendibagh, Sylhet-3100"
+        if language == "en":
+            copy_right = "Mahim Soft | "
+            company_name = "Samprity Tower"
+            company_abr = "ST"
+            company_address = "Samprity Tower, Bawnia, Turag, Dhaka-1231"
+            company_head_office = ""
+            #! Font asigning ================
+            font_banner = font_en_banner
+            font_size_banner = font_size_en_banner
+            font_other = font_en_other
+        else:
+            company_name = "‌সম্প্রীতি টাওয়ার"
+            copy_right = "মাহিম সফ্‌ট | "
+            company_abr = "জেজিটিডিএসএল"
+            company_head_office = ""
+            company_address = "বাউনিয়া, তুরাগ, ঢাকা-১২৩১"
+            #! Font asigning ======================
+            font_banner = font_bn_banner
+            font_other = font_bn_other
+            font_size_banner = font_size_bn_banner
         # From static/icons Folder ===========
-        company_logo_fevicon = "company_logo_fevicon_1.png"
-        company_logo_sm = "company_logo_sm_5.png"
+        company_logo_fevicon = "company_logo_fevicon.png"
+        company_logo_sm = "company_logo_sm.png"
         company_logo_lg = "company_logo_lg.png"
-
-    # current_fiscal = CurrentFiscal.objects.all().order_by("-id")[0]
-    # fiscal_year_1st_part = current_fiscal.Fiscal
-    # fiscal_year_2nd_part = current_fiscal.Fiscal + 1
-    # fiscal_start_date = date(fiscal_year_1st_part, 7, 1)
-    # fiscal_end_date = date(fiscal_year_2nd_part, 6, 30)
-    # fiscal = f"{fiscal_year_1st_part}-{fiscal_year_2nd_part}"
     time = timezone.now()
     return {
-        "company_name_bn": company_name_bn,
-        "company_name_en": company_name_en,
-        "company_abr_bn": company_abr_bn,
-        "company_abr_en": company_abr_en,
-        "company_address_bn": company_address_bn,
-        "company_address_en": company_address_en,
-        "company_head_office_bn": company_head_office_bn,
-        "company_head_office_en": company_head_office_en,
-        "copy_right_bn": copy_right_bn,
-        "copy_right_en": copy_right_en,
+        "company_name": company_name,
+        "company_abr": company_abr,
+        "company_address": company_address,
+        "company_head_office": company_head_office,
+        "copy_right": copy_right,
+        #! Font asigning ======================
+        "font_banner": font_banner,
+        "font_other": font_other,
+        "font_size_banner": font_size_banner,
         # Logo and Icons ========
         "company_logo_sm": company_logo_sm,
         "company_logo_lg": company_logo_lg,
         "company_logo_fevicon": company_logo_fevicon,
-        # Fiscal and Dates ======
-        # "fiscal_year_1st_part": fiscal_year_1st_part,
-        # "fiscal": fiscal,
-        # "fiscal_start_date": fiscal_start_date,
-        # "fiscal_end_date": fiscal_end_date,
         "time": time,
     }

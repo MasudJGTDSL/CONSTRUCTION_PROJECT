@@ -51,3 +51,92 @@
 .NothingYouCouldDo {
     font-family: NothingYouCouldDo;
   }
+
+
+/* Bangla Fonts */
+
+/*=============== CSS File ================*/
+
+@font-face {
+  font-family: FontsNikosh2;
+  src: url("./fonts/nikosh2.ttf");
+}
+@font-face {
+  font-family: FontsSejuti;
+  src: url("./fonts/Fazlay Sejuti Unicode.ttf");
+}
+@font-face {
+  font-family: FontsEid;
+  src: url("./fonts/Eid_Mubarak.ttf");
+}
+@font-face {
+  font-family: FontsEkushey;
+  src: url("./fonts/Ekushey_Belycon_06-09-2018.ttf");
+}
+@font-face {
+  font-family: FontsKero;
+  src: url("./fonts/KEERO___.ttf");
+}
+@font-face {
+  font-family: FontsPadmo;
+  src: url("./fonts/Padmo UNICODE.ttf");
+}
+@font-face {
+  font-family: FontsMadon;
+  src: url("./fonts/Li MadanMohan Unicode.ttf");
+}
+@font-face {
+  font-family: digital7;
+  src: url("./fonts/digital-7.ttf");
+}
+
+.b_fontNikosh2 {
+  font-family: FontsNikosh2;
+}
+.b_fontSejuti {
+  font-family: FontsSejuti;
+}
+.b_fonteid {
+  font-family: FontsEid;
+}
+.b_fontekush {
+  font-family: FontsEkushey;
+}
+.b_fontkero {
+  font-family: FontsKero;
+}
+.b_fontpadmo {
+  font-family: FontsPadmo;
+}
+.b_fontmadon {
+  font-family: FontsMadon;
+}
+.digital7 {
+  font-family: digital7;
+}
+
+ /* 
+div {
+  font-family: "FontsNikosh2", Times, serif;
+}
+
+h {
+  font-family: "FontsNikosh2", "Courier New", monospace;
+}
+
+p {
+  font-family: "FontsNikosh2", Helvetica, sans-serif;
+}
+
+td {
+  font-family: "b_fontpadmo", Helvetica, sans-serif;
+}
+th {
+  font-family: b_fontpadmo, Helvetica, sans-serif;
+}
+table {
+  font-family: "b_fontpadmo", Helvetica, sans-serif;
+}
+*/
+
+

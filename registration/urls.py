@@ -6,6 +6,8 @@ app_name = 'registration'
 urlpatterns = [
     # path('', views.home, name="home"),
     path('registerPage/', views.registerPage, name="registerPage"),
+    path('loginPage/', views.loginPage, name="loginPage"),
+    path('logoutUser/', views.logoutUser, name="logoutUser"),
     # path('user_list_dropdown/', views.user_list_dropdown,
         #  name="user_list_dropdown"),
     ]

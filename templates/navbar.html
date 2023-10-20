@@ -16,8 +16,8 @@
 
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'Accounts:index' %}"><img class="bg-success-subtle" style="border-radius: 8px;width: 38px; height: 38px;" src="{% static 'images/SamprityTowerLogo.png' %}">
-      <span class="hello-msg BalletRegular fs-3">&nbsp; Shamprity Tower</span></a>
+    <a class="navbar-brand" href="{% url 'Accounts:index' %}"><img class="bg-secondary-subtle" style="border-radius: 8px;width: 38px; height: 38px;" src="{% get_static_prefix %}images/{{company_logo_lg}}">
+      <span class="hello-msg {{font_banner}} {{font_size_banner}}">&nbsp; {{company_name}}</span></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -37,10 +37,11 @@
         {% if user.is_authenticated %}
 
   <span class="hello-msg nav-item">Hello, {{request.user|title}}</span>
-        <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'logout' %}">{% trans "Log out" %}</a>|
+        <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'registration:logoutUser' %}">{% trans "Log out" %}</a>|
         <a class="hello-msg" href="{% url 'password_change' %}"> {% trans "Change password" %}</a></span>
     {% else %}
        <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'login' %}">{% trans "Log in" %}</a></span>
+       <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'registration:registerPage' %}">{% trans "Sign up" %}</a></span>
   {% endif %}
       </span>
     </div>

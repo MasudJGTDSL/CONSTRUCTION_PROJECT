@@ -54,6 +54,11 @@ class Contractor(models.Model):
         default="OTH",
     )
     address = models.TextField(blank=True, null=True)
+    NID = models.CharField(max_length=30, blank=True, null=True)
+    TIN = models.CharField(max_length=50, blank=True, null=True)
+    TelephoneNo = models.CharField(max_length=50, blank=True, null=True)
+    Mobile = models.CharField(max_length=20, blank=True, null=True)
+    Email = models.CharField(max_length=100, blank=True, null=True)
     image = models.ImageField(blank=True, null=True, upload_to="media")
 
     class Meta:

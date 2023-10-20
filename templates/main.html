@@ -15,8 +15,8 @@
   <meta name="description" content="{% block description %}{% endblock %}">
   <meta name="keywords" content="{% block keywords %}{% endblock %}">
 
-  <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/samprityTower48.png' %}">
-  <link rel="apple-touch-icon" type="image/jpg" href="{% static 'images/samprityTower48.png' %}">
+  <link rel="shortcut icon" type="image/x-icon" href="{% get_static_prefix %}images/{{company_logo_fevicon}}">
+  <link rel="apple-touch-icon" type="image/jpg" href="{% get_static_prefix %}images/{{company_logo_fevicon}}">
 
   <!-- ================================
     Start CSS
@@ -60,10 +60,10 @@
   <script src="{% static 'js/glightbox.min.js' %}"></script>
   <script src="{% static 'js/swiper.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
-  <!-- {% comment %} <script src="{% static 'js/script.js' %}"></script> {% endcomment %} -->
+  <script src="{% static 'js/script.js' %}"></script>
   <script src="{% static 'js/aos.js' %}"></script>
   <!-- {% comment %} <script src="{% static 'js/nav_main.js' %}"></script> {% endcomment %} -->
-
+  {% block script %} {% endblock script %}
   <!-- ================================
     End Scripts
     ================================= -->
