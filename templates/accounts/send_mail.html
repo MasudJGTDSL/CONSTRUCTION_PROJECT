@@ -1,0 +1,157 @@
+{% extends "main.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% comment %} {% load i18n %} {% endcomment %}
+
+
+
+{% block content %}
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-7">
+        <div class="mt-1 pe-0 me-0">
+        <center>
+            <h3 class="text-muted">eMail from "{{request.user.email}}"</h3>
+        </center>
+    </div>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{fm| crispy}}
+            <!-- <input type="submit" value="Send"> -->
+            <button class="btn btn-outline-secondary btn-sm" type="submit">Send <span
+                    class="badge bg-secondary">Total Persion: {{qs.nos_of_shareholders}}</span>
+            </button>
+        </form>
+
+        
+    </div>
+    <div class="col-1"></div>
+</div>
+
+<!-- Button trigger modal -->
+
+<div class="mb-3">
+    <label for="" class="form-label">eMail from "{{request.user.email}}"</label>
+    <input type="email" class="form-control" name="" id="" aria-describedby="emailHelpId" placeholder="abc@mail.com">
+    <small id="emailHelpId" class="form-text text-muted">Help text</small>
+</div>
+
+
+<button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalId">
+    Launch
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="modalId" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitleId">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut quae sunt accusantium commodi quibusdam
+                consectetur recusandae qui? Commodi accusantium impedit illum cumque et harum doloremque, maiores
+                assumenda accusamus id consectetur!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+    tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">Modal 1</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem, iste molestias accusantium magnam
+                tenetur ullam animi! Odit, est excepturi eos inventore, quam, doloremque consectetur nemo repellat porro
+                ipsa quibusdam nobis?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">
+                    Open second
+                    modal</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+    tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel2">Modal 2</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Hide this modal and show the first with the button below.
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Back to
+                    first</button>
+            </div>
+        </div>
+    </div>
+</div>
+<a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Open first modal</a>
+
+
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                aria-expanded="true" aria-controls="collapseOne">
+                Accordion Item #1
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+            data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repudiandae, reiciendis consequatur in error
+                illo quaerat, quas dolores est praesentium rerum sapiente libero! Sit excepturi officiis veritatis
+                voluptatum unde temporibus provident.
+            </div>
+        </div>
+    </div>
+    <!-- <form>
+        <div>
+          {{ fm.as_field_group }}
+          <div class="row">
+            <div class="col">{{ fm.attachment.as_field_group }}</div>
+            <div class="col">{{ fm.msg.as_field_group }}</div>
+          </div>
+        </div>
+        </form>
+        {{ fm.non_field_errors }}
+<div class="fieldWrapper">
+  {{ fm.subject.as_field_group }}
+</div>
+<div class="fieldWrapper">
+  {{ fm.email_id.as_field_group }}
+</div>
+<div class="fieldWrapper">
+  {{ fm.email_cc.as_field_group }}
+</div>
+<div class="fieldWrapper">
+  {{ fm.email_bcc.as_field_group }}
+</div>
+<div class="fieldWrapper">
+  {{ fm.msg.as_field_group }}
+</div>
+<div class="fieldWrapper">
+  {{ fm.attachment.as_field_group }}
+</div>
+</div> -->
+
+
+
+{% endblock %}

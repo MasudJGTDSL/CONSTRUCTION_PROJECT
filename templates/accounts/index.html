@@ -3,4 +3,23 @@
 
 {% block content %}
 Django Registration Template Page
+<div class="d-flex justify-content-between">
+<div style="width: 50%; margin-top:50px; border: thin; border-color: brown;">
+    {% comment %} <!-- <form method="GET" action="{% url 'chart' %}">
+        {{ chart_form.as_p }}
+
+        <button>Submit</button>
+    </form>  --> {% endcomment %}
+        {{ chart|safe }}
+    </div>
+
+<div style="width: 50%; margin-top:50px; border: thin; border-color: brown;">
+    {% comment %} <!-- <form method="GET" action="{% url 'chart' %}">
+        {{ chart_form.as_p }}
+
+        <button>Submit</button>
+    </form>  --> {% endcomment %}
+        {{ chart_avg|safe }}
+    </div>
+    </div>
 {% endblock %}

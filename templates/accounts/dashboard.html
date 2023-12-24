@@ -3,6 +3,27 @@
 {% block content %}
 
 <br>
+<div class="d-flex justify-content-between">
+	<div style="width: 50%; margin-top:50px;" class="border border-2 border-dark-subtle">
+		{% comment %} <!-- <form method="GET" action="{% url 'chart' %}">
+			{{ chart_form.as_p }}
+	
+			<button>Submit</button>
+		</form>  --> {% endcomment %}
+		<div class="me-1">
+			{{ chart|safe }}
+		</div>
+		</div>
+	
+	<div style="width: 50%; margin-top:50px;" class="border border-2 border-danger-subtle ms-1">
+		{% comment %} <!-- <form method="GET" action="{% url 'chart' %}">
+			{{ chart_form.as_p }}
+	
+			<button>Submit</button>
+		</form>  --> {% endcomment %}
+			{{ chart_avg|safe }}
+		</div>
+		</div>
 
 <div class="row">
 	<div class="col-md-5">
@@ -59,7 +80,23 @@
 			</table>
 		</div>
 	</div>
-
+<!-- Test Start -->
+<nav aria-label="...">
+	<ul class="pagination">
+	  <li class="page-item disabled">
+		<a class="page-link">Previous</a>
+	  </li>
+	  <li class="page-item"><a class="page-link" href="#">1</a></li>
+	  <li class="page-item active" aria-current="page">
+		<a class="page-link" href="#">2 <span class="visually-hidden">(current)</span></a>
+	  </li>
+	  <li class="page-item"><a class="page-link" href="#">3</a></li>
+	  <li class="page-item">
+		<a class="page-link" href="#">Next</a>
+	  </li>
+	</ul>
+  </nav>
+<!-- Test End -->
 </div>
 
 {% endblock %}

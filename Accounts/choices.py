@@ -1,26 +1,26 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 import datetime
 
-'','Electrical','Sanitary','Carpenter','Thai and Glass','Plumber'
 ContractorType = (
-    ('CIV', 'Civil'),
-    ('SAN', 'Sanitary'),
-    ('CAR', 'Carpenter'),
-    ('THA', 'Thai and Glass'),
-    ('PLU', 'Plumber'),
-    ('OTH', 'Other'),
+    ("CIV", "Civil"),
+    ("ELE", "Electrical"),
+    ("SAN", "Sanitary"),
+    ("CAR", "Carpenter"),
+    ("THA", "Thai and Glass"),
+    ("PLU", "Plumber"),
+    ("OTH", "Other"),
 )
 
 
 modeOfDeposit = (
-    ('CASH', 'Cash'),
-    ('CHEQ', 'Cheque'),
-    ('OTHE', 'Other'),
+    ("CASH", "Cash"),
+    ("CHEQ", "Cheque"),
+    ("OTHE", "Other"),
 )
 
 YesNo = (
-    ('Y', 'Yes'),
-    ('N', 'No'),
+    ("Y", "Yes"),
+    ("N", "No"),
 )
 
 
@@ -28,7 +28,6 @@ ActiveInactive = (
     ("A", "Active"),
     ("I", "Inactive"),
 )
-
 
 
 def current_year():
@@ -44,10 +43,6 @@ def max_value_current_year(value):
 #                                MinValueValidator(2010), max_value_current_year])
 
 
-
-
 # class MyForm(forms.ModelForm):
 #     year = forms.TypedChoiceField(
 #         coerce=int, choices=year_choices, initial=current_year)
-
-

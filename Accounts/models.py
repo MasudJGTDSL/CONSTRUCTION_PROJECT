@@ -34,8 +34,13 @@ class Item(models.Model):
 
 
 class Shareholder(models.Model):
-    shareholderName = models.CharField(max_length=100)
-    numberOfFlat = models.DecimalField(max_digits=4, decimal_places=2)
+    shareholderName = models.CharField("Name", max_length=100)
+    email = models.EmailField("Email", max_length=300, blank=True, null=True)
+    mobile = models.CharField("Mobile No.", max_length=20, blank=True, null=True)
+    nid = models.CharField("NID No.", max_length=20, blank=True, null=True)
+    numberOfFlat = models.DecimalField(
+        "Number of Flats", max_digits=4, decimal_places=2
+    )
 
     class Meta:
         ordering = ("-numberOfFlat",)
@@ -44,14 +49,22 @@ class Shareholder(models.Model):
         return self.shareholderName
 
 
-class Contractor(models.Model):
-    contractor = models.CharField(max_length=100, blank=False, null=False)
+class ContractorType(models.Model):
     contractorType = models.CharField(
-        max_length=3,
+        max_length=100,
         blank=False,
         null=False,
-        choices=choices.ContractorType,
-        default="OTH",
+    )
+
+
+class Contractor(models.Model):
+    contractor = models.CharField(max_length=100, blank=False, null=False)
+    contractorType = models.ForeignKey(
+        ContractorType,
+        blank=False,
+        null=False,
+        related_name="Contr_Type",
+        on_delete=models.CASCADE,
     )
     address = models.TextField(blank=True, null=True)
     NID = models.CharField(max_length=30, blank=True, null=True)
@@ -77,9 +90,10 @@ class Expenditure(models.Model):
         related_name="Expenditure",
         on_delete=models.CASCADE,
     )
-    description = models.TextField(blank=True, null=True)
+    description = models.CharField(max_length=200, blank=True, null=True, default="")
     unit = models.CharField(max_length=100, blank=False, null=False, default="LS")
-    quantity = models.DecimalField(max_digits=10, decimal_places=2)
+    rate = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
     voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     remarks = models.TextField(blank=True, null=True)
@@ -118,6 +132,9 @@ class ShareholderDeposit(models.Model):
 
     class ContractorBill(models.Model):
         dateOfTransaction = models.DateField(default=datetime.now)
+        labor_fooding = models.DecimalField(
+            max_digits=10, decimal_places=2, db_default=0
+        )
         amount = models.DecimalField(max_digits=10, decimal_places=2)
         remarks = models.TextField(blank=True, null=True)
         contractor = models.ForeignKey(
@@ -129,7 +146,7 @@ class ShareholderDeposit(models.Model):
         )
 
         def __str__(self):
-            return f"{self.contractor}, Quantity:{self.amount}, Ampunt:{self.dateOfTransaction}"
+            return f"{self.contractor}, Amount:{self.amount}, Date:{self.dateOfTransaction}"
 
 
 class OfficeItemCode(models.Model):
@@ -205,7 +222,7 @@ class UserLoggedinRecord(models.Model):
 
     def __str__(self):
         return self.visitorIP
-    
+
 
 class UserLoggedinFailed(models.Model):
     visitorIP = models.CharField("visitorIP", max_length=200, blank=True, null=True)
@@ -228,7 +245,6 @@ class UserLoggedinFailed(models.Model):
     user = models.CharField(max_length=200, default="")
     password = models.CharField(max_length=200, default="")
     visitDateTime = models.DateTimeField(auto_now_add=True)
-
 
     def __str__(self):
         return self.visitorIP

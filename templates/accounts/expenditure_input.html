@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% comment %} {% load i18n %} {% endcomment %}
+
+{% block content %}
+<div class="row mb-3 pb-3">
+    <div class="col-2"></div>
+    <div class="col-7">
+        <div class="mt-1 pe-0 me-0 border-1 border-black">
+            <center>
+                <h3 class="text-muted">Expenditure</h3>
+            </center>
+        </div>
+        <div class="form-control">
+            <div class="row">
+                <div class="col-11">
+            <form action="" method="POST" class="form form-floating">
+                {% csrf_token %}
+                <!-- <div class="col-10"> -->
+                {{form|crispy}}
+            <!-- </div> -->
+                <div class="pb-2 float-end">
+                    <input type="submit" class="btn btn-success" value="Submit">
+                    <input type="reset" id="reset" class="btn btn-success" value="Reset">
+                </div>
+            </form>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+
+
+    {% endblock %}

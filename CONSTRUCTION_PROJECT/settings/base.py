@@ -14,19 +14,20 @@ DEBUG = int(config["DEBUG"])
 # print("The SECRET_KEY is:",SECRET_KEY)
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     # Extra Apps installed =====
-    'crispy_forms',
-    'crispy_bootstrap5',
-    'whitenoise',
+    "django_extensions",
+    "crispy_forms",
+    "crispy_bootstrap5",
+    "whitenoise",
     # Porject Apps =====
-    'registration',
-    'Accounts',
+    "registration",
+    "Accounts",
 ]
 
 
@@ -174,10 +175,18 @@ MESSAGE_TAGS = {
 
 
 #!For send email ===============================================
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = "mahimsofts@gmail.com"
+# EMAIL_HOST_PASSWORD = "tkkohbbzggrfqpgo"
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = "mahimsofts@gmail.com"
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "mahimsofts@gmail.com"
-EMAIL_HOST_PASSWORD = "tkkohbbzggrfqpgo"
+EMAIL_HOST_USER = config["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = config["EMAIL_HOST_PASSWORD"]
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "mahimsofts@gmail.com"
+DEFAULT_FROM_EMAIL = config["EMAIL_HOST_USER"]
