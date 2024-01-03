@@ -23,7 +23,7 @@ def company_info_settings(request):
         if language == "en":
             company_name = "Name of The Institution"
             company_head_office = "Head Office"
-            company_abr = "XTDCL"
+            company_abr = "Samprity"
             copy_right = "Mahim Soft | "
             company_address = (
                 "Address (House No.###, Street, City, State, Postcode, County, Country)"
@@ -48,7 +48,7 @@ def company_info_settings(request):
         if language == "en":
             copy_right = "Mahim Soft | "
             company_name = "Samprity Tower"
-            company_abr = "ST"
+            company_abr = "S.Tower"
             company_address = "Samprity Tower, Bawnia, Turag, Dhaka-1231"
             company_head_office = ""
             #! Font asigning ================

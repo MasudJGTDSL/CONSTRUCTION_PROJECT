@@ -1,0 +1,596 @@
+[
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 54,
+    "fields": {
+      "dateOfTransaction": "2023-06-02",
+      "modeOfDeposit": "Cash recived",
+      "amount": "100000.00",
+      "remarks": "From Monzur Morsad shab",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 53,
+    "fields": {
+      "dateOfTransaction": "2023-03-05",
+      "modeOfDeposit": "Cash recived",
+      "amount": "300000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 52,
+    "fields": {
+      "dateOfTransaction": "2023-02-01",
+      "modeOfDeposit": "Cash recived",
+      "amount": "9400.00",
+      "remarks": "Pay to Eactric matirial purchage",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 51,
+    "fields": {
+      "dateOfTransaction": "2023-01-09",
+      "modeOfDeposit": "Cash recived",
+      "amount": "309860.00",
+      "remarks": "Whoich pay BRB Cabol purchage",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 50,
+    "fields": {
+      "dateOfTransaction": "2022-12-15",
+      "modeOfDeposit": "Cash recived",
+      "amount": "26000.00",
+      "remarks": "Whoicj pay Elactric matirial",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 49,
+    "fields": {
+      "dateOfTransaction": "2022-12-06",
+      "modeOfDeposit": "Cash recived",
+      "amount": "274000.00",
+      "remarks": "Whoich pay eElactric matirial purchage",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 48,
+    "fields": {
+      "dateOfTransaction": "2022-10-13",
+      "modeOfDeposit": "Cash deposit DBBL",
+      "amount": "100000.00",
+      "remarks": "From Fattahu Amin Prince",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 47,
+    "fields": {
+      "dateOfTransaction": "2022-08-30",
+      "modeOfDeposit": "Cheue deposi DBBL",
+      "amount": "600000.00",
+      "remarks": "From Monzurul shab",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 46,
+    "fields": {
+      "dateOfTransaction": "2022-08-28",
+      "modeOfDeposit": "Cash recived",
+      "amount": "100000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 45,
+    "fields": {
+      "dateOfTransaction": "2022-08-16",
+      "modeOfDeposit": "Cheque recived",
+      "amount": "100000.00",
+      "remarks": "From  janota bank",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 44,
+    "fields": {
+      "dateOfTransaction": "2022-07-03",
+      "modeOfDeposit": "Cassh deposit DBBL",
+      "amount": "100000.00",
+      "remarks": "From  Fattahu Amin Prince",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 43,
+    "fields": {
+      "dateOfTransaction": "2022-06-08",
+      "modeOfDeposit": "Cash recived",
+      "amount": "100000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 42,
+    "fields": {
+      "dateOfTransaction": "2022-04-20",
+      "modeOfDeposit": "Cash deposit DBBL",
+      "amount": "400000.00",
+      "remarks": "From  Fattahu Amin Prince",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 41,
+    "fields": {
+      "dateOfTransaction": "2022-03-28",
+      "modeOfDeposit": "Cash recived",
+      "amount": "300000.00",
+      "remarks": "From A.Razzak shab (Monzurul)",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 40,
+    "fields": {
+      "dateOfTransaction": "2021-09-10",
+      "modeOfDeposit": "Cash recived",
+      "amount": "100000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 39,
+    "fields": {
+      "dateOfTransaction": "2021-08-31",
+      "modeOfDeposit": "Cash deposit DBBL",
+      "amount": "200000.00",
+      "remarks": "From Fast Tacnology",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 38,
+    "fields": {
+      "dateOfTransaction": "2021-08-23",
+      "modeOfDeposit": "Cash recived",
+      "amount": "100000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 37,
+    "fields": {
+      "dateOfTransaction": "2021-08-08",
+      "modeOfDeposit": "Cash  paid to Zahid",
+      "amount": "20000.00",
+      "remarks": "From bcash paid",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 36,
+    "fields": {
+      "dateOfTransaction": "2021-06-30",
+      "modeOfDeposit": "Cash recived",
+      "amount": "200000.00",
+      "remarks": "Khokon shab (Monzu shab)",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 35,
+    "fields": {
+      "dateOfTransaction": "2021-06-13",
+      "modeOfDeposit": "Cash recived",
+      "amount": "400000.00",
+      "remarks": "From A. Razzak shab( Monzu)",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 34,
+    "fields": {
+      "dateOfTransaction": "2021-06-05",
+      "modeOfDeposit": "Cash recived",
+      "amount": "5000.00",
+      "remarks": "Whoich pay En.Monaem shab",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 33,
+    "fields": {
+      "dateOfTransaction": "2021-05-29",
+      "modeOfDeposit": "Cheque recived",
+      "amount": "150000.00",
+      "remarks": "For Personal A/C",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 32,
+    "fields": {
+      "dateOfTransaction": "2021-04-07",
+      "modeOfDeposit": "Cash recived",
+      "amount": "500000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 31,
+    "fields": {
+      "dateOfTransaction": "2021-02-22",
+      "modeOfDeposit": "Cheque deposidDBBL",
+      "amount": "700000.00",
+      "remarks": "From a.Razzak shab",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 30,
+    "fields": {
+      "dateOfTransaction": "2021-02-18",
+      "modeOfDeposit": "Cash withdrown from Jonota bank",
+      "amount": "100000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 29,
+    "fields": {
+      "dateOfTransaction": "2021-01-30",
+      "modeOfDeposit": "Cash recived",
+      "amount": "500000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 28,
+    "fields": {
+      "dateOfTransaction": "2021-01-16",
+      "modeOfDeposit": "Cash recived",
+      "amount": "300000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 27,
+    "fields": {
+      "dateOfTransaction": "2021-01-06",
+      "modeOfDeposit": "Cash recived",
+      "amount": "500000.00",
+      "remarks": "From A.Razzak shab(Monzu )",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 26,
+    "fields": {
+      "dateOfTransaction": "2020-12-11",
+      "modeOfDeposit": "Cheque (No 5563536",
+      "amount": "100000.00",
+      "remarks": "From A.Razzak shab(Monzu )",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 25,
+    "fields": {
+      "dateOfTransaction": "2020-11-28",
+      "modeOfDeposit": "Cash recived",
+      "amount": "200000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 23,
+    "fields": {
+      "dateOfTransaction": "2020-08-29",
+      "modeOfDeposit": "Cash recived",
+      "amount": "400000.00",
+      "remarks": "From Khokon shab",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 24,
+    "fields": {
+      "dateOfTransaction": "2020-08-29",
+      "modeOfDeposit": "Check recived",
+      "amount": "500000.00",
+      "remarks": "From Khokon shab(4216553)",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 22,
+    "fields": {
+      "dateOfTransaction": "2020-06-27",
+      "modeOfDeposit": "Cash",
+      "amount": "300000.00",
+      "remarks": "From Khokon shab",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 21,
+    "fields": {
+      "dateOfTransaction": "2020-04-10",
+      "modeOfDeposit": "Cash  recived",
+      "amount": "300000.00",
+      "remarks": "Abdur Razzak",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 20,
+    "fields": {
+      "dateOfTransaction": "2020-03-04",
+      "modeOfDeposit": "Cash withdrown from Jonota bank",
+      "amount": "100000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 19,
+    "fields": {
+      "dateOfTransaction": "2020-02-02",
+      "modeOfDeposit": "Cash",
+      "amount": "150000.00",
+      "remarks": "Abdur Razzak",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 18,
+    "fields": {
+      "dateOfTransaction": "2020-01-21",
+      "modeOfDeposit": "Cash",
+      "amount": "350000.00",
+      "remarks": "Abdur Razzak",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 17,
+    "fields": {
+      "dateOfTransaction": "2019-12-26",
+      "modeOfDeposit": "Cash",
+      "amount": "500000.00",
+      "remarks": "Abdur Razzak",
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 16,
+    "fields": {
+      "dateOfTransaction": "2019-12-20",
+      "modeOfDeposit": "Cash",
+      "amount": "600000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 15,
+    "fields": {
+      "dateOfTransaction": "2019-12-02",
+      "modeOfDeposit": "Cash",
+      "amount": "400000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 14,
+    "fields": {
+      "dateOfTransaction": "2019-10-19",
+      "modeOfDeposit": "Cash",
+      "amount": "500000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 13,
+    "fields": {
+      "dateOfTransaction": "2019-10-10",
+      "modeOfDeposit": "AP Check",
+      "amount": "1000000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 12,
+    "fields": {
+      "dateOfTransaction": "2019-10-01",
+      "modeOfDeposit": "Cash",
+      "amount": "200000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 11,
+    "fields": {
+      "dateOfTransaction": "2019-09-21",
+      "modeOfDeposit": "Cash",
+      "amount": "200000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 10,
+    "fields": {
+      "dateOfTransaction": "2019-07-22",
+      "modeOfDeposit": "Cheque recived",
+      "amount": "1000000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 9,
+    "fields": {
+      "dateOfTransaction": "2019-07-10",
+      "modeOfDeposit": "Cheque recived",
+      "amount": "100000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 8,
+    "fields": {
+      "dateOfTransaction": "2019-06-25",
+      "modeOfDeposit": "Cheque recived",
+      "amount": "100000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 7,
+    "fields": {
+      "dateOfTransaction": "2019-05-12",
+      "modeOfDeposit": "Cheque recived",
+      "amount": "300000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 6,
+    "fields": {
+      "dateOfTransaction": "2019-04-21",
+      "modeOfDeposit": "Cheque recived",
+      "amount": "200000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 5,
+    "fields": {
+      "dateOfTransaction": "2019-02-17",
+      "modeOfDeposit": "Cheque recived",
+      "amount": "200000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 4,
+    "fields": {
+      "dateOfTransaction": "2019-02-06",
+      "modeOfDeposit": "Cash",
+      "amount": "300000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 3,
+    "fields": {
+      "dateOfTransaction": "2019-02-05",
+      "modeOfDeposit": "Cheque recived",
+      "amount": "400000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 2,
+    "fields": {
+      "dateOfTransaction": "2019-02-02",
+      "modeOfDeposit": "Cash",
+      "amount": "300000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  },
+  {
+    "model": "Accounts.shareholderdeposit",
+    "pk": 1,
+    "fields": {
+      "dateOfTransaction": "2019-01-14",
+      "modeOfDeposit": "Cheque recived",
+      "amount": "200000.00",
+      "remarks": null,
+      "shareholder": 1
+    }
+  }
+]

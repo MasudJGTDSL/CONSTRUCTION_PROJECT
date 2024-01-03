@@ -1,0 +1,75 @@
+{% extends "main.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% comment %} {% load i18n %} {% endcomment %}
+{% block title %}Samprity Tower{%endblock %}
+{% block content %}
+
+<div class="container pt-3">
+    <div class="card">
+        <div class="card-header p-2 me-0 text-white bg-secondary">
+            <h3>{{heading}}</h3>
+        </div>
+        <div class="card-body">
+            {% crispy form %}
+        </div>
+    </div>
+    <br>
+
+    <div class="card" id="deposit_details">
+        <div class="card-header p-2 me-0 text-white bg-secondary">
+            <h3>{{data_heading}}</h3>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for dt in data %}
+            {% if forloop.counter|divisibleby:2 %}
+            <li class="ps-5 pe-5 list-group-item list-group-item-light">- {{dt}}</li>
+            {% else %}
+            <li class="ps-5 pe-5 list-group-item list-group-item-secondary">- {{dt}}</li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    <br>
+
+    {% endblock %}
+
+    {% block script %} 
+    <script> 
+    $('#id_shareholder').change(function() {
+        let shareholder_id = $(this).val();
+        let htm = '<div class="card-header p-2 me-0 text-white bg-secondary d-flex justify-content-between">'
+        $.ajax({
+            url: '/get_shareholder_deposit_info/' + shareholder_id,
+            dataType: "json",
+            success: function(data) {
+                htm+=`<h3>${data[0]["shareholderName"]}</h3><h5 class="text-warning pt-2 pe-3">Total Deposited Amount: Tk ${data[data.length - 1]["total_deposit"]}/=</h5>`
+                htm += `</div><div class="d-flex justify-content-center"><table style="width: 90%;" class="table table-sm align-middle table-striped table-hover table-responsive">
+                        <tr><th>Date</th><th>Deposit Mode</th><th class="text-end pe-5">Amount</th><th>Remarks</th></tr>`
+                $.each(data, function(index,Item) {
+                    if(index != data.length - 1){
+                    htm += `<tr>
+                        <td>${Item["date_of_transaction"]}</td>
+                        <td>${Item["modeOfDeposit"]}</td>
+                        <td class="text-end pe-5">${Item["amount"]}</td>
+                        <td>${Item["remarks"]}</td>
+                        </tr>`
+
+                    }
+                });
+                htm += `</table></div></div>`
+                document.getElementById('deposit_details').innerHTML=htm;
+            }
+        });
+    });
+    
+    // ======= Auto add months from opening date to Maturity date.========
+    $('#deposit_details').change(function() {
+        let unit = parseInt($('#id_Duration').val()?? 0) ;
+        let x = new Date($(this).val())
+        let y = new Date(x.setMonth(x.getMonth() + duration));
+        $('#id_MaturityDate').val(y.toISOString().split('T')[0]);
+        }) 
+    // ===================================================================
+    </script>
+    {% endblock script %}

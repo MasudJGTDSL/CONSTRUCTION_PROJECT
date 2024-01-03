@@ -1,0 +1,114 @@
+{% extends "accounts/reports/reportbase.html" %}
+{% load static %}
+{% block link %}
+{% endblock link %}
+{% block title %}<title>{{data.company_abr}}</title>{% endblock title %}
+{% block style %}
+<style>
+  th,
+  td {
+    font-size: small;
+  }
+
+  @page {
+    size: a4 portrait;
+    margin: 5mm 5mm 10mm 10mm;
+    counter-increment: page;
+
+    @bottom-right {
+      font-family: 'Times New Roman';
+      content: '\00A9 {{data.copy_right}} Page No : ' counter(page);
+      white-space: pre;
+      color: grey;
+    }
+  }
+</style>
+{% endblock style %}
+{% block contents %}
+<p class="text-end" style="margin:0;">Date: {{data.time|date:'d-b-Y'}}</p>
+<div class="container pt-3">
+  <div class="card">
+    <div class="d-flex justify-content-center">
+      <img src="/media/{{data.image}}" class="card-img-top" alt="masud" style="width: 100px; height: 100px;">
+    </div>
+    <div class="card-body">
+      <h3 class="bg-light p-3">Sub:&nbsp;<u>Details information of<span class="text-danger fw-bold">&nbsp;"M/S.
+            {{data.contractor}}</u>"</span></h3>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Date of Join:</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start">&nbsp;{{data.dateOfJoin|date:'d-b-Y'}}</p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Contractor Type:</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start">&nbsp;{{data.contractorType__contractorType}}</p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Address:</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start">&nbsp;{{data.address}}</p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Email:</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start">&nbsp;{{data.Email}}</p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">NID:</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start">&nbsp;{{data.NID}}</p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">TIN:</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start">&nbsp;{{data.TIN}}</p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Telephone No:</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start">&nbsp;{{data.TelephoneNo}}</p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Mobile No:</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start">&nbsp;{{data.Mobile}}</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <br>
+</div>
+
+{% endblock contents %}
+{% block script %}
+<script>
+  // let elements = document.getElementsByTagName("style");
+  // let pageNo=elements.
+
+</script>
+{% endblock script %}

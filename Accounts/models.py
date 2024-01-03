@@ -1,8 +1,25 @@
+import os
+from PIL import Image
 from django.db import models
 from datetime import date, datetime, time, timedelta
 from . import choices
+from uuid import uuid4
 
-# Create your models here.
+# from . import views
+from django.urls import reverse
+
+
+def path_and_rename(instance, filename):
+    upload_to = "ContractorsImage"
+    ext = filename.split(".")[-1]
+    # get filename
+    if instance.pk:
+        filename = "{}.{}".format(instance.pk, ext)
+    else:
+        # set filename as random string
+        filename = "{}.{}".format(uuid4().hex, ext)
+    # return the whole path to the file
+    return os.path.join(upload_to, filename)
 
 
 class ItemCode(models.Model):
@@ -27,23 +44,46 @@ class Item(models.Model):
     )
 
     class Meta:
-        ordering = ("itemName",)
+        ordering = (
+            "ItemCode",
+            "itemName",
+        )
 
     def __str__(self):
-        return self.itemName
+        return f"{self.itemName} [Unit: {self.unit}]"
 
 
 class Shareholder(models.Model):
+    dateOfJoin = models.DateField(default=datetime.now)
     shareholderName = models.CharField("Name", max_length=100)
+    address = models.CharField("Address", max_length=300, blank=True, null=True)
     email = models.EmailField("Email", max_length=300, blank=True, null=True)
     mobile = models.CharField("Mobile No.", max_length=20, blank=True, null=True)
     nid = models.CharField("NID No.", max_length=20, blank=True, null=True)
     numberOfFlat = models.DecimalField(
         "Number of Flats", max_digits=4, decimal_places=2
     )
+    image = models.ImageField(
+        upload_to="ShareholdersImage/",
+        max_length=255,
+        default="ShareholdersImage/default.png",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         ordering = ("-numberOfFlat",)
+
+    def save(self):
+        super().save()
+        img = Image.open(self.image.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
+
+    def get_absolute_url(self):
+        return f"/shareholder/{str(self.id)}"
 
     def __str__(self):
         return self.shareholderName
@@ -56,8 +96,12 @@ class ContractorType(models.Model):
         null=False,
     )
 
+    def __str__(self):
+        return self.contractorType
+
 
 class Contractor(models.Model):
+    dateOfJoin = models.DateField(default=datetime.now)
     contractor = models.CharField(max_length=100, blank=False, null=False)
     contractorType = models.ForeignKey(
         ContractorType,
@@ -72,10 +116,34 @@ class Contractor(models.Model):
     TelephoneNo = models.CharField(max_length=50, blank=True, null=True)
     Mobile = models.CharField(max_length=20, blank=True, null=True)
     Email = models.CharField(max_length=100, blank=True, null=True)
-    image = models.ImageField(blank=True, null=True, upload_to="media")
+    image = models.ImageField(
+        upload_to=path_and_rename,
+        max_length=255,
+        default="ContractorsImage/default.png",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         ordering = ("contractor",)
+
+    # def get_absolute_url(self):
+    #     return reverse(
+    #         "contractor-details",
+    #         args=[
+    #             self.id,
+    #         ],
+    #     )
+    def save(self):
+        super().save()
+        img = Image.open(self.image.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
+
+    def get_absolute_url(self):
+        return f"/contractor/{str(self.id)}"
 
     def __str__(self):
         return self.contractor
@@ -102,7 +170,7 @@ class Expenditure(models.Model):
         ordering = ("-dateOfTransaction",)
 
     def __str__(self):
-        return f"{self.item}, Quantity:{self.quantity}{self.unit}, Ampunt:{self.amount}"
+        return f"Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, {self.description}, Sector: {self.item}, Quantity:{self.quantity} {self.unit}, Amount: {self.amount}/- Tk"
 
 
 class ShareholderDeposit(models.Model):
@@ -128,25 +196,26 @@ class ShareholderDeposit(models.Model):
         ordering = ("-dateOfTransaction",)
 
     def __str__(self):
-        return f"{self.shareholder}, Quantity:{self.amount}, Ampunt:{self.dateOfTransaction}"
-
-    class ContractorBill(models.Model):
-        dateOfTransaction = models.DateField(default=datetime.now)
-        labor_fooding = models.DecimalField(
-            max_digits=10, decimal_places=2, db_default=0
-        )
-        amount = models.DecimalField(max_digits=10, decimal_places=2)
-        remarks = models.TextField(blank=True, null=True)
-        contractor = models.ForeignKey(
-            Contractor,
-            blank=False,
-            null=False,
-            related_name="ContractorBill",
-            on_delete=models.CASCADE,
+        return (
+            f"{self.shareholder}: Amount:{self.amount}, Date:{self.dateOfTransaction}"
         )
 
-        def __str__(self):
-            return f"{self.contractor}, Amount:{self.amount}, Date:{self.dateOfTransaction}"
+
+class ContractorBill(models.Model):
+    dateOfTransaction = models.DateField(default=datetime.now)
+    labor_fooding = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    remarks = models.TextField(blank=True, null=True)
+    contractor = models.ForeignKey(
+        Contractor,
+        blank=False,
+        null=False,
+        related_name="ContractorBill",
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return f"{self.contractor}, Amount:{self.amount}, Date:{self.dateOfTransaction}"
 
 
 class OfficeItemCode(models.Model):

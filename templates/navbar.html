@@ -2,29 +2,32 @@
 {% load i18n %}
 
 <style>
-  .hello-msg{
+  .hello-msg {
     font-size: 18px;
     color: #fff;
     margin-right: 20px;
     text-decoration: inherit;
   }
-  a:hover {
-  color: rgb(7, 240, 96);
-}
 
+  a:hover {
+    color: rgb(7, 240, 96);
+  }
 </style>
 
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'Accounts:index' %}"><img class="bg-secondary-subtle" style="border-radius: 8px;width: 38px; height: 38px;" src="{% get_static_prefix %}images/{{company_logo_lg}}">
+    <a class="navbar-brand" href="{% url 'Accounts:index' %}"><img class="bg-secondary-subtle"
+        style="border-radius: 8px;width: 38px; height: 38px;" src="{% get_static_prefix %}images/{{company_logo_lg}}">
       <span class="hello-msg {{font_banner}} {{font_size_banner}}">&nbsp; {{company_name}}</span></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+      aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'Accounts:index' %}"><i class="bu bi-house"></i> Home</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'Accounts:index' %}"><i class="bu bi-house"></i>
+            Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Features</a>
@@ -32,17 +35,46 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'Accounts:send_mail' %}">Mail</a>
         </li>
+
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Postings
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="{% url 'Accounts:expenditure_posting' %}">Expenditure</a></li>
+            <li><a class="dropdown-item" href="{% url 'Accounts:shareholder_deposit' %}">Shareholder Deposit</a></li>
+            <li><a class="dropdown-item" href="{% url 'Accounts:contractor_bill' %}">Contractor Bill</a></li>
+            <li><a class="dropdown-item" href="{% url 'Accounts:itemcode' %}">Add Work Sector</a></li>
+            <li><a class="dropdown-item" href="{% url 'Accounts:item' %}">Add Item</a></li>
+            <li><a class="dropdown-item" href="{% url 'Accounts:contractor' %}">Add Contractor</a></li>
+            <li><a class="dropdown-item" href="{% url 'Accounts:contractortype' %}">Add Contractor Type</a></li>
+            <li><a class="dropdown-item" href="{% url 'Accounts:shareholder' %}">Add Shareholder</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+        </li>
+
+
+
+
       </ul>
       <span class="navbar-text">
         {% if user.is_authenticated %}
 
-  <span class="hello-msg nav-item">Hello, {{request.user|title}}</span>
-        <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'registration:logoutUser' %}">{% trans "Log out" %}</a>|
-        <a class="hello-msg" href="{% url 'password_change' %}"> {% trans "Change password" %}</a></span>
-    {% else %}
-       <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'login' %}">{% trans "Log in" %}</a></span>
-       <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'registration:registerPage' %}">{% trans "Sign up" %}</a></span>
-  {% endif %}
+        <span class="hello-msg nav-item">Hello, {{request.user|title}}</span>
+        <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'registration:logoutUser' %}">
+            {% trans "Logout" %}</a>|
+          <a class="hello-msg" href="{% url 'password_change' %}"> {% trans "Change password" %}</a></span>
+        {% else %}
+        <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'login' %}">{% trans "Login" %}</a></span>
+        <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'registration:registerPage' %}">
+            {% trans "Signup" %}</a></span>
+        {% endif %}
       </span>
     </div>
   </div>
