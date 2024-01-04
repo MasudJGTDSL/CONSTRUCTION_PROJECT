@@ -118,7 +118,15 @@ class ContractorView(generic.edit.FormView):
 
 class ContractorDetailView(DetailView):
     model = Contractor
-    template_name = "accounts/details_templates/contractor_details.html"
+    template_name = "accounts/report_templates/contractor_details.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context["now"] = timezone.now()
+        return context
+class ShareholderDetailView(DetailView):
+    model = Shareholder
+    template_name = "accounts/report_templates/shareholder_details.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -319,7 +327,7 @@ class ShareholderView(generic.edit.FormView):
         return context
 
 
-def index(request):
+def chart(request):
     # start = request.GET.get("start")
     # end = request.GET.get("end")
 
@@ -448,32 +456,55 @@ def send_mail(request):
     return render(request, "accounts/send_mail.html", {"fm": fm, "qs": qs})
 
 
-def chart(request):
-    # start = request.GET.get("start")
-    # end = request.GET.get("end")
+def index(request):
+    qs = Expenditure.objects.values("item__ItemCode__workSector").annotate(
+        spent_amount=Sum(Coalesce(F("amount"), 0, output_field=FloatField()))
+    )
+    qs = qs.annotate(
+        work_sector=F("item__ItemCode__workSector"), Amount=F("spent_amount")
+    )
 
-    qs = ShareholderDeposit.objects.values("shareholder__shareholderName").annotate(
+    fig_bar = px.bar(
+        x=[c["work_sector"] for c in qs],
+        y=[c["Amount"] for c in qs],
+        # text=[f"{(amnt/10**5):,.2f} Lac" for amnt in [c["Amount"] for c in qs]],
+        text_auto=".2s",
+        title="Work Sector Wise Spent Amount",
+        color=[c["Amount"] for c in qs],
+        labels={"x": "Work Sector", "y": "Amount Taka"},
+    )
+    fig_bar.update_layout(
+        title={"font_size": 24, "xanchor": "center", "x": 0.5}, barmode="group"
+    )
+    fig_bar.update_traces(textangle=-90, textposition="outside", cliponaxis=False)
+    fig_bar_chart = fig_bar.to_html()
+
+    fig_pie = px.pie(
+        qs,
+        values="Amount",
+        names="work_sector",
+        title="Work Sector Wise Spent Amount",
+        #  color_discrete_sequence=px.colors.sequential.RdBu
+    )
+    # update_traces(title_text="Work Sector", selector=dict(type='pie'))
+    fig_pie.update_traces(textinfo="label+percent", textposition="outside")
+    fig_pie.update_layout(
+        showlegend=True, title={"font_size": 24, "xanchor": "auto", "x": 0.5}
+    )
+    fig_pie_chart = fig_pie.to_html()
+
+    total_deposited = ShareholderDeposit.objects.aggregate(Sum("amount"))
+    total_Expenditure = Expenditure.objects.aggregate(Sum("amount"))
+
+    qs_shareholder = ShareholderDeposit.objects.values("shareholder__shareholderName").annotate(
         Deposited_Amount=Sum(Coalesce(F("amount"), 0, output_field=FloatField()))
     )
 
-    qs = qs.annotate(
+    qs_shareholder = qs_shareholder.annotate(
         Shareholder=F("shareholder__shareholderName"), Amount=F("Deposited_Amount")
     )
 
-    # if start:
-    #     qs = Shareholder.filter(date__gte=start)
-    # if end:
-    #     qs = Shareholder.filter(date__lte=end)
-
-    fig = px.bar(
-        x=[c["Shareholder"] for c in qs],
-        y=[c["Amount"] for c in qs],
-        text=[f"{(amnt/10**5):,.2f}Lac" for amnt in [c["Amount"] for c in qs]],
-        title="Amount Deposited Per Flat",
-        labels={"x": "Share Holders", "y": "Amount Taka"},
-    )
-
-    qs_avg = ShareholderDeposit.objects.values("shareholder__shareholderName").annotate(
+    qs_shareholder_avg = ShareholderDeposit.objects.values("shareholder__shareholderName").annotate(
         Deposited_Amount=ExpressionWrapper(
             Sum(Coalesce(F("amount"), 0, output_field=FloatField()))
             / F("shareholder__numberOfFlat"),
@@ -481,24 +512,19 @@ def chart(request):
         )
     )
 
-    x_avg = qs_avg.values_list("shareholder__shareholderName", flat=True)
-    y_avg = qs_avg.values_list("Deposited_Amount", flat=True)
+    x_avg = qs_shareholder_avg.values_list("shareholder__shareholderName", flat=True)
+    y_avg = qs_shareholder_avg.values_list("Deposited_Amount", flat=True)
     text_avg = [f"{(amnt/10**3):,.2f}K" for amnt in y_avg]
-    # fig_avg = px.bar(
-    #     x=x_avg,
-    #     y=y_avg,
-    #     text=text_avg,
-    #     title="Amount Deposited",
-    #     labels={"x": "Share Holders", "y": "Average Amount per Flat"},
-    # )
-    fig_avg = px.bar(
+
+    fig_shareholder_avg = px.bar(
         x=x_avg,
         y=y_avg,
         # text=text_avg,
         text_auto=".2s",
-        title="Amount Deposited",
+        title="Per Flat Deposited by The Shareholders",
         labels={"x": "Share Holders", "y": "Average Amount per Flat"},
         color=y_avg,
+        range_y=[10000, 3000000],
         # color_discrete_map = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
         color_discrete_map={
             "Thur": "lightcyan",
@@ -507,21 +533,115 @@ def chart(request):
             "Sun": "darkblue",
         },
     )
-    fig = px.pie(
-        qs,
+
+    fig_shareholder = px.pie(
+        qs_shareholder,
         values="Amount",
         names="Shareholder",
-        title="Amount Deposited",
+        title="Amount Deposited by The Shareholders",
         #  color_discrete_sequence=px.colors.sequential.RdBu
     )
+
     # fig_avg.title = "Amount Deposited"
     # fig_avg.labels = {"x": "Share Holders", "y": "Average Amount per Flat"}
-    fig.update_layout(title={"font_size": 24, "xanchor": "center", "x": 0.5})
-    chart = fig.to_html()
-    fig_avg.update_layout(title={"font_size": 24, "xanchor": "center", "x": 0.5})
-    chart_avg = fig_avg.to_html()
-    context = {"chart": chart, "chart_avg": chart_avg}
-    return render(request, "accounts/index.html", context)
+    fig_shareholder_avg.update_traces(textangle=-90, textposition="outside", cliponaxis=False)
+    fig_shareholder_avg.update_layout(
+        title={"font_size": 24, "xanchor": "center", "x": 0.5}, barmode="group"
+    )
+
+    fig_shareholder.update_traces(textinfo="label+percent", textposition="outside")
+    fig_shareholder.update_layout(
+        showlegend=False, title={"font_size": 24, "xanchor": "auto", "x": 0.5}
+    )
+
+    chart_shareholder = fig_shareholder.to_html()
+    chart_shareholder_avg = fig_shareholder_avg.to_html()
+
+    context = {
+        "chart_shareholder":chart_shareholder,
+        "chart_shareholder_avg":chart_shareholder_avg,
+        "fig_pie_chart": fig_pie_chart,
+        "fig_bar_chart": fig_bar_chart,
+        "total_deposited": total_deposited,
+        "total_Expenditure": total_Expenditure,
+    }  # "fig_bar_chart": fig_bar_chart
+    return render(request, "accounts/dashboard.html", context)
+
+
+# def chart(request):
+#     # start = request.GET.get("start")
+#     # end = request.GET.get("end")
+
+#     qs = ShareholderDeposit.objects.values("shareholder__shareholderName").annotate(
+#         Deposited_Amount=Sum(Coalesce(F("amount"), 0, output_field=FloatField()))
+#     )
+
+#     qs = qs.annotate(
+#         Shareholder=F("shareholder__shareholderName"), Amount=F("Deposited_Amount")
+#     )
+
+#     # if start:
+#     #     qs = Shareholder.filter(date__gte=start)
+#     # if end:
+#     #     qs = Shareholder.filter(date__lte=end)
+
+#     fig = px.bar(
+#         x=[c["Shareholder"] for c in qs],
+#         y=[c["Amount"] for c in qs],
+#         text=[f"{(amnt/10**5):,.2f}Lac" for amnt in [c["Amount"] for c in qs]],
+#         title="Amount Deposited Per Flat",
+#         labels={"x": "Share Holders", "y": "Amount Taka"},
+#     )
+
+#     qs_avg = ShareholderDeposit.objects.values("shareholder__shareholderName").annotate(
+#         Deposited_Amount=ExpressionWrapper(
+#             Sum(Coalesce(F("amount"), 0, output_field=FloatField()))
+#             / F("shareholder__numberOfFlat"),
+#             output_field=FloatField(),
+#         )
+#     )
+
+#     x_avg = qs_avg.values_list("shareholder__shareholderName", flat=True)
+#     y_avg = qs_avg.values_list("Deposited_Amount", flat=True)
+#     text_avg = [f"{(amnt/10**3):,.2f}K" for amnt in y_avg]
+#     # fig_avg = px.bar(
+#     #     x=x_avg,
+#     #     y=y_avg,
+#     #     text=text_avg,
+#     #     title="Amount Deposited",
+#     #     labels={"x": "Share Holders", "y": "Average Amount per Flat"},
+#     # )
+#     fig_avg = px.bar(
+#         x=x_avg,
+#         y=y_avg,
+#         # text=text_avg,
+#         text_auto=".2s",
+#         title="Amount Deposited",
+#         labels={"x": "Share Holders", "y": "Average Amount per Flat"},
+#         color=y_avg,
+#         # color_discrete_map = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
+#         color_discrete_map={
+#             "Thur": "lightcyan",
+#             "Fahim Amin": "cyan",
+#             "Sat": "royalblue",
+#             "Sun": "darkblue",
+#         },
+#     )
+#     fig = px.pie(
+#         qs,
+#         values="Amount",
+#         names="Shareholder",
+#         title="Amount Deposited",
+#         #  color_discrete_sequence=px.colors.sequential.RdBu
+#     )
+#     # fig_avg.title = "Amount Deposited"
+#     # fig_avg.labels = {"x": "Share Holders", "y": "Average Amount per Flat"}
+#     fig.update_layout(title={"font_size": 24, "xanchor": "center", "x": 0.5})
+#     chart = fig.to_html()
+#     fig_avg.update_layout(title={"font_size": 24, "xanchor": "center", "x": 0.5})
+#     chart_avg = fig_avg.to_html()
+#     context = {"chart": chart, "chart_avg": chart_avg}
+#     return render(request, "accounts/index.html", context)
 
 
 @login_required
@@ -577,3 +697,101 @@ def get_shareholder_deposit_info(request, shareholder_id):
 
     info = json.dumps(deposit_info)
     return HttpResponse(info)
+
+
+#! Reports =================================================
+class ExpenditureSummary(LoginRequiredMixin, ListView):
+    model = Expenditure
+    template_name = "accounts/report_templates/expenditure_summary.html"
+    context_object_name = "expenditure"
+    # paginate_by = 30
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.values(
+            "item__ItemCode__workSector",
+            "item__itemName",
+        ).annotate(
+            sum_amount=Round(Sum(F("amount")), 0),
+            sum_quantity=Round(Sum(F("quantity")), 0),
+            unit=F("item__unit"),
+        )
+        subquery_work_sector_sum = (
+            Expenditure.objects.filter(
+                item__ItemCode__workSector=OuterRef("item__ItemCode__workSector")
+            )
+            .values("item__ItemCode__workSector")
+            .annotate(
+                worksector_sum=Coalesce(
+                    Sum(F("amount")), 0, output_field=DecimalField()
+                )
+            )
+        )
+        # subquery_unit = Item.objects.values("unit", "itemName").filter(
+        #     itemName=OuterRef("item__itemName")
+        # )
+
+        # qs = qs.annotate(unit=Subquery(subquery_unit.values("unit")))
+        qs = qs.annotate(
+            worksector_sum=Subquery(subquery_work_sector_sum.values("worksector_sum")),
+        )
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        grand_total = Expenditure.objects.aggregate(Sum("amount"))
+        context["grand_total"] = grand_total
+        return context
+
+
+class ExpenditureDetailsList(LoginRequiredMixin, ListView):
+    model = Expenditure
+    template_name = "accounts/report_templates/expenditure_detail_list.html"
+    context_object_name = "expenditure"
+    # paginate_by = 30
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        subquery_sum = (
+            Expenditure.objects.filter(
+                item_id=OuterRef("item__id"),
+                item__ItemCode=OuterRef("item__ItemCode__id"),
+            )
+            .values(
+                "item__ItemCode__workSector",
+                "item__itemName",
+            )
+            .annotate(
+                sum_amount=Round(Sum(F("amount")), 0),
+                sum_quantity=Round(Sum(F("quantity")), 0),
+                units=F("item__unit"),
+            )
+        )
+        qs = qs.annotate(
+            work_sector=Subquery(subquery_sum.values("item__ItemCode__workSector")),
+            item_name=Subquery(subquery_sum.values("item__itemName")),
+            sum_amount=Subquery(subquery_sum.values("sum_amount")),
+            sum_quantity=Subquery(subquery_sum.values("sum_quantity")),
+            units=Subquery(subquery_sum.values("units")),
+        )
+        subquery_work_sector_sum = (
+            Expenditure.objects.filter(
+                item__ItemCode__workSector=OuterRef("item__ItemCode__workSector")
+            )
+            .values("item__ItemCode__workSector")
+            .annotate(
+                worksector_sum=Coalesce(
+                    Sum(F("amount")), 0, output_field=DecimalField()
+                )
+            )
+        )
+        qs = qs.annotate(
+            worksector_sum=Subquery(subquery_work_sector_sum.values("worksector_sum")),
+        ).order_by("work_sector", "item_name", "-dateOfTransaction")
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        grand_total = Expenditure.objects.aggregate(Sum("amount"))
+        context["grand_total"] = grand_total
+        return context

@@ -1,0 +1,74 @@
+{% extends "main.html" %}
+{% load static %} 
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% comment %} {% load i18n %} {% endcomment %}
+{% block title %}Samprity Tower{%endblock %}
+{% block content %}
+
+<div class="container pt-3" style="width:50%;">
+    <div class="card">
+        <div class="d-flex justify-content-center">
+        <img src="/media/{{object.image}}" 
+        class="card-img-top" 
+        alt="masud"
+        style="border-radius: 15%; width: 200px; height: 200px;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+        </div>
+        <div class="card-body">
+          <h3 class="card card-title text-white bg-secondary bg-opacity-50 p-3">{{object.shareholderName}}</h3>
+        <div class="row mb-3">
+            <div class="col-3 fw-bold"><p class="card-text text-end">Date of Join:</p></div>
+            <div class="col"><p class="card-text text-start">{{object.dateOfJoin|date:'d-b-Y'}}</p></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-3 fw-bold"><p class="card-text text-end">Number of Flats:</p></div>
+            <div class="col"><p class="card-text text-start">{{object.numberOfFlat}}</p></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-3 fw-bold"><p class="card-text text-end">Address:</p></div>
+            <div class="col"><p class="card-text text-start">
+                {% if  object.address == None%}
+                ---
+                {% else %}
+                {{object.address}}
+                {% endif %}
+            </p></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-3 fw-bold"><p class="card-text text-end">Email:</p></div>
+            <div class="col"><p class="card-text text-start">{{object.email}}</p></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-3 fw-bold"><p class="card-text text-end">NID:</p></div>
+            <div class="col"><p class="card-text text-start">
+                {% if  object.nid == None%}
+                ---
+                {% else %}
+                {{object.nid}}
+                {% endif %}
+            </p></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-3 fw-bold"><p class="card-text text-end">TIN:</p></div>
+            <div class="col"><p class="card-text text-start">
+                
+                {% if  object.TIN == None%}
+                    ---
+                    {% else %}
+                    {{object.TIN}}
+                    {% endif %}
+            </p></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-3 fw-bold"><p class="card-text text-end">Mobile No:</p></div>
+            <div class="col"><p class="card-text text-start">{{object.mobile}}</p></div>
+
+      </div>
+    </div>
+</div>
+<div class="d-flex justify-content-end py-3">
+<a href="/contractorDetails/{{object.id}}" target="_blank" class="btn btn-primary">Print</a>
+</div>
+</div>
+
+{% endblock %}

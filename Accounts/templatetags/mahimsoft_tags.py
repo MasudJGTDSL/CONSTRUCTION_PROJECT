@@ -9,6 +9,9 @@ from django.conf import settings
 
 register = template.Library()
 
+@register.filter
+def subtract(value, arg):
+    return value - arg
 
 @register.filter(is_safe=True)
 def enTobnNumber(Value):
@@ -200,3 +203,4 @@ def floatword_indian(value):
         if tens_ones == '00':
             return '%s Hundreds' % hundreds
         return '%s.%s Hundreds' % (hundreds, tens_ones)
+    

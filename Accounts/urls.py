@@ -20,15 +20,30 @@ urlpatterns = [
     path(
         "contractor_bill/", views.ContractorBillView.as_view(), name="contractor_bill"
     ),
-    path(
-        "shareholder/", views.ShareholderView.as_view(), name="shareholder"
-    ),
+    path("shareholder/", views.ShareholderView.as_view(), name="shareholder"),
     path(
         "shareholder_deposit/",
         views.ShareholderDepositView.as_view(),
         name="shareholder_deposit",
     ),
+    path(
+        "shareholder/<int:pk>",
+        views.ShareholderDetailView.as_view(),
+        name="shareholder-details",
+    ),
     path("chart/", views.chart, name="chart"),
+    # Html Reports ========================
+    path(
+        "expenditure_summary/",
+        views.ExpenditureSummary.as_view(),
+        name="expenditure_summary",
+    ),
+    path(
+        "expenditure_details_list/",
+        views.ExpenditureDetailsList.as_view(),
+        name="expenditure_details_list",
+    ),
+    # Html Reports End ====================
     # serializers =========================
     path("get_item/<str:itemCode_id>", views.get_item, name="get_item"),
     path(
