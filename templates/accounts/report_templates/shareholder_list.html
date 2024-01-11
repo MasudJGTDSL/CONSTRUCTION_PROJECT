@@ -1,0 +1,52 @@
+{% extends "main.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load mahimsoft_tags %}
+{% comment %} {% load i18n %} {% endcomment %}
+{% block content %}
+
+<div class="container pt-3">
+    <div class="card">
+            <h3 class="text-muted text-center">{{heading}}</h3>
+    </div>
+    <br>
+
+        <div class="table table-active">
+            <table class="table table-sm align-middle table-bordered table-striped table-hover table-responsive">
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Photo</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Mobile</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">Date of Join</th>
+                    <th class="text-center">Nos. of Flat</th>
+                    <th class="text-center">Deposited Amnt</th>
+                    <th class="text-center">Rest Amnt to Pay</th>
+                    <th class="text-center"></th>
+                </tr>
+                {% for dt in shareholder %}
+                <tr>
+                    <td class = "text-center">{{forloop.counter}}</td>
+                    <td><img src="/media/{{dt.image}}" class="card-img-top" alt="masud"
+                            style="border-radius: 15%; width: 80px; height: 80px;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                    </td>
+                    <td>{{dt.shareholderName}}</td>
+                    <td>{{dt.mobile}}</td>
+                    <td>{{dt.email}}</td>
+                    <td>{{dt.dateOfJoin|date:"d b Y"}}</td>
+                    <td class="text-center">{{dt.numberOfFlat|floatformat:"1"}}</td>
+                    <td class="text-end pe-1">{{dt.deposit_amount_sum|intcomma_bd}}/-</td>
+                    <td class="text-end pe-1">{{dt.numberOfFlat|number_product:targeted_amount_per_flat|subtract:dt.deposit_amount_sum|intcomma_bd}}/-</td>
+                    <td class="text-center"><a href="{{ dt.get_absolute_url}}">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <p class="text-danger">NB: Rest amount to pay calculated as per targeted amount per share as Taka: {{3|number_product:targeted_amount_per_flat|intcomma_bd}}/-</p>
+        </div>
+        <br>
+        {% endblock %}

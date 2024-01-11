@@ -7,6 +7,9 @@ app_name = "Accounts"
 urlpatterns = [
     path("", views.index, name="index"),
     path("send_mail/", views.send_mail, name="send_mail"),
+    path(
+        "targetedamount/", views.TargetedAmountPosting.as_view(), name="targetedamount"
+    ),
     path("contractortype/", views.ContractorTypeView.as_view(), name="contractortype"),
     path("contractor/", views.ContractorView.as_view(), name="contractor"),
     path(
@@ -22,9 +25,19 @@ urlpatterns = [
     ),
     path("shareholder/", views.ShareholderView.as_view(), name="shareholder"),
     path(
+        "shareholder_list/",
+        views.ShareholderListView.as_view(),
+        name="shareholder_list",
+    ),
+    path(
         "shareholder_deposit/",
         views.ShareholderDepositView.as_view(),
         name="shareholder_deposit",
+    ),
+    path(
+        "shareholder_deposit_list/<int:shareholder_id>",
+        views.ShareholderDepositList.as_view(),
+        name="shareholder_deposit_list",
     ),
     path(
         "shareholder/<int:pk>",
@@ -32,6 +45,7 @@ urlpatterns = [
         name="shareholder-details",
     ),
     path("chart/", views.chart, name="chart"),
+    path("plot/", views.plot_chart, name="plot_chart"),
     # Html Reports ========================
     path(
         "expenditure_summary/",

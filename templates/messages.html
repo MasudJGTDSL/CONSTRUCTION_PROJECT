@@ -1,31 +1,31 @@
-
 {% load static %}
-{% comment %} 
+{% comment %}
 {% if messages %}
-    {% for message in messages %}
-        {% if message.tags %}  <script>alert("{{ message }}")</script> {% endif %}
-    {% endfor %}
+{% for message in messages %}
+{% if message.tags %}
+<script>alert("{{ message }}")</script> {% endif %}
+{% endfor %}
 {% endif %} {% endcomment %}
-    
+
 
 <!-- Message from backend -->
 {% if messages %}
 {% for message in messages %}
 {% if message.tags %}
-<div class="bg-success text-light text-center position-fixed top-0 start-0 end-0 rounded-start-3 rounded-end-3 ms-1 me-1" id="toast" style="z-index: 2000;">
-    <span class="text-muted pt-0 mt-0 mb-0 pb-0">
+<div class="bg-success text-white text-center position-fixed top-0 start-0 end-0 rounded-start-3 rounded-end-3 ms-1 me-1"
+    id="toast" style="z-index: 2000;">
+    <span class="text-white pt-0 mt-0 mb-0 pb-0">
         <img src="{% get_static_prefix %}images/{{company_logo_fevicon}}" alt="JG"
-        style="width:24px;height:24px;">&nbsp;
+            style="width:28px;height:28px;">&nbsp;
         <span class="{{font_other}} fs-4">{{company_name}}
-        <hr class="pt-0 mt-1 mb-1 pb-0">
+            <hr class="pt-0 mt-1 mb-1 pb-0">
         </span>
-        </span>
-        
+    </span>
+
     {{ message|safe }}
 
-</div> 
+</div>
 
 {% endif %}
 {% endfor %}
 {% endif %}
-

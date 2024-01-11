@@ -43,7 +43,7 @@
  <!-- {% comment %}Take a closer look at the widthratio template tag. Given {% widthratio a b c %} it computes (a/b)*c {% endcomment %}--> 
     <td class="text-end pe-5 me-5">{{x.amount}}</td>
     <td>{{x.unit}}</td>
-    <td class="text-end pe-5 me-5">{{x.units}}/=</td>
+    <td class="text-end pe-5 me-5">{{x.units}}/-</td>
 </tr>
 {% endfor %}
 
@@ -51,7 +51,7 @@
 <td></td>
 <td></td>
 <th>Total =</th>
-<th class="text-end pe-5 me-5">{{dt.list.0.worksector_sum|intcomma_bd}}/=</th>
+<th class="text-end pe-5 me-5">{{dt.list.0.worksector_sum|intcomma_bd}}/-</th>
 
 </tr>
 </tbody>

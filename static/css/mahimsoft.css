@@ -4,6 +4,10 @@
   font-family: CompanyNameFont;
   src: url("./fonts/RussoOne-Regular.ttf");
 }
+@font-face {
+  font-family: AeroSkyFont;
+  src: url("./fonts/Audiowide-Regular.ttf");
+}
 
 @font-face {
   font-family: BalletRegular;
@@ -30,6 +34,9 @@
 
 .CompanyNameFont {
     font-family: CompanyNameFont;
+  }
+.AeroSkyFont {
+    font-family: AeroSkyFont;
   }
 
 .BalletRegular {

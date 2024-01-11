@@ -8,28 +8,31 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from Accounts.decorators import admin_only, allowed_users, unauthenticated_user
 
 # Create your views here.
 from .models import *
 from .forms import CreateUserForm
 
-
+@login_required
+@allowed_users(allowed_roles=["Manager"])
 def registerPage(request):
-    if request.user.is_authenticated:
-        return redirect("/")
-    else:
-        form = CreateUserForm()
-        if request.method == "POST":
-            form = CreateUserForm(request.POST)
-            if form.is_valid():
-                form.save()
-                user = form.cleaned_data.get("username")
-                messages.success(request, f"Account has created for {user}")
+    # if request.user.is_authenticated:
+    #     return redirect("/")
+    # else:
+    form = CreateUserForm()
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get("username")
+            messages.success(request, f"Account has created for {user}")
 
-                return redirect("login")
+            return redirect("login")
 
-        context = {"form": form}
-        return render(request, "registration/register.html", context)
+    context = {"form": form}
+    return render(request, "registration/register.html", context)
 
 
 def loginPage(request):

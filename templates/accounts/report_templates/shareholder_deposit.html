@@ -1,0 +1,65 @@
+{% extends "main.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load mahimsoft_tags %}
+{% comment %} {% load i18n %} {% endcomment %}
+{% block title %}Samprity Tower{%endblock %}
+{% block content %}
+
+<div class="container pt-3">
+    <div class="row">
+        <div class="col-6">
+            <h4 class="text-danger">{{shareholder_deposit.0.shareholderName}}</h4>
+            <p>Number of Flats: {{shareholder_deposit.0.numberOfFlat|floatformat:"1"}} <br>
+                Targeted Amount: Tk.
+                {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|intcomma_bd}}/- <br>
+                Amount Deposited: Tk. {{shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/- <br>
+                Amount to Deposit: Tk.
+                {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|subtract:shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
+            </p>
+        </div>
+        <div class="col text-end pt-3">
+            <img src="/media/{{shareholder_deposit.0.image}}" class="card-img-top" alt="shareholder"
+                style="border-radius: 15%; width: 100px; height: 100px;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+        </div>
+    </div>
+    <div class="card">
+
+        <div class="card-header p-0 ps-2 me-0 text-white bg-secondary">
+            <h3 class="p-0">{{heading}}</h3>
+        </div>
+
+    </div>
+    <br>
+    <div class="table table-active">
+        <table class="table table-sm align-middle table-bordered table-striped table-hover table-responsive">
+            <tr>
+                <th class="text-center">#</th>
+                <th class="text-center">Date</th>
+                <th class="text-center">Mode of Deposit</th>
+                <th class="text-center">Amount (Taka)</th>
+                <th class="text-center">Remarks</th>
+            </tr>
+            {% for item in shareholder_deposit %}
+            <tr>
+                <td class="text-center">{{forloop.counter}}</td>
+                <td class="text-start ps-2">{{item.dateOfTransaction|date:"d b Y"}}</td>
+                <td class="text-start ps-2">{{item.modeOfDeposit}}</td>
+                <td class="text-end pe-4">{{item.amount|intcomma_bd}}</td>
+                {% if item.remarks == None %}
+                <td class="text-center">
+                    ----
+                </td>
+                {% else %}
+                <td>
+                    {{item.remarks}}
+                </td>
+                {% endif %}
+
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <br>
+
+    {% endblock %}

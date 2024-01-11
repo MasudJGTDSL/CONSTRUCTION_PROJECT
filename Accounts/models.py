@@ -7,6 +7,7 @@ from uuid import uuid4
 
 # from . import views
 from django.urls import reverse
+from .templatetags.mahimsoft_tags import intcomma_bd
 
 
 def path_and_rename(instance, filename):
@@ -87,6 +88,37 @@ class Shareholder(models.Model):
 
     def __str__(self):
         return self.shareholderName
+
+
+class ShareholderDeposit(models.Model):
+    dateOfTransaction = models.DateField(default=datetime.now)
+    modeOfDeposit = models.CharField(
+        max_length=4,
+        blank=False,
+        null=False,
+        choices=choices.modeOfDeposit,
+        default="OTHE",
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    remarks = models.TextField(blank=True, null=True)
+    shareholder = models.ForeignKey(
+        Shareholder,
+        blank=False,
+        null=False,
+        related_name="ShareholderDeposit",
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        ordering = ("-dateOfTransaction",)
+
+    def __str__(self):
+        return (
+            f"{self.shareholder}: Amount:{self.amount}, Date:{self.dateOfTransaction}"
+        )
+
+    def get_absolute_url(self):
+        return f"/get_shareholder_deposit_info/{str(self.shareholder)}"
 
 
 class ContractorType(models.Model):
@@ -171,34 +203,6 @@ class Expenditure(models.Model):
 
     def __str__(self):
         return f"Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, {self.description}, Sector: {self.item}, Quantity:{self.quantity} {self.unit}, Amount: {self.amount}/- Tk"
-
-
-class ShareholderDeposit(models.Model):
-    dateOfTransaction = models.DateField(default=datetime.now)
-    modeOfDeposit = models.CharField(
-        max_length=4,
-        blank=False,
-        null=False,
-        choices=choices.modeOfDeposit,
-        default="OTHE",
-    )
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    remarks = models.TextField(blank=True, null=True)
-    shareholder = models.ForeignKey(
-        Shareholder,
-        blank=False,
-        null=False,
-        related_name="ShareholderDeposit",
-        on_delete=models.CASCADE,
-    )
-
-    class Meta:
-        ordering = ("-dateOfTransaction",)
-
-    def __str__(self):
-        return (
-            f"{self.shareholder}: Amount:{self.amount}, Date:{self.dateOfTransaction}"
-        )
 
 
 class ContractorBill(models.Model):
@@ -317,3 +321,14 @@ class UserLoggedinFailed(models.Model):
 
     def __str__(self):
         return self.visitorIP
+
+
+class TargetedAmount(models.Model):
+    inputDate = models.DateField(default=datetime.now)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        ordering = ("-inputDate",)
+
+    def __str__(self):
+        return f"Targeted Amount: {intcomma_bd(self.amount)} | Date: {self.inputDate.strftime('%d %b %Y')}"

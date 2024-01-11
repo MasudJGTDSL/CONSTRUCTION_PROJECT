@@ -26,7 +26,7 @@
                 {% if row.grouper != None %}
                 <div class="card mt-2" style="background-color: #FCE6C9;">
                     <div class="d-flex justify-content-between">
-                    <h5 class="p-1">Item: {{ row.grouper }}</h5>
+                    <h5 class="p-1">{{ row.grouper }}</h5>
                     <p class="pt-1 pe-2 pb-0 mb-0">Total: Tk. {{row.list.0.sum_amount|intcomma_bd}}</p></div>
                 </div>
                 <div class="table-responsive-sm" >
@@ -52,7 +52,7 @@
                         <td class="text-end pe-4">{{dt.quantity|intcomma_bd}}</td>
                         <td>{{dt.units}}</td>
                         <td class="text-center">{{dt.voucherNo}}</td>
-                        <td class="text-end pe-4">{{dt.amount|intcomma_bd}}/=</td>
+                        <td class="text-end pe-4">{{dt.amount|intcomma_bd}}/-</td>
                     </tr>
                     {% endfor %}
                     <tr>
@@ -60,7 +60,7 @@
                     <th class="text-end pe-4">{{row.list.0.sum_quantity|intcomma_bd}}</th>
                     <th>{{row.list.0.units}}</th>
                     <th class="text-end">Total Amount =</th>
-                    <th class="text-end pe-4">{{row.list.0.sum_amount|intcomma_bd}}/=</th>
+                    <th class="text-end pe-4">{{row.list.0.sum_amount|intcomma_bd}}/-</th>
                     </tr>
                     </tbody>
                     </table>

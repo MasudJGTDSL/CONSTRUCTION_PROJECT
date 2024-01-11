@@ -1,0 +1,12 @@
+SECRET_KEY=django-insecure-0u*e^77a*f@ug^33*76fd9$0q!6lgdh7^-wd1)h5-e72lm_5ro^_m
+DEBUG=1
+MEDIA_ROOT=/home/pi/CONSTRUCTION_media/media
+STATIC_ROOT=/home/pi/CONSTRUCTION_asets/asets
+
+EMAIL_HOST_USER=info.mahimsofts@gmail.com
+EMAIL_HOST_PASSWORD=lopdxhyavhnbpyvh
+STATIC_ROOT=/home/pi/myprofile_asets
+MEDIA_ROOT=/home/pi/FDR_media/media
+
+
+.env file location: root folder (location of manage.py file)

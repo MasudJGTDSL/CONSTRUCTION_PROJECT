@@ -8,13 +8,13 @@ from django.utils import timezone
 anonymous_company = False
 language = "en"
 
-font_en_banner = "BalletRegular"
+font_en_banner = "AeroSkyFont"
 font_bn_banner = "b_fontkero"
 
-font_en_other = "CompanyNameFont"
+font_en_other = "AeroSkyFont"
 font_bn_other = "b_fontpadmo"
 
-font_size_en_banner = "fs-3"
+font_size_en_banner = "fs-5"
 font_size_bn_banner = "fs-1"
 
 
@@ -23,7 +23,7 @@ def company_info_settings(request):
         if language == "en":
             company_name = "Name of The Institution"
             company_head_office = "Head Office"
-            company_abr = "Samprity"
+            company_abr = "AS. Tower"
             copy_right = "Mahim Soft | "
             company_address = (
                 "Address (House No.###, Street, City, State, Postcode, County, Country)"
@@ -47,18 +47,18 @@ def company_info_settings(request):
     else:
         if language == "en":
             copy_right = "Mahim Soft | "
-            company_name = "Samprity Tower"
-            company_abr = "S.Tower"
-            company_address = "Samprity Tower, Bawnia, Turag, Dhaka-1231"
+            company_name = "AeroSky Tower"
+            company_abr = "SK.Tower"
+            company_address = "AeroSky Tower, Bawnia, Turag, Dhaka-1231"
             company_head_office = ""
             #! Font asigning ================
             font_banner = font_en_banner
             font_size_banner = font_size_en_banner
             font_other = font_en_other
         else:
-            company_name = "‌সম্প্রীতি টাওয়ার"
+            company_name = "‌এ্যারোস্কাই টাওয়ার"
             copy_right = "মাহিম সফ্‌ট | "
-            company_abr = "জেজিটিডিএসএল"
+            company_abr = "এ্যারোস্কাই"
             company_head_office = ""
             company_address = "বাউনিয়া, তুরাগ, ঢাকা-১২৩১"
             #! Font asigning ======================
@@ -70,6 +70,8 @@ def company_info_settings(request):
         company_logo_sm = "company_logo_sm.png"
         company_logo_lg = "company_logo_lg.png"
     time = timezone.now()
+    total_number_of_flat = 36
+    no_of_flat_per_share = 3
     return {
         "company_name": company_name,
         "company_abr": company_abr,
@@ -85,4 +87,6 @@ def company_info_settings(request):
         "company_logo_lg": company_logo_lg,
         "company_logo_fevicon": company_logo_fevicon,
         "time": time,
+        "total_number_of_flat": total_number_of_flat,
+        "no_of_flat_per_share": no_of_flat_per_share,
     }

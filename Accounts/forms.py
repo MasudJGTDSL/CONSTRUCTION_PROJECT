@@ -8,10 +8,43 @@ from .models import (
     Item,
     ContractorBill,
     ShareholderDeposit,
+    TargetedAmount,
 )
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Reset, HTML
 
+
+class TargetedAmountForm(forms.ModelForm):
+    class Meta:
+        model = TargetedAmount
+        fields = "__all__"
+        labels = {
+            "amount": "Targeted Amount:",
+            "inputDate": "Date:",
+        }
+
+        widgets = {
+            "dateOfJoin": forms.DateInput(
+                format=("%Y-%m-%d"),
+                attrs={"class": "", "placeholder": "Select Date", "type": "date"},
+            ),
+        }
+    def __init__(self, *args, **kwargs):
+        super(TargetedAmountForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.attrs["autocomplete"] = "off"
+        self.helper.layout = Layout(
+            Row(
+                Column("inputDate", css_class="form-group col-2 me-2 mb-0"),
+                Column("amount", css_class="form-group col-2 mb-0"),
+                css_class="form-row",
+            ),
+            HTML("<div class='d-flex justify-content-end mb-1'>"),
+            Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
+            Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
+            HTML("</div>"),
+        )
 
 class ContractorTypeForm(forms.ModelForm):
     class Meta:

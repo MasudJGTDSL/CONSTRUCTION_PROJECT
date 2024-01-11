@@ -9,7 +9,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{% block title %}Samprity Tower{%endblock %}</title>
+  <title>{% block title %}{{company_name}}{%endblock %}</title>
   <meta name="author" content="Mahim Soft">
   <link rel="canonical" href="{{request.path}}" />
   <link rel="home" href="{% url 'Accounts:index' %}" />
@@ -30,7 +30,7 @@
   {% comment %} <link href="{% static 'css/style.css' %}" rel="stylesheet"> {% endcomment %}
   <link href="{% static 'css/aos.css' %}" rel="stylesheet">
   {% comment %} <link href="{% static 'css/nav_style.css' %}" rel="stylesheet"> {% endcomment %}
-  <link href="{% static 'bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'bootstrap-icons/font/bootstrap-icons.css' %}" rel="stylesheet">
   {% block extend_header%}{%endblock%}
   <!-- ================================
     End CSS

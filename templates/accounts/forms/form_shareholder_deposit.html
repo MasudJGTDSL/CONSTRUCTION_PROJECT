@@ -43,7 +43,8 @@
             url: '/get_shareholder_deposit_info/' + shareholder_id,
             dataType: "json",
             success: function(data) {
-                htm+=`<h3>${data[0]["shareholderName"]}</h3><h5 class="text-warning pt-2 pe-3">Total Deposited Amount: Tk ${data[data.length - 1]["total_deposit"]}/=</h5>`
+                htm+=`<h3 class='pb-0 mb-0'><img src="/media/${data[0]['image']}" class="card-img-top" alt="masud" style="border-radius: 15%; width: 50px; height: 50px;">
+                    ${data[0]["shareholderName"]}</h3><h5 class="text-warning pt-2 pe-3">Total Deposited Amount: Tk ${data[data.length - 1]["total_deposit"]}/-</h5>`
                 htm += `</div><div class="d-flex justify-content-center"><table style="width: 90%;" class="table table-sm align-middle table-striped table-hover table-responsive">
                         <tr><th>Date</th><th>Deposit Mode</th><th class="text-end pe-5">Amount</th><th>Remarks</th></tr>`
                 $.each(data, function(index,Item) {

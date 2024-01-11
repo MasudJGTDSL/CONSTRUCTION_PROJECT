@@ -16,10 +16,8 @@
 		</div>
 	
 	<div style="width: 50%; margin-top:50px;" class="border border-2 border-danger-subtle ms-1">
-		{% comment %} <!-- <form method="GET" action="{% url 'chart' %}">
-			{{ chart_form.as_p }}
-	
-			<button>Submit</button>
+		{% comment %} <!-- chart_deposit_target>
+
 		</form>  --> {% endcomment %}
 			{{ chart_avg|safe }}
 		</div>
@@ -80,6 +78,7 @@
 			</table>
 		</div>
 	</div>
+
 <!-- Test Start -->
 <nav aria-label="...">
 	<ul class="pagination">
@@ -97,6 +96,17 @@
 	</ul>
   </nav>
 <!-- Test End -->
+<div style="width: 50%; margin-top:50px;" class="border border-2 border-danger-subtle ms-1">
+	{% comment %} {% url 'Accounts:plot_chart' %} {% endcomment %}
+		{{ chart_deposit_target|safe }}
+	</div>
+
+    <h1>Plotly Chart</h1>
+    <img src="{% url 'Accounts:plot_chart' %}" alt="Plotly Chart">
+<div id="dddd">
+
+</div>
+
 </div>
 
 {% endblock %}
