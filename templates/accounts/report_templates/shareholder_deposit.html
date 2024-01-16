@@ -39,6 +39,9 @@
                 <th class="text-center">Mode of Deposit</th>
                 <th class="text-center">Amount (Taka)</th>
                 <th class="text-center">Remarks</th>
+                {% if request.user|has_group:"Admin"%}
+                <th class="text-center">Edit</th>
+                {% endif %}
             </tr>
             {% for item in shareholder_deposit %}
             <tr>
@@ -54,6 +57,10 @@
                 <td>
                     {{item.remarks}}
                 </td>
+                {% endif %}
+                {% if request.user|has_group:"Admin"%}
+                <td class="text-center"><a class="c_link" href="/shareholder_deposit_update/{{item.id}}"><i
+                    class="bi bi-pencil-square"></i></a></td>
                 {% endif %}
 
             </tr>

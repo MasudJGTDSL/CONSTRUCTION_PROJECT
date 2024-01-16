@@ -8,31 +8,19 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("send_mail/", views.send_mail, name="send_mail"),
     path(
-        "targetedamount/", views.TargetedAmountPosting.as_view(), name="targetedamount"
-    ),
-    path("contractortype/", views.ContractorTypeView.as_view(), name="contractortype"),
-    path("contractor/", views.ContractorView.as_view(), name="contractor"),
-    path(
         "contractor/<int:pk>",
         views.ContractorDetailView.as_view(),
         name="contractor-details",
     ),
-    path("itemcode/", views.ItemCodeView.as_view(), name="itemcode"),
-    path("item/", views.ItemView.as_view(), name="item"),
-    path("expenditure/", views.ExpenditureView.as_view(), name="expenditure_posting"),
-    path(
-        "contractor_bill/", views.ContractorBillView.as_view(), name="contractor_bill"
-    ),
-    path("shareholder/", views.ShareholderView.as_view(), name="shareholder"),
     path(
         "shareholder_list/",
         views.ShareholderListView.as_view(),
         name="shareholder_list",
     ),
     path(
-        "shareholder_deposit/",
-        views.ShareholderDepositView.as_view(),
-        name="shareholder_deposit",
+        "contractor_list/",
+        views.ContractorListView.as_view(),
+        name="contractor_list",
     ),
     path(
         "shareholder_deposit_list/<int:shareholder_id>",
@@ -46,7 +34,6 @@ urlpatterns = [
     ),
     path("chart/", views.chart, name="chart"),
     path("plot/", views.plot_chart, name="plot_chart"),
-    # Html Reports ========================
     path(
         "expenditure_summary/",
         views.ExpenditureSummary.as_view(),
@@ -57,22 +44,84 @@ urlpatterns = [
         views.ExpenditureDetailsList.as_view(),
         name="expenditure_details_list",
     ),
-    # Html Reports End ====================
-    # serializers =========================
-    path("get_item/<str:itemCode_id>", views.get_item, name="get_item"),
     path(
         "get_shareholder_deposit_info/<str:shareholder_id>",
         views.get_shareholder_deposit_info,
         name="get_shareholder_deposit_info",
     ),
-    # serializers end =========================
+]
+#! Datast  =========================
+Get_Dataset_URLs = [
+    path("get_item/<str:itemCode_id>", views.get_item, name="get_item"),
+    path("get_credit_purchase_rest_amount/<int:seller_id>", views.get_credit_purchase_rest_amount, name="get_credit_purchase_rest_amount"),
 ]
 
-Report_URLS = [
+Forms_URLs = [
+    path(
+        "targetedamount/", views.TargetedAmountPosting.as_view(), name="targetedamount"
+    ),
+    #! Shareholder ===============
+    path("shareholder/", views.ShareholderView.as_view(), name="shareholder"),
+    path(
+        "shareholder_update/<int:pk>",
+        views.ShareholderUpdate.as_view(),
+        name="shareholder_update",
+    ),
+    path(
+        "shareholder_deposit/",
+        views.ShareholderDepositView.as_view(),
+        name="shareholder_deposit",
+    ),
+    path(
+        "shareholder_deposit_update/<int:pk>",
+        views.ShareholderDepositUpdate.as_view(),
+        name="shareholder_deposit_update",
+    ),
+    #! Contractor ===============
+    path("contractortype/", views.ContractorTypeView.as_view(), name="contractortype"),
+    path("contractor/", views.ContractorView.as_view(), name="contractor"),
+    path(
+        "contractor_update/<int:pk>",
+        views.ContractorUpdate.as_view(),
+        name="contractor_update",
+    ),
+    path(
+        "expenditure_update/<int:pk>",
+        views.ExpenditureUpdate.as_view(),
+        name="expenditure_update",
+    ),
+    path(
+        "contractor_bill_submission/",
+        views.ContractorBillSubmissionView.as_view(),
+        name="contractor_bill_submission",
+    ),
+    path(
+        "contractor_bill_payment/",
+        views.ContractorBillPaymentView.as_view(),
+        name="contractor_bill_payment",
+    ),
+    #! Item ===============
+    path("itemcode/", views.ItemCodeView.as_view(), name="itemcode"),
+    path("item/", views.ItemView.as_view(), name="item"),
+    path("expenditure/", views.ExpenditureView.as_view(), name="expenditure_posting"),
+    #! CreditPurchase ===============
+    path(
+        "credit_purchase/", views.CreditPurchaseView.as_view(), name="credit_purchase"
+    ),
+    path(
+        "credit_purchase_payment/", views.CreditPurchasePaymentView.as_view(), name="credit_purchase_payment"
+    ),
+]
+
+#! PDF Reports ========================
+Report_URLs = [
     path(
         "contractorDetails/<int:pk>",
         reports.contractorDetails,
         name="contractorDetails",
     ),
 ]
-urlpatterns += Report_URLS
+
+urlpatterns += Forms_URLs
+urlpatterns += Report_URLs
+urlpatterns += Get_Dataset_URLs

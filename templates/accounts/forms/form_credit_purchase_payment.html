@@ -1,0 +1,77 @@
+{% extends "main.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% comment %} {% load i18n %} {% endcomment %}
+{% block title %}Samprity Tower{%endblock %}
+{% block content %}
+
+<div class="container pt-3">
+    <div class="card">
+        <div class="card-header p-2 me-0 text-white bg-secondary">
+            <h3>{{heading}}</h3>
+        </div>
+        <div class="card-body">
+            {% crispy form %}
+        </div>
+    </div>
+    <br>
+
+    <div class="card">
+        <div class="card-header p-2 me-0 text-white bg-secondary">
+            <h3>{{data_heading}}</h3>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for dt in data %}
+            {% if forloop.counter|divisibleby:2 %}
+            <li class="ps-5 pe-5 list-group-item list-group-item-light">- {{dt}}</li>
+            {% else %}
+            <li class="ps-5 pe-5 list-group-item list-group-item-secondary">- {{dt}}</li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    <br>
+
+    {% endblock %}
+    {% block script %}
+    <script>
+        {% if update_tag is None %}
+        $('#id_item').empty();
+        $('#id_item').append(`<option class='text-muted' value selected>------------</option>`);
+        {% else %}
+        button_div = document.getElementById("button_div")
+        button_div.innerHTML = `<input type="submit" name="submit" value="Update" class="btn btn-primary btn btn-success me-2 mb-0" id="submit-id-submit">
+	<a href="{%url 'Accounts:expenditure_details_list'%}" class="btn btn-danger">Cancel</a>`
+        {% endif %}
+        $('#id_ItemCode').change(function () {
+            let item_code_id = $(this).val();
+            $('#id_item').empty();
+            $('#id_item').append(`<option class='text-muted' value selected>------------</option>`);
+            $.ajax({
+                url: '/get_item/' + item_code_id,
+                success: function (data) {
+                    $.each(data, function (index, Item) {
+                        $('#id_item').append($('<option>', {
+                            value: Item.pk,
+                            text: Item.fields.itemName
+                        }));
+                    });
+                }
+            });
+        });
+
+        // ======= Populate Rest Amount.========
+        $('#id_amount').focus(function () {
+            let id_seller = document.getElementById("id_seller").value;
+            $.ajax({
+                url: '/get_credit_purchase_rest_amount/' + id_seller,
+                success: function (data) {
+                    let item = JSON.parse(data);
+                    $('#id_amount').val(item['rest_amount'])
+                }
+            });
+        })
+        // ===================================================================
+    </script>
+
+    {% endblock script %}

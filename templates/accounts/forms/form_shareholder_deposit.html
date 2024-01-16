@@ -15,7 +15,7 @@
         </div>
     </div>
     <br>
-
+    {% if update_tag is None %}
     <div class="card" id="deposit_details">
         <div class="card-header p-2 me-0 text-white bg-secondary">
             <h3>{{data_heading}}</h3>
@@ -30,12 +30,19 @@
             {% endfor %}
         </ul>
     </div>
+    {% endif %}
     <br>
 
     {% endblock %}
 
     {% block script %} 
     <script> 
+
+    {% if update_tag is True %}
+    button_div = document.getElementById("button_div")
+	button_div.innerHTML = `<input type="submit" name="submit" value="Update" class="btn btn-primary btn btn-success me-2 mb-0" id="submit-id-submit">
+	<a href="{%url 'Accounts:shareholder_list'%}" class="btn btn-danger">Cancel</a>`
+    {% else %}
     $('#id_shareholder').change(function() {
         let shareholder_id = $(this).val();
         let htm = '<div class="card-header p-2 me-0 text-white bg-secondary d-flex justify-content-between">'
@@ -72,5 +79,6 @@
         $('#id_MaturityDate').val(y.toISOString().split('T')[0]);
         }) 
     // ===================================================================
+    {% endif %}
     </script>
     {% endblock script %}

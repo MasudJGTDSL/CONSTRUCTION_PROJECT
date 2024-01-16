@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
-{% comment %} {% load i18n %} {% endcomment %}
+
 {% block title %}Samprity Tower{%endblock %}
 {% block content %}
 
@@ -12,10 +12,21 @@
         </div>
         <div class="card-body">
             {% crispy form %}
+            {% comment %} <div class="d-flex justify-content-end mb-1" id="button_div">
+            {% if update_tag is None %}
+                <input type="submit" name="submit" value="Submit" class="btn btn-primary btn btn-success me-2 mb-0" id="submit-id-submit">
+                <input type="reset" name="reset" value="Reset" class="btn btn-inverse btn btn-danger me-0 mb-0" id="reset-id-reset">
+            {% else %}
+            <input type="submit" name="submit" value="Update" class="btn btn-primary btn btn-success me-2 mb-0" id="submit-id-submit">
+            <a href="/expenditure_details_list/" class="btn btn-danger">Cancel</a>
+            {% endif %}
+            </div> {% endcomment %}
+            
         </div>
+            
     </div>
     <br>
-
+    {% if update_tag is None %}
     <div class="card">
         <div class="card-header p-2 me-0 text-white bg-secondary">
             <h3>{{data_heading}}</h3>
@@ -30,15 +41,21 @@
             {% endfor %}
         </ul>
     </div>
+    {% endif %}
     <br>
 
     {% endblock %}
 
     {% block script %} 
     <script>
+    {% if update_tag is None %}
     $('#id_item').empty();
     $('#id_item').append(`<option class='text-muted' value selected>------------</option>`);  
-    
+    {% else %}
+    button_div = document.getElementById("button_div")
+	button_div.innerHTML = `<input type="submit" name="submit" value="Update" class="btn btn-primary btn btn-success me-2 mb-0" id="submit-id-submit">
+	<a href="{%url 'Accounts:expenditure_details_list'%}" class="btn btn-danger">Cancel</a>`
+    {% endif %}
     $('#id_ItemCode').change(function() {
         let item_code_id = $(this).val();
         $('#id_item').empty(); 
@@ -65,4 +82,5 @@
         }) */}
     // ===================================================================
     </script>
+    
     {% endblock script %}

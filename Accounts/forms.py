@@ -1,4 +1,22 @@
 from django import forms
+from django.db.models import (
+    Case,
+    CharField,
+    Count,
+    DecimalField,
+    DurationField,
+    ExpressionWrapper,
+    F,
+    FloatField,
+    IntegerField,
+    OuterRef,
+    Q,
+    Subquery,
+    Sum,
+    Value,
+    When,
+)
+from django.db.models.functions import Cast, Coalesce, Concat, Extract, Round, Trunc
 from .models import (
     Shareholder,
     Expenditure,
@@ -6,9 +24,12 @@ from .models import (
     Contractor,
     ItemCode,
     Item,
-    ContractorBill,
+    ContractorBillSubmission,
+    ContractorBillPayment,
     ShareholderDeposit,
     TargetedAmount,
+    CreditPurchase,
+    CreditPurchasePayment,
 )
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Reset, HTML
@@ -29,6 +50,7 @@ class TargetedAmountForm(forms.ModelForm):
                 attrs={"class": "", "placeholder": "Select Date", "type": "date"},
             ),
         }
+
     def __init__(self, *args, **kwargs):
         super(TargetedAmountForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -45,6 +67,7 @@ class TargetedAmountForm(forms.ModelForm):
             Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
             HTML("</div>"),
         )
+
 
 class ContractorTypeForm(forms.ModelForm):
     class Meta:
@@ -133,7 +156,7 @@ class ShareholderForm(forms.ModelForm):
                 Column("image", css_class="form-group col me-4 mb-0"),
                 css_class="form-row",
             ),
-            HTML("<div class='d-flex justify-content-end mb-1'>"),
+            HTML("<div class='d-flex justify-content-end mb-1' id ='button_div'>"),
             Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
             Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
             HTML("</div>"),
@@ -165,15 +188,16 @@ class ContractorForm(forms.ModelForm):
         }
 
 
-class ContractorBillForm(forms.ModelForm):
+class ContractorBillPaymentModelForm(forms.ModelForm):
     class Meta:
-        model = ContractorBill
+        model = ContractorBillPayment
         fields = "__all__"
         labels = {
             "contractor": "Contractor:",
             "dateOfTransaction": "Date:",
             "amount": "Amount:",
             "labor_fooding": "Labor Fooding:",
+            "voucherNo": "Voucher No:",
             "remarks": "Remarks:",
         }
         widgets = {
@@ -181,11 +205,18 @@ class ContractorBillForm(forms.ModelForm):
                 format=("%Y-%m-%d"),
                 attrs={"class": "", "placeholder": "Select Date", "type": "date"},
             ),
-            "remarks": forms.Textarea(attrs={"rows": 2, "cols": 15}),
         }
 
+
+class ContractorBillPaymentForm(ContractorBillPaymentModelForm):
+    qrySetItem = Item.objects.only("itemName").filter(ItemCode_id=8).distinct()
+    item = forms.ModelChoiceField(
+        queryset=qrySetItem,
+        label="Item:",
+    )
+
     def __init__(self, *args, **kwargs):
-        super(ContractorBillForm, self).__init__(*args, **kwargs)
+        super(ContractorBillPaymentForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = "post"
         self.helper.attrs["autocomplete"] = "off"
@@ -195,8 +226,57 @@ class ContractorBillForm(forms.ModelForm):
                 Column(
                     "dateOfTransaction", css_class="form-group col-2 ms-3 me-2 mb-0"
                 ),
-                Column("amount", css_class="form-group col-1 ms-2 me-2 mb-0"),
+                Column("item", css_class="form-group col-1 ms-2 me-4 mb-0"),
+                Column("amount", css_class="form-group col-1 ms-3 me-2 mb-0"),
                 Column("labor_fooding", css_class="form-group col ms-2 me-4 mb-0"),
+                css_class="form-row",
+            ),
+            Row(
+                Column(
+                    "voucherNo", css_class="form-group col-3 ms-2 ps-1 pe-3 me-4 mb-0"
+                ),
+                Column("remarks", css_class="form-group col ms-2 me-4 mb-0"),
+                css_class="form-row",
+            ),
+            HTML("<div class='d-flex justify-content-end mb-1' id ='button_div'>"),
+            Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
+            Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
+            HTML("</div>"),
+        )
+
+
+class ContractorBillSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = ContractorBillSubmission
+        fields = "__all__"
+        labels = {
+            "contractor": "Contractor:",
+            "dateOfBillSubmission": "Date:",
+            "description": "Description:",
+            "amount": "Amount:",
+            "remarks": "Remarks:",
+        }
+        widgets = {
+            "dateOfBillSubmission": forms.DateInput(
+                format=("%Y-%m-%d"),
+                attrs={"class": "", "placeholder": "Select Date", "type": "date"},
+            ),
+            "remarks": forms.Textarea(attrs={"rows": 2, "cols": 15}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ContractorBillSubmissionForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.attrs["autocomplete"] = "off"
+        self.helper.layout = Layout(
+            Row(
+                Column("contractor", css_class="form-group col-3 me-4 mb-0"),
+                Column(
+                    "dateOfBillSubmission", css_class="form-group col-2 ms-3 me-2 mb-0"
+                ),
+                Column("description", css_class="form-group col ms-2 me-2 mb-0"),
+                Column("amount", css_class="form-group col-1 ms-2 me-4 mb-0"),
                 css_class="form-row",
             ),
             Row(
@@ -204,6 +284,121 @@ class ContractorBillForm(forms.ModelForm):
                 css_class="form-row",
             ),
             HTML("<div class='d-flex justify-content-end mb-1'>"),
+            Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
+            Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
+            HTML("</div>"),
+        )
+
+
+class CreditPurchaseForm(forms.ModelForm):
+    class Meta:
+        model = CreditPurchase
+        fields = "__all__"
+        labels = {
+            "dateOfPurchase": "Date",
+            "seller ": "Seller:",
+            "address ": "Address:",
+            "description ": "Description:",
+            "mobile ": "Mobile:",
+            "email ": "Email:",
+            "amount ": "Amount:",
+            "remarks ": "Remarks:",
+        }
+        widgets = {
+            "dateOfPurchase": forms.DateInput(
+                format=("%Y-%m-%d"),
+                attrs={"class": "", "placeholder": "Select Date", "type": "date"},
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(CreditPurchaseForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.attrs["autocomplete"] = "off"
+        self.helper.layout = Layout(
+            Row(
+                Column("seller", css_class="form-group col-3 me-2 mb-0"),
+                Column("address", css_class="form-group col-4 me-2 mb-0"),
+                Column("mobile", css_class="form-group col-2 me-2 mb-0"),
+                Column("email", css_class="form-group col me-4 mb-0"),
+                css_class="form-row",
+            ),
+            Row(
+                Column("dateOfPurchase", css_class="form-group col-2 me-2 mb-0"),
+                Column("description", css_class="form-group col-3 me-2 mb-0"),
+                Column("amount", css_class="form-group col-1 me-2 mb-0"),
+                Column("remarks", css_class="form-group col me-4 mb-0"),
+                css_class="form-row",
+            ),
+            HTML("<div class='d-flex justify-content-end mb-1'>"),
+            Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
+            Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
+            HTML("</div>"),
+        )
+
+
+class CreditPurchasePaymentForm(forms.ModelForm):
+    QrySetItemCode = ItemCode.objects.only("workSector").distinct()
+    ItemCode = forms.ModelChoiceField(
+        queryset=QrySetItemCode, label="Work Sector:", required=False
+    )
+
+    class Meta:
+        model = CreditPurchasePayment
+        fields = "__all__"
+        labels = {
+            "seller": "Seller:",
+            "dateOfTransaction": "Date:",
+            "description": "Description:",
+            "amount": "Amount:",
+            "voucherNo": "Voucher:",
+            "remarks": "Remarks:",
+            "item": "Item",
+        }
+        widgets = {
+            "dateOfTransaction": forms.DateInput(
+                format=("%Y-%m-%d"),
+                attrs={"class": "", "placeholder": "Select Date", "type": "date"},
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(CreditPurchasePaymentForm, self).__init__(*args, **kwargs)
+        qs = CreditPurchase.objects.values("id").annotate(
+            sum_amount=Sum(F("Seller__amount")),
+            amount=F("amount"),
+        )
+        query_set = CreditPurchase.objects.filter(
+            id__in=(
+                qs.filter(amount__gt=Coalesce(F("sum_amount"), 0)).values_list("id")
+            )
+        )
+
+        self.fields["seller"].queryset = query_set
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.attrs["autocomplete"] = "off"
+        self.helper.layout = Layout(
+            Row(
+                Column("seller", css_class="form-group col-3 me-4 mb-0"),
+                Column(
+                    "dateOfTransaction", css_class="form-group col-2 ms-3 me-2 mb-0"
+                ),
+                Column("ItemCode", css_class="form-group col-2 ms-2 me-4 mb-0"),
+                Column("item", css_class="form-group col ms-3 me-5 mb-0"),
+                css_class="form-row",
+            ),
+            Row(
+                Column("description", css_class="form-group col-3 me-3 pe-2 mb-0"),
+                Column("amount", css_class="form-group col-1 ms-4 ps-3 pe-1 me-4 mb-0"),
+                Column(
+                    "voucherNo", css_class="form-group col-1 ms-2 ps-1 pe-3 me-2 mb-0"
+                ),
+                Column("remarks", css_class="form-group col ms-1 me-4 mb-0"),
+                css_class="form-row",
+            ),
+            HTML("<div class='d-flex justify-content-end mb-1' id ='button_div'>"),
             Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
             Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
             HTML("</div>"),
@@ -238,8 +433,7 @@ class ExpenditureModelForm(forms.ModelForm):
 class ExpenditureForm(ExpenditureModelForm):
     QrySetItemCode = ItemCode.objects.only("workSector").distinct()
     ItemCode = forms.ModelChoiceField(
-        queryset=QrySetItemCode,
-        label="Work Sector:",
+        queryset=QrySetItemCode, label="Work Sector:", required=False
     )
 
     def __init__(self, *args, **kwargs):
@@ -268,7 +462,7 @@ class ExpenditureForm(ExpenditureModelForm):
                 Column("remarks", css_class="form-group col me-4 mb-0"),
                 css_class="form-row",
             ),
-            HTML("<div class='d-flex justify-content-end mb-1'>"),
+            HTML("<div class='d-flex justify-content-end mb-1' id='button_div'>"),
             Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
             Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
             HTML("</div>"),
@@ -330,7 +524,7 @@ class ShareholderDepositForm(forms.ModelForm):
                 Column("remarks", css_class="form-group col me-4 mb-0"),
                 css_class="form-row",
             ),
-            HTML("<div class='d-flex justify-content-end mb-1'>"),
+            HTML("<div class='d-flex justify-content-end mb-1' id='button_div'>"),
             Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
             Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
             HTML("</div>"),

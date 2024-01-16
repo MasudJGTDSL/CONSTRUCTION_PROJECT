@@ -13,23 +13,30 @@ from Accounts.decorators import admin_only, allowed_users, unauthenticated_user
 
 # Create your views here.
 from .models import *
+from django.contrib.auth.models import Group, User
 from .forms import CreateUserForm
 
+
 @login_required
-@allowed_users(allowed_roles=["Manager"])
+@allowed_users(allowed_roles=["Admin"])
 def registerPage(request):
-    # if request.user.is_authenticated:
-    #     return redirect("/")
-    # else:
     form = CreateUserForm()
     if request.method == "POST":
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.save()
+            u = User.objects.get(username=request.POST["username"])
+            u.groups.set(
+                [
+                    form.cleaned_data.get("group"),
+                ]
+            )
+            u.save()
             user = form.cleaned_data.get("username")
             messages.success(request, f"Account has created for {user}")
 
-            return redirect("login")
+            return redirect("./")
 
     context = {"form": form}
     return render(request, "registration/register.html", context)

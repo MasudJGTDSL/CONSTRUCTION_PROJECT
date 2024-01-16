@@ -54,6 +54,187 @@ class Item(models.Model):
         return f"{self.itemName} [Unit: {self.unit}]"
 
 
+class ContractorType(models.Model):
+    contractorType = models.CharField(
+        max_length=100,
+        blank=False,
+        null=False,
+    )
+
+    def __str__(self):
+        return self.contractorType
+
+
+class Contractor(models.Model):
+    dateOfJoin = models.DateField(default=datetime.now)
+    contractor = models.CharField(max_length=100, blank=False, null=False)
+    contractorType = models.ForeignKey(
+        ContractorType,
+        blank=False,
+        null=False,
+        related_name="Contr_Type",
+        on_delete=models.CASCADE,
+    )
+    address = models.TextField(blank=True, null=True)
+    NID = models.CharField(max_length=30, blank=True, null=True)
+    TIN = models.CharField(max_length=50, blank=True, null=True)
+    TelephoneNo = models.CharField(max_length=50, blank=True, null=True)
+    Mobile = models.CharField(max_length=20, blank=True, null=True)
+    Email = models.CharField(max_length=100, blank=True, null=True)
+    image = models.ImageField(
+        upload_to=path_and_rename,
+        max_length=255,
+        default="ContractorsImage/default.png",
+        null=True,
+        blank=True,
+    )
+    IsArchive = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ("contractor",)
+
+    def save(self):
+        super().save()
+        img = Image.open(self.image.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
+
+    def get_absolute_url(self):
+        return f"/contractor/{str(self.id)}"
+
+    def __str__(self):
+        return self.contractor
+
+
+class ContractorBillSubmission(models.Model):
+    dateOfBillSubmission = models.DateField(default=datetime.now)
+    description = models.CharField(max_length=200, blank=True, null=True, default="")
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    remarks = models.TextField(blank=True, null=True)
+    contractor = models.ForeignKey(
+        Contractor,
+        blank=False,
+        null=False,
+        related_name="ContractorBillSubmission",
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return f"{self.contractor}, Amount: {intcomma_bd(self.amount)}, Date: {self.dateOfBillSubmission.strftime('%d %b %Y')}"
+
+
+class ContractorBillPayment(models.Model):
+    dateOfTransaction = models.DateField(default=datetime.now)
+    labor_fooding = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
+    remarks = models.CharField(max_length=200, blank=False, null=False, default="")
+    contractor = models.ForeignKey(
+        Contractor,
+        blank=False,
+        null=False,
+        related_name="ContractorBill",
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return f"{self.contractor}, Amount: {intcomma_bd(self.amount)}, Date: {self.dateOfTransaction.strftime('%d-%b-%Y')}"
+
+
+class CreditPurchase(models.Model):
+    dateOfPurchase = models.DateField(default=datetime.now)
+    seller = models.CharField(max_length=150, blank=False, null=False, default="")
+    address = models.CharField(max_length=250, blank=False, null=False, default="")
+    description = models.CharField(max_length=250, blank=False, null=False, default="")
+    mobile = models.CharField(max_length=20, blank=True, null=True)
+    email = models.CharField(max_length=100, blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    remarks = models.CharField(max_length=250, blank=False, null=False, default="")
+
+    class Meta:
+        ordering = ("-dateOfPurchase",)
+
+    def get_absolute_url(self):
+        return f"/credit_purchase_update/{str(self.id)}"  #! Done Pending ==========
+
+    def __str__(self):
+        return f"Seller: {self.seller}, Date: {(self.dateOfPurchase).strftime('%d-%b-%Y')}, Amount: {self.amount}/- Tk"
+
+
+class CreditPurchasePayment(models.Model):
+    dateOfTransaction = models.DateField(default=datetime.now)
+    seller = models.ForeignKey(
+        CreditPurchase,
+        blank=False,
+        null=False,
+        related_name="Seller",
+        on_delete=models.CASCADE,
+    )
+    item = models.ForeignKey(
+        Item,
+        blank=False,
+        null=False,
+        related_name="Item",
+        on_delete=models.CASCADE,
+    )
+    description = models.CharField(max_length=250, blank=False, null=False, default="")
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
+    remarks = models.CharField(max_length=250, blank=False, null=False, default="")
+
+    class Meta:
+        ordering = ("-dateOfTransaction",)
+
+    def get_absolute_url(self):
+        return f"/credit_purchase_payment_update/{str(self.id)}"  #! Done Pending ==========
+
+    def __str__(self):
+        return f"Seller: {self.seller}, Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, Amount: {self.amount}/- Tk"
+
+
+class Expenditure(models.Model):
+    dateOfTransaction = models.DateField(default=datetime.now)
+    item = models.ForeignKey(
+        Item,
+        blank=False,
+        null=False,
+        related_name="Expenditure_Item",
+        on_delete=models.CASCADE,
+    )
+    description = models.CharField(max_length=200, blank=True, null=True, default="")
+    unit = models.CharField(max_length=100, blank=False, null=False, default="LS")
+    rate = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
+    voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    contractor = models.ForeignKey(
+        Contractor,
+        blank=True,
+        null=True,
+        related_name="Contractor",
+        on_delete=models.CASCADE,
+    )
+    seller = models.ForeignKey(
+        CreditPurchasePayment,
+        blank=True,
+        null=True,
+        related_name="CreditPurchasePayment",
+        on_delete=models.CASCADE,
+    )
+    remarks = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ("-dateOfTransaction",)
+
+    def get_absolute_url(self):
+        return f"/expenditure_update/{str(self.id)}"
+
+    def __str__(self):
+        return f"Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, {self.description}, Sector: {self.item}, Quantity:{self.quantity} {self.unit}, Amount: {self.amount}/- Tk"
+
+
 class Shareholder(models.Model):
     dateOfJoin = models.DateField(default=datetime.now)
     shareholderName = models.CharField("Name", max_length=100)
@@ -119,107 +300,6 @@ class ShareholderDeposit(models.Model):
 
     def get_absolute_url(self):
         return f"/get_shareholder_deposit_info/{str(self.shareholder)}"
-
-
-class ContractorType(models.Model):
-    contractorType = models.CharField(
-        max_length=100,
-        blank=False,
-        null=False,
-    )
-
-    def __str__(self):
-        return self.contractorType
-
-
-class Contractor(models.Model):
-    dateOfJoin = models.DateField(default=datetime.now)
-    contractor = models.CharField(max_length=100, blank=False, null=False)
-    contractorType = models.ForeignKey(
-        ContractorType,
-        blank=False,
-        null=False,
-        related_name="Contr_Type",
-        on_delete=models.CASCADE,
-    )
-    address = models.TextField(blank=True, null=True)
-    NID = models.CharField(max_length=30, blank=True, null=True)
-    TIN = models.CharField(max_length=50, blank=True, null=True)
-    TelephoneNo = models.CharField(max_length=50, blank=True, null=True)
-    Mobile = models.CharField(max_length=20, blank=True, null=True)
-    Email = models.CharField(max_length=100, blank=True, null=True)
-    image = models.ImageField(
-        upload_to=path_and_rename,
-        max_length=255,
-        default="ContractorsImage/default.png",
-        null=True,
-        blank=True,
-    )
-
-    class Meta:
-        ordering = ("contractor",)
-
-    # def get_absolute_url(self):
-    #     return reverse(
-    #         "contractor-details",
-    #         args=[
-    #             self.id,
-    #         ],
-    #     )
-    def save(self):
-        super().save()
-        img = Image.open(self.image.path)
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
-
-    def get_absolute_url(self):
-        return f"/contractor/{str(self.id)}"
-
-    def __str__(self):
-        return self.contractor
-
-
-class Expenditure(models.Model):
-    dateOfTransaction = models.DateField(default=datetime.now)
-    item = models.ForeignKey(
-        Item,
-        blank=False,
-        null=False,
-        related_name="Expenditure",
-        on_delete=models.CASCADE,
-    )
-    description = models.CharField(max_length=200, blank=True, null=True, default="")
-    unit = models.CharField(max_length=100, blank=False, null=False, default="LS")
-    rate = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
-    voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    remarks = models.TextField(blank=True, null=True)
-
-    class Meta:
-        ordering = ("-dateOfTransaction",)
-
-    def __str__(self):
-        return f"Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, {self.description}, Sector: {self.item}, Quantity:{self.quantity} {self.unit}, Amount: {self.amount}/- Tk"
-
-
-class ContractorBill(models.Model):
-    dateOfTransaction = models.DateField(default=datetime.now)
-    labor_fooding = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    remarks = models.TextField(blank=True, null=True)
-    contractor = models.ForeignKey(
-        Contractor,
-        blank=False,
-        null=False,
-        related_name="ContractorBill",
-        on_delete=models.CASCADE,
-    )
-
-    def __str__(self):
-        return f"{self.contractor}, Amount:{self.amount}, Date:{self.dateOfTransaction}"
 
 
 class OfficeItemCode(models.Model):

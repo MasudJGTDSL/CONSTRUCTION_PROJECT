@@ -122,6 +122,81 @@
   font-family: digital7;
 }
 
+/*! Link style */
+a.a_link:link {
+  color: #4169E1;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a.a_link:visited {
+  color: #4169E1;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a.a_link:hover {
+  color: red;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a.a_link:active {
+  color: yellow;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a.b_link:link {
+  color: red;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a.b_link:visited {
+  color: Red;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a.b_link:hover {
+  color: #FFA54F;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a.b_link:active {
+  color: yellow;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+
+a.c_link:link {
+  color: green;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a.c_link:visited {
+  color: green;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a.c_link:hover {
+  color:yellow;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a.c_link:active {
+  color: yellow;
+  background-color: transparent;
+  text-decoration: underline;
+}
+/*! Link style End */
+
  /* 
 div {
   font-family: "FontsNikosh2", Times, serif;

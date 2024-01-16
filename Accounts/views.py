@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django import forms
 import pandas as pd
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -18,7 +19,7 @@ from django.views.generic import (
 )
 from django.contrib import messages
 from django.views import generic
-
+from django.db import transaction
 from django.db.models import (
     Case,
     CharField,
@@ -47,10 +48,13 @@ from .forms import (
     ContractorForm,
     ItemCodeForm,
     ItemForm,
-    ContractorBillForm,
+    ContractorBillSubmissionForm,
+    ContractorBillPaymentForm,
     ShareholderDepositForm,
     ShareholderForm,
     TargetedAmountForm,
+    CreditPurchaseForm,
+    CreditPurchasePaymentForm,
 )
 import plotly.express as px
 from .models import (
@@ -61,10 +65,13 @@ from .models import (
     Expenditure,
     ContractorType,
     Contractor,
-    ContractorBill,
+    ContractorBillSubmission,
+    ContractorBillPayment,
     ShareholderDeposit,
     Shareholder,
     TargetedAmount,
+    CreditPurchase,
+    CreditPurchasePayment,
 )
 from CONSTRUCTION_PROJECT.settings.context_processors import company_info_settings
 
@@ -131,7 +138,7 @@ class ContractorTypeView(LoginRequiredMixin, generic.edit.FormView):
         return context
 
 
-class ContractorView(LoginRequiredMixin,generic.edit.FormView):
+class ContractorView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_single_column.html"
     form_class = ContractorForm
     success_url = "/"
@@ -156,13 +163,25 @@ class ContractorView(LoginRequiredMixin,generic.edit.FormView):
         return context
 
 
-class ContractorDetailView(LoginRequiredMixin,DetailView):
+class ContractorDetailView(LoginRequiredMixin, DetailView):
     model = Contractor
     template_name = "accounts/report_templates/contractor_details.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # context["now"] = timezone.now()
+        return context
+
+
+class ContractorListView(LoginRequiredMixin, ListView):
+    model = Contractor
+    template_name = "accounts/report_templates/contractor_list.html"
+    context_object_name = "contractor"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["heading"] = "Contractors List"
+        print(context)
         return context
 
 
@@ -204,7 +223,7 @@ class ShareholderListView(LoginRequiredMixin, ListView):
         return context
 
 
-class ShareholderDetailView(LoginRequiredMixin,DetailView):
+class ShareholderDetailView(LoginRequiredMixin, DetailView):
     model = Shareholder
     template_name = "accounts/report_templates/shareholder_details.html"
 
@@ -214,7 +233,7 @@ class ShareholderDetailView(LoginRequiredMixin,DetailView):
         return context
 
 
-class ItemCodeView(LoginRequiredMixin,generic.edit.FormView):
+class ItemCodeView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_single_column.html"
     form_class = ItemCodeForm
     success_url = "/"
@@ -238,7 +257,7 @@ class ItemCodeView(LoginRequiredMixin,generic.edit.FormView):
         return context
 
 
-class ItemView(LoginRequiredMixin,generic.edit.FormView):
+class ItemView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_item_add.html"
     form_class = ItemForm
     success_url = "/"
@@ -262,7 +281,7 @@ class ItemView(LoginRequiredMixin,generic.edit.FormView):
         return context
 
 
-class ExpenditureView(LoginRequiredMixin,generic.edit.FormView):
+class ExpenditureView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_expenditure.html"
     form_class = ExpenditureForm
     success_url = "/"
@@ -303,45 +322,165 @@ class ExpenditureView(LoginRequiredMixin,generic.edit.FormView):
         return context
 
 
-class ContractorBillView(LoginRequiredMixin,generic.edit.FormView):
-    template_name = "accounts/forms/form_contractor_bill.html"
-    form_class = ContractorBillForm
-    success_url = "/"
+class ContractorBillSubmissionView(LoginRequiredMixin, generic.edit.FormView):
+    template_name = "accounts/forms/form_contractor_bill_submission.html"
+    form_class = ContractorBillSubmissionForm
+    success_url = "./"
     # print(form)
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, "Thank you. Contractor Bill Posting done.")
+        messages.success(
+            self.request, "Thank you. Contractor Bill Submission Posting done."
+        )
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        heading = "Contractor Bill"
+        heading = "Contractor Bill Submission"
         context["heading"] = heading
         # max_date = Expenditure.objects.latest('dateOfTransaction').dateOfTransaction
-        max_date = (
-            ContractorBill.objects.values_list("dateOfTransaction")
-            .annotate(Transaction_Date_Count=Count(F("dateOfTransaction")))
-            .order_by("-dateOfTransaction")[:7]
-        )
+        # max_date = (
+        #     ContractorBillSubmission.objects.values_list("dateOfBillSubmission")
+        #     .annotate(Transaction_Date_Count=Count(F("dateOfBillSubmission")))
+        #     .order_by("-dateOfBillSubmission")[:7]
+        # )
         # print(max_date.query)
         # print(max_date)
-        data = ContractorBill.objects.filter(
-            dateOfTransaction__in=[
-                str(max_date[0][0].strftime("%Y-%m-%d")),
-                str(max_date[1][0].strftime("%Y-%m-%d")),
-                str(max_date[2][0].strftime("%Y-%m-%d")),
-                str(max_date[3][0].strftime("%Y-%m-%d")),
-                str(max_date[4][0].strftime("%Y-%m-%d")),
-                str(max_date[5][0].strftime("%Y-%m-%d")),
-                str(max_date[6][0].strftime("%Y-%m-%d")),
-            ]
-        )
+        data = ContractorBillSubmission.objects.all().order_by("-dateOfBillSubmission")[
+            :50
+        ]
         # print(data.query)
-        data_heading = "Last 7 Days Bill Payment:"
+        data_heading = "Last 50 Bill Submission History:"
         context["data"] = data
         context["data_heading"] = data_heading
         return context
+
+
+class ContractorBillPaymentView(LoginRequiredMixin, CreateView):
+    template_name = "accounts/forms/form_contractor_bill_payment.html"
+    form_class = ContractorBillPaymentForm
+    success_url = "./"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        heading = "Contractor Bill Payment Entry"
+        context["heading"] = heading
+        data = ContractorBillPayment.objects.order_by("-dateOfTransaction")[:10]
+        # print(data.query)
+        data_heading = "Last 10 Bill Payment:"
+        context["data"] = data
+        context["data_heading"] = data_heading
+        return context
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            form.save()
+            contractor = Contractor.objects.get(id=form["contractor"].value())
+            contractor_id = form["contractor"].value()
+            dateOfTransaction = form["dateOfTransaction"].value()
+            item = form["item"].value()
+            amount = int(form["amount"].value()) + int(form["labor_fooding"].value())
+            voucher_no = form["voucherNo"].value()
+            remarks = form["remarks"].value()
+            # region
+            # print(
+            #     "dateOfTransaction: ",
+            #     dateOfTransaction,
+            #     "labor_fooding: ",
+            #     labor_fooding,
+            #     "amount: ",
+            #     amount,
+            #     "voucher_no: ",
+            #     voucher_no,
+            #     "remarks: ",
+            #     remarks,
+            #     "contractor: ",
+            #     contractor,
+            #     "item: ",
+            #     item,
+            # )
+            # endregion
+            Expenditure.objects.create(
+                dateOfTransaction=dateOfTransaction,
+                item_id=item,
+                description=f"Bill Payment of {contractor}",
+                unit="LS",
+                rate=1,
+                quantity=1,
+                voucherNo=voucher_no,
+                contractor_id=contractor_id,
+                amount=amount,
+                remarks=remarks,
+            )
+        #! End Transaction atomic ===============
+        # form.save()
+
+        messages.success(
+            self.request, "Thank you. Contractor Bill Payment Posting done."
+        )
+        return super(ContractorBillPaymentView, self).form_valid(form)
+
+
+class CreditPurchaseView(LoginRequiredMixin, CreateView):
+    template_name = "accounts/forms/form_credit_purchase.html"
+    form_class = CreditPurchaseForm
+    success_url = "./"
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            form.save()
+        messages.success(self.request, "Thank you. Credit Purchase Entry Posting done.")
+        return super(CreditPurchaseView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        heading = "Credit Purchase Entry"
+        context["heading"] = heading
+        data = CreditPurchase.objects.order_by("-dateOfPurchase")[:10]
+        # print(data.query)
+        data_heading = "Last 10 Credit Purchase:"
+        context["data"] = data
+        context["data_heading"] = data_heading
+        return context
+
+
+class CreditPurchasePaymentView(LoginRequiredMixin, CreateView):
+    template_name = "accounts/forms/form_credit_purchase_payment.html"
+    form_class = CreditPurchasePaymentForm
+    success_url = "./"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        heading = "Credit Purchase Payment Entry"
+        context["heading"] = heading
+        data = CreditPurchasePayment.objects.order_by("-dateOfTransaction")[:10]
+        # print(data.query)
+        data_heading = "Last 10 Credit Purchase Payment:"
+        context["data"] = data
+        context["data_heading"] = data_heading
+        return context
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            form.save()
+            Expenditure.objects.create(
+                dateOfTransaction=form["dateOfTransaction"].value(),
+                item=Item.objects.get(id=form["item"].value()),
+                description=f"Payment of {CreditPurchase.objects.get(id=form['seller'].value())}",
+                unit="LS",
+                rate=1,
+                quantity=1,
+                voucherNo=form["voucherNo"].value(),
+                seller=CreditPurchasePayment.objects.all().order_by("-id")[0],
+                amount=int(form["amount"].value()),
+                remarks=form["remarks"].value(),
+            )
+
+            messages.success(
+                self.request, "Thank you. Credit Purchase Entry Posting done."
+            )
+            return super(CreditPurchasePaymentView, self).form_valid(form)
 
 
 class ShareholderDepositList(LoginRequiredMixin, ListView):
@@ -396,7 +535,7 @@ class ShareholderDepositList(LoginRequiredMixin, ListView):
         return context
 
 
-class ShareholderDepositView(LoginRequiredMixin,generic.edit.FormView):
+class ShareholderDepositView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_shareholder_deposit.html"
     form_class = ShareholderDepositForm
     success_url = "./"
@@ -437,7 +576,7 @@ class ShareholderDepositView(LoginRequiredMixin,generic.edit.FormView):
         return context
 
 
-class ShareholderView(LoginRequiredMixin,generic.edit.FormView):
+class ShareholderView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_shareholder.html"
     form_class = ShareholderForm
     success_url = "/"
@@ -457,6 +596,7 @@ class ShareholderView(LoginRequiredMixin,generic.edit.FormView):
         context["data"] = data
         context["data_heading"] = data_heading
         return context
+
 
 @login_required
 def chart(request):
@@ -583,6 +723,7 @@ def chart(request):
         "chart_deposit_target": chart_deposit_target,
     }
     return render(request, "accounts/dashboard1.html", context)
+
 
 @login_required
 def send_mail(request):
@@ -868,6 +1009,31 @@ def get_shareholder_deposit_info(request, shareholder_id):
     return HttpResponse(info)
 
 
+@login_required
+def get_credit_purchase_rest_amount(request, seller_id):
+    query_set = (
+        CreditPurchase.objects.filter(id=seller_id)
+        .values("id")
+        .annotate(
+            sum_amount=Sum(F("Seller__amount")),
+            amount=F("amount"),
+        )
+    )
+    query_set = query_set.annotate(
+        rest_amount=(
+            Coalesce(
+                (F("amount") - Coalesce(F("sum_amount"), 0)),
+                0,
+                output_field=IntegerField(),
+            )
+        )
+    )
+    rest_amount = {"rest_amount": str(query_set[0]["rest_amount"])}
+
+    info = json.dumps(rest_amount)
+    return HttpResponse(info)
+
+
 #! Reports =================================================
 class ExpenditureSummary(LoginRequiredMixin, ListView):
     model = Expenditure
@@ -1029,3 +1195,89 @@ def plot_chart(request):
     # Serve the image as an HTTP response
     response = HttpResponse(img_bytes)
     return response
+
+
+class ContractorUpdate(UpdateView):
+    model = Contractor
+    form_class = ContractorForm
+    template_name = "accounts/forms/form_single_column.html"
+    success_url = "/contractor_list/"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        headind = "Contractor Information Update"
+        context["update_tag"] = True
+        context["heading"] = headind
+        context["redirect_url"] = "/contractor_list/"
+        return context
+
+    def form_valid(self, form):
+        messages.success(
+            self.request, "The Contractor's information updated successfully."
+        )
+        return super(ContractorUpdate, self).form_valid(form)
+
+
+class ExpenditureUpdate(UpdateView):
+    model = Expenditure
+    form_class = ExpenditureForm
+    template_name = "accounts/forms/form_expenditure.html"
+    success_url = "/expenditure_details_list/"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        headind = "Expenditure's Information Update"
+        context["update_tag"] = True
+        context["heading"] = headind
+        context["redirect_url"] = "/expenditure_details_list/"
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, "The transaction updated successfully.")
+        return super(ExpenditureUpdate, self).form_valid(form)
+
+
+class ShareholderUpdate(UpdateView):
+    model = Shareholder
+    form_class = ShareholderForm
+    template_name = "accounts/forms/form_shareholder.html"
+    success_url = "/shareholder_list/"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        headind = "Shareholder's Information Update"
+        context["update_tag"] = True
+        context["heading"] = headind
+        context["redirect_url"] = "/shareholder_list/"
+        return context
+
+    def form_valid(self, form):
+        messages.success(
+            self.request, "The shareholder's information updated successfully."
+        )
+        return super(ShareholderUpdate, self).form_valid(form)
+
+
+class ShareholderDepositUpdate(UpdateView):
+    model = ShareholderDeposit
+    form_class = ShareholderDepositForm
+    template_name = "accounts/forms/form_shareholder_deposit.html"
+    success_url = "/shareholder_list/"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        headind = "Shareholder Deposit Update"
+        context["update_tag"] = True
+        context["heading"] = headind
+        context["redirect_url"] = "/shareholder_list/"
+        return context
+
+    def form_valid(self, form):
+        messages.success(
+            self.request, "The shareholder's Deposit Informations updated successfully."
+        )
+        return super(ShareholderDepositUpdate, self).form_valid(form)
+
+    #! form_valid() – the method is called once the form is posted successfully.
+    #! In this example, we create a flash message and
+    #! return the result of the form_valid() method of the superclass.

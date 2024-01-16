@@ -15,7 +15,7 @@
         </div>
     </div>
     <br>
-
+    {% if update_tag is None %}
     <div class="card">
         <div class="card-header p-2 me-0 text-white bg-secondary">
             <h3>{{data_heading}}</h3>
@@ -45,9 +45,22 @@
                 <td>{{dt.email}}</td>
                 <td>{{dt.dateOfJoin}}</td>
                 <td>{{dt.numberOfFlat}}</td>
-                <td><a href="{{ dt.get_absolute_url}}">Details</a></td>
+                <td><a href="{{ dt.get_absolute_url}}"><i class="bi bi-file-earmark-text-fill"></i></a></td>
             </tr>
             {% endfor %}
             </table></div>
+                
+            {% endif %}
+                
     <br>
     {% endblock %}
+    {% block script %} 
+
+    <script>
+    {% if update_tag %}
+    button_div = document.getElementById("button_div")
+	button_div.innerHTML = `<input type="submit" name="submit" value="Update" class="btn btn-primary btn btn-success me-2 mb-0" id="submit-id-submit">
+	<a href="{%url 'Accounts:expenditure_details_list'%}" class="btn btn-danger">Cancel</a>`
+    {% endif %}
+    {% endblock script %}
+</script>

@@ -1,0 +1,76 @@
+{% extends "main.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load mahimsoft_tags %}
+{% block extend_header%}
+<style>
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }
+</style>
+{%endblock%}
+{% block content %}
+<div class="container pt-3">
+    <div class="card">
+        <h3 class="text-muted text-center">{{heading}}</h3>
+    </div>
+    <br>
+    <div class="table table-active">
+        <table class="table table-sm align-middle table-bordered table-striped table-hover table-responsive">
+            <tr>
+                <th class="text-center">#</th>
+                <th class="text-center">Photo</th>
+                <th class="text-center">Name</th>
+                <th class="text-center">Contractor Type</th>
+                <th class="text-center">Mobile</th>
+                <th class="text-center">Email</th>
+                <th class="text-center">Date of Join</th>
+                <th colspan="3" class="text-center">Actions</th>
+            </tr>
+            {% for dt in contractor %}
+            <tr>
+                <td class="text-center">{{forloop.counter}}</td>
+                <td><img src="/media/{{dt.image}}" class="card-img-top" alt="masud"
+                        style="border-radius: 15%; width: 80px; height: 80px;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                </td>
+                <td>{{dt.contractor}}</td>
+                <td class="text-center">{{dt.contractorType}}</td>
+                <td>{{dt.Mobile}}</td>
+                <td>{{dt.Email}}</td>
+                <td>{{dt.dateOfJoin|date:"d b Y"}}</td>
+                <td class="text-center"><a class="a_link" href="{{dt.get_absolute_url}}">
+                        <i class="bi bi-file-earmark-text-fill"></a></i></td>
+                {% if request.user|has_group:"Admin"%}
+                <td class="text-center"><a class="b_link" href="#"><i class="bi bi-trash"></i></a></td>
+                <td class="text-center"><a class="c_link" href="/contractor_update/{{dt.id}}"><i class="bi bi-pencil-square"></i></a>
+                    </a></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<br>
+
+{% endblock %}
