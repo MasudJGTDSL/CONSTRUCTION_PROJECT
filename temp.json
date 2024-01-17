@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "sum_amount": "10687994",
+    "amount": "1000000.00",
+    "contractor": "None",
+    "rest_amount": -9687994
+  },
+  {
+    "id": 2,
+    "sum_amount": "50000",
+    "amount": "100000.00",
+    "contractor": 2299,
+    "rest_amount": 50000
+  },
+  {
+    "id": 3,
+    "sum_amount": "1034560",
+    "amount": "1234560.00",
+    "contractor": 2298,
+    "rest_amount": 200000
+  },
+  {
+    "id": 3,
+    "sum_amount": "100000",
+    "amount": "1234560.00",
+    "contractor": 2300,
+    "rest_amount": 1134560
+  }
+]

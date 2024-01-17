@@ -86,7 +86,6 @@ class TargetedAmountPosting(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/fotm_targeted_amount.html"
     form_class = TargetedAmountForm
     success_url = "/"
-    # print(form)
 
     def form_valid(self, form):
         form.save()
@@ -94,7 +93,6 @@ class TargetedAmountPosting(LoginRequiredMixin, generic.edit.FormView):
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        # called whenever the pages is rendered
         context = super().get_context_data(**kwargs)
         heading = "Add new Shareholder Deposit target"
         context["heading"] = heading
@@ -104,9 +102,6 @@ class TargetedAmountPosting(LoginRequiredMixin, generic.edit.FormView):
         context["data_heading"] = data_heading
         detil_tag = False
         context["detil_tag"] = detil_tag
-        # context["query_params"] = self.request.GET.get(
-        #     "q", "a default"
-        # )  # should be testingtesting
         return context
 
 
@@ -114,7 +109,6 @@ class ContractorTypeView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_single_column.html"
     form_class = ContractorTypeForm
     success_url = "/"
-    # print(form)
 
     def form_valid(self, form):
         form.save()
@@ -122,7 +116,6 @@ class ContractorTypeView(LoginRequiredMixin, generic.edit.FormView):
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        # called whenever the pages is rendered
         context = super().get_context_data(**kwargs)
         heading = "Add New Contractor Type"
         context["heading"] = heading
@@ -132,9 +125,6 @@ class ContractorTypeView(LoginRequiredMixin, generic.edit.FormView):
         context["data_heading"] = data_heading
         detil_tag = False
         context["detil_tag"] = detil_tag
-        # context["query_params"] = self.request.GET.get(
-        #     "q", "a default"
-        # )  # should be testingtesting
         return context
 
 
@@ -142,7 +132,6 @@ class ContractorView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_single_column.html"
     form_class = ContractorForm
     success_url = "/"
-    # print(form)
 
     def form_valid(self, form):
         form.save()
@@ -169,7 +158,6 @@ class ContractorDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context["now"] = timezone.now()
         return context
 
 
@@ -181,7 +169,6 @@ class ContractorListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["heading"] = "Contractors List"
-        print(context)
         return context
 
 
@@ -189,7 +176,6 @@ class ShareholderListView(LoginRequiredMixin, ListView):
     model = Shareholder
     template_name = "accounts/report_templates/shareholder_list.html"
     context_object_name = "shareholder"
-    # paginate_by = 30
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -215,7 +201,6 @@ class ShareholderListView(LoginRequiredMixin, ListView):
         targeted_amount = TargetedAmount.objects.values_list("amount").order_by(
             "-inputDate"
         )[0]
-        # print(company_info["total_number_of_flat"],"|",targeted_amount_per_share)
         context["targeted_amount_per_flat"] = (
             targeted_amount[0] / company_info["no_of_flat_per_share"]
         )
@@ -229,7 +214,6 @@ class ShareholderDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context["now"] = timezone.now()
         return context
 
 
@@ -237,7 +221,6 @@ class ItemCodeView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_single_column.html"
     form_class = ItemCodeForm
     success_url = "/"
-    # print(form)
 
     def form_valid(self, form):
         form.save()
@@ -261,7 +244,6 @@ class ItemView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_item_add.html"
     form_class = ItemForm
     success_url = "/"
-    # print(form)
 
     def form_valid(self, form):
         form.save()
@@ -285,7 +267,6 @@ class ExpenditureView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_expenditure.html"
     form_class = ExpenditureForm
     success_url = "/"
-    # print(form)
 
     def form_valid(self, form):
         form.save()
@@ -296,14 +277,11 @@ class ExpenditureView(LoginRequiredMixin, generic.edit.FormView):
         context = super().get_context_data(**kwargs)
         heading = "Expenditure"
         context["heading"] = heading
-        # max_date = Expenditure.objects.latest('dateOfTransaction').dateOfTransaction
         max_date = (
             Expenditure.objects.values_list("dateOfTransaction")
             .annotate(Transaction_Date_Count=Count(F("dateOfTransaction")))
             .order_by("-dateOfTransaction")[:7]
         )
-        # print(max_date.query)
-        # print(max_date)
         data = Expenditure.objects.filter(
             dateOfTransaction__in=[
                 str(max_date[0][0].strftime("%Y-%m-%d")),
@@ -315,7 +293,6 @@ class ExpenditureView(LoginRequiredMixin, generic.edit.FormView):
                 str(max_date[6][0].strftime("%Y-%m-%d")),
             ]
         )
-        # print(data.query)
         data_heading = "Last 7 Days Expenditure:"
         context["data"] = data
         context["data_heading"] = data_heading
@@ -326,7 +303,6 @@ class ContractorBillSubmissionView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_contractor_bill_submission.html"
     form_class = ContractorBillSubmissionForm
     success_url = "./"
-    # print(form)
 
     def form_valid(self, form):
         form.save()
@@ -339,18 +315,9 @@ class ContractorBillSubmissionView(LoginRequiredMixin, generic.edit.FormView):
         context = super().get_context_data(**kwargs)
         heading = "Contractor Bill Submission"
         context["heading"] = heading
-        # max_date = Expenditure.objects.latest('dateOfTransaction').dateOfTransaction
-        # max_date = (
-        #     ContractorBillSubmission.objects.values_list("dateOfBillSubmission")
-        #     .annotate(Transaction_Date_Count=Count(F("dateOfBillSubmission")))
-        #     .order_by("-dateOfBillSubmission")[:7]
-        # )
-        # print(max_date.query)
-        # print(max_date)
         data = ContractorBillSubmission.objects.all().order_by("-dateOfBillSubmission")[
             :50
         ]
-        # print(data.query)
         data_heading = "Last 50 Bill Submission History:"
         context["data"] = data
         context["data_heading"] = data_heading
@@ -367,7 +334,6 @@ class ContractorBillPaymentView(LoginRequiredMixin, CreateView):
         heading = "Contractor Bill Payment Entry"
         context["heading"] = heading
         data = ContractorBillPayment.objects.order_by("-dateOfTransaction")[:10]
-        # print(data.query)
         data_heading = "Last 10 Bill Payment:"
         context["data"] = data
         context["data_heading"] = data_heading
@@ -376,45 +342,21 @@ class ContractorBillPaymentView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         with transaction.atomic():
             form.save()
-            contractor = Contractor.objects.get(id=form["contractor"].value())
-            contractor_id = form["contractor"].value()
-            dateOfTransaction = form["dateOfTransaction"].value()
-            item = form["item"].value()
-            amount = int(form["amount"].value()) + int(form["labor_fooding"].value())
-            voucher_no = form["voucherNo"].value()
-            remarks = form["remarks"].value()
-            # region
-            # print(
-            #     "dateOfTransaction: ",
-            #     dateOfTransaction,
-            #     "labor_fooding: ",
-            #     labor_fooding,
-            #     "amount: ",
-            #     amount,
-            #     "voucher_no: ",
-            #     voucher_no,
-            #     "remarks: ",
-            #     remarks,
-            #     "contractor: ",
-            #     contractor,
-            #     "item: ",
-            #     item,
-            # )
-            # endregion
             Expenditure.objects.create(
-                dateOfTransaction=dateOfTransaction,
-                item_id=item,
-                description=f"Bill Payment of {contractor}",
+                dateOfTransaction=form["dateOfTransaction"].value(),
+                item=Item.objects.get(id=form["item"].value()),
+                description=f"{ContractorBillSubmission.objects.get(id=form['bill'].value())}",
                 unit="LS",
                 rate=1,
                 quantity=1,
-                voucherNo=voucher_no,
-                contractor_id=contractor_id,
-                amount=amount,
-                remarks=remarks,
+                voucherNo=form["voucherNo"].value(),
+                contractor_bill_payment=ContractorBillPayment.objects.all().order_by(
+                    "-id"
+                )[0],
+                amount=int(form["amount"].value()),
+                remarks=form["remarks"].value(),
             )
         #! End Transaction atomic ===============
-        # form.save()
 
         messages.success(
             self.request, "Thank you. Contractor Bill Payment Posting done."
@@ -438,7 +380,6 @@ class CreditPurchaseView(LoginRequiredMixin, CreateView):
         heading = "Credit Purchase Entry"
         context["heading"] = heading
         data = CreditPurchase.objects.order_by("-dateOfPurchase")[:10]
-        # print(data.query)
         data_heading = "Last 10 Credit Purchase:"
         context["data"] = data
         context["data_heading"] = data_heading
@@ -455,7 +396,6 @@ class CreditPurchasePaymentView(LoginRequiredMixin, CreateView):
         heading = "Credit Purchase Payment Entry"
         context["heading"] = heading
         data = CreditPurchasePayment.objects.order_by("-dateOfTransaction")[:10]
-        # print(data.query)
         data_heading = "Last 10 Credit Purchase Payment:"
         context["data"] = data
         context["data_heading"] = data_heading
@@ -472,7 +412,9 @@ class CreditPurchasePaymentView(LoginRequiredMixin, CreateView):
                 rate=1,
                 quantity=1,
                 voucherNo=form["voucherNo"].value(),
-                seller=CreditPurchasePayment.objects.all().order_by("-id")[0],
+                credit_purchase_payment=CreditPurchasePayment.objects.all().order_by(
+                    "-id"
+                )[0],
                 amount=int(form["amount"].value()),
                 remarks=form["remarks"].value(),
             )
@@ -527,7 +469,6 @@ class ShareholderDepositList(LoginRequiredMixin, ListView):
         targeted_amount = TargetedAmount.objects.values_list("amount").order_by(
             "-inputDate"
         )[0]
-        # print(company_info["total_number_of_flat"],"|",targeted_amount_per_share)
         context["targeted_amount_per_flat"] = (
             targeted_amount[0] / company_info["no_of_flat_per_share"]
         )
@@ -539,7 +480,6 @@ class ShareholderDepositView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_shareholder_deposit.html"
     form_class = ShareholderDepositForm
     success_url = "./"
-    # print(form)
 
     def form_valid(self, form):
         form.save()
@@ -550,14 +490,11 @@ class ShareholderDepositView(LoginRequiredMixin, generic.edit.FormView):
         context = super().get_context_data(**kwargs)
         heading = "Shareholder Deposit"
         context["heading"] = heading
-        # max_date = Expenditure.objects.latest('dateOfTransaction').dateOfTransaction
         max_date = (
             ShareholderDeposit.objects.values_list("dateOfTransaction")
             .annotate(Transaction_Date_Count=Count(F("dateOfTransaction")))
             .order_by("-dateOfTransaction")[:7]
         )
-        # print(max_date.query)
-        # print(max_date)
         data = ShareholderDeposit.objects.filter(
             dateOfTransaction__in=[
                 str(max_date[0][0].strftime("%Y-%m-%d")),
@@ -569,7 +506,6 @@ class ShareholderDepositView(LoginRequiredMixin, generic.edit.FormView):
                 str(max_date[6][0].strftime("%Y-%m-%d")),
             ]
         )
-        # print(data.query)
         data_heading = "Last 7 Days Shareholder Deposit:"
         context["data"] = data
         context["data_heading"] = data_heading
@@ -580,7 +516,6 @@ class ShareholderView(LoginRequiredMixin, generic.edit.FormView):
     template_name = "accounts/forms/form_shareholder.html"
     form_class = ShareholderForm
     success_url = "/"
-    # print(form)
 
     def form_valid(self, form):
         form.save()
@@ -604,24 +539,6 @@ def chart(request):
         Amount=Sum(Coalesce(F("amount"), 0, output_field=FloatField())),
         Shareholder=F("shareholder__shareholderName"),
     )
-
-    # qs = qs_1.annotate(
-    #     Shareholder=F("shareholder__shareholderName"), Amount=F("Deposited_Amount")
-    # )
-
-    # if start:
-    #     qs = Shareholder.filter(date__gte=start)
-    # if end:
-    #     qs = Shareholder.filter(date__lte=end)
-
-    # fig = px.bar(
-    #     x=[c["Shareholder"] for c in qs],
-    #     y=[c["Amount"] for c in qs],
-    #     text=[f"{(amnt/10**5):,.2f}Lac" for amnt in [c["Amount"] for c in qs]],
-    #     title="Amount Deposited Per Flat",
-    #     labels={"x": "Share Holders", "y": "Amount Taka"},
-    # )
-
     qs_avg = ShareholderDeposit.objects.values("shareholder__shareholderName").annotate(
         Deposited_Amount=ExpressionWrapper(
             Sum(Coalesce(F("amount"), 0, output_field=FloatField()))
@@ -689,7 +606,6 @@ def chart(request):
     targeted_amount = TargetedAmount.objects.values_list("amount").order_by(
         "-inputDate"
     )[0]
-    # print(company_info["total_number_of_flat"],"|",targeted_amount_per_share)
     targeted_amount_per_flat = targeted_amount[0] / company_info["no_of_flat_per_share"]
     qs_data = qs_shareholder.annotate(
         deposited_sum=qs_deposit_subquery.values("deposited_amount_sum"),
@@ -704,7 +620,6 @@ def chart(request):
         }
         for x in qs_data
     ]
-    # print(data)
     fig_deposit_target = px.bar(
         data,
         barmode="stack",
@@ -714,7 +629,6 @@ def chart(request):
         title="Shareholders Amount Deposit Info:",
         labels={"value": "Amount", "variable": "Deposit Type:"},
     )
-    # print(df_deposit_target)
     chart_deposit_target = fig_deposit_target.to_html()
     #! Bar Chart for shareholder deposit and to pay end ================
     context = {
@@ -775,20 +689,20 @@ def index(request):
         Amount=Sum(Coalesce(F("amount"), 0, output_field=FloatField())),
     )
 
-    fig_bar = px.bar(
-        x=[c["work_sector"] for c in qs],
-        y=[c["Amount"] for c in qs],
-        # text=[f"{(amnt/10**5):,.2f} Lac" for amnt in [c["Amount"] for c in qs]],
-        text_auto=".2s",
-        title="Work Sector Wise Spent Amount",
-        color=[c["Amount"] for c in qs],
-        labels={"x": "Work Sector", "y": "Amount Taka"},
-    )
-    fig_bar.update_layout(
-        title={"font_size": 24, "xanchor": "center", "x": 0.5}, barmode="group"
-    )
-    fig_bar.update_traces(textangle=-90, textposition="outside", cliponaxis=False)
-    fig_bar_chart = fig_bar.to_html()
+    # fig_bar = px.bar(
+    #     x=[c["work_sector"] for c in qs],
+    #     y=[c["Amount"] for c in qs],
+    #     # text=[f"{(amnt/10**5):,.2f} Lac" for amnt in [c["Amount"] for c in qs]],
+    #     text_auto=".2s",
+    #     title="Work Sector Wise Spent Amount",
+    #     color=[c["Amount"] for c in qs],
+    #     labels={"x": "Work Sector", "y": "Amount Taka"},
+    # )
+    # fig_bar.update_layout(
+    #     title={"font_size": 24, "xanchor": "center", "x": 0.5}, barmode="group"
+    # )
+    # fig_bar.update_traces(textangle=-90, textposition="outside", cliponaxis=False)
+    # fig_bar_chart = fig_bar.to_html()
     #! Bar chart Sector wise Expenditure end ==============
     #! Pie chart Sector wise Expenditure ==============
 
@@ -802,7 +716,9 @@ def index(request):
     # update_traces(title_text="Work Sector", selector=dict(type='pie'))
     fig_pie.update_traces(textinfo="label+percent", textposition="outside")
     fig_pie.update_layout(
-        showlegend=True, title={"font_size": 24, "xanchor": "auto", "x": 0.5}
+        showlegend=True,
+        title={"font_size": 20, "xanchor": "auto", "x": 0.5},
+        legend=dict(title_font_family="Times New Roman", font=dict(size=9)),
     )
     fig_pie_chart = fig_pie.to_html()
     #! Pie chart Sector wise Expenditure end ==============
@@ -828,7 +744,7 @@ def index(request):
         deposited_sum=qs_deposit_subquery.values("deposited_amount_sum"),
         amount_to_deposit=(F("numberOfFlat") * targeted_amount_per_flat),
     )
-    print(qs_data.query)
+
     data_deposit_target = [
         [
             x.shareholderName,
@@ -859,7 +775,7 @@ def index(request):
         legend=dict(
             title=None, orientation="h", y=1, yanchor="bottom", x=0.5, xanchor="center"
         ),
-        title={"font_size": 24, "xanchor": "center", "x": 0.5},
+        title={"font_size": 20, "xanchor": "center", "x": 0.5},
     )
 
     chart_deposit_target = fig_deposit_target.to_html()
@@ -868,86 +784,144 @@ def index(request):
     total_deposited = ShareholderDeposit.objects.aggregate(Sum("amount"))
     total_Expenditure = Expenditure.objects.aggregate(Sum("amount"))
 
-    qs_shareholder = ShareholderDeposit.objects.values(
-        "shareholder__shareholderName"
-    ).annotate(
-        Shareholder=F("shareholder__shareholderName"),
-        num_of_flat=F("shareholder__numberOfFlat"),
-        Amount=Sum(Coalesce(F("amount"), 0, output_field=FloatField())),
-    )
-    print(qs_shareholder.query)
+    # qs_shareholder = ShareholderDeposit.objects.values(
+    #     "shareholder__shareholderName"
+    # ).annotate(
+    #     Shareholder=F("shareholder__shareholderName"),
+    #     num_of_flat=F("shareholder__numberOfFlat"),
+    #     Amount=Sum(Coalesce(F("amount"), 0, output_field=FloatField())),
+    # )
+
     # qs_shareholder = qs_shareholder.annotate(
     #     Shareholder=F("shareholder__shareholderName"), Amount=F("Deposited_Amount")
     # )
 
-    qs_shareholder_avg = ShareholderDeposit.objects.values(
-        "shareholder__shareholderName"
-    ).annotate(
-        Deposited_Amount=ExpressionWrapper(
-            Sum(Coalesce(F("amount"), 0, output_field=FloatField()))
-            / F("shareholder__numberOfFlat"),
-            output_field=FloatField(),
-        )
-    )
+    # qs_shareholder_avg = ShareholderDeposit.objects.values(
+    #     "shareholder__shareholderName"
+    # ).annotate(
+    #     Deposited_Amount=ExpressionWrapper(
+    #         Sum(Coalesce(F("amount"), 0, output_field=FloatField()))
+    #         / F("shareholder__numberOfFlat"),
+    #         output_field=FloatField(),
+    #     )
+    # )
 
-    x_avg = qs_shareholder_avg.values_list("shareholder__shareholderName", flat=True)
-    y_avg = qs_shareholder_avg.values_list("Deposited_Amount", flat=True)
-    text_avg = [f"{(amnt/10**3):,.2f}K" for amnt in y_avg]
+    # x_avg = qs_shareholder_avg.values_list("shareholder__shareholderName", flat=True)
+    # y_avg = qs_shareholder_avg.values_list("Deposited_Amount", flat=True)
+    # text_avg = [f"{(amnt/10**3):,.2f}K" for amnt in y_avg]
 
-    fig_shareholder_avg = px.bar(
-        x=x_avg,
-        y=y_avg,
-        # text=text_avg,
-        text_auto=".2s",
-        title="Per Flat Deposited by The Shareholders",
-        labels={"x": "Share Holders", "y": "Average Amount per Flat"},
-        color=y_avg,
-        range_y=[10000, 3000000],
-        # color_discrete_map = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
-        color_discrete_map={
-            "Thur": "lightcyan",
-            "Fahim Amin": "cyan",
-            "Sat": "royalblue",
-            "Sun": "darkblue",
-        },
-    )
+    # fig_shareholder_avg = px.bar(
+    #     x=x_avg,
+    #     y=y_avg,
+    #     # text=text_avg,
+    #     text_auto=".2s",
+    #     title="Per Flat Deposited by The Shareholders",
+    #     labels={"x": "Share Holders", "y": "Average Amount per Flat"},
+    #     color=y_avg,
+    #     range_y=[10000, 3000000],
+    #     # color_discrete_map = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
+    #     color_discrete_map={
+    #         "Thur": "lightcyan",
+    #         "Fahim Amin": "cyan",
+    #         "Sat": "royalblue",
+    #         "Sun": "darkblue",
+    #     },
+    # )
 
-    fig_shareholder = px.pie(
-        qs_shareholder,
-        values="Amount",
-        names="Shareholder",
-        title="Amount Deposited by The Shareholders",
-        #  color_discrete_sequence=px.colors.sequential.RdBu
-    )
+    # fig_shareholder = px.pie(
+    #     qs_shareholder,
+    #     values="Amount",
+    #     names="Shareholder",
+    #     title="Amount Deposited by The Shareholders",
+    #     #  color_discrete_sequence=px.colors.sequential.RdBu
+    # )
 
     # fig_avg.title = "Amount Deposited"
     # fig_avg.labels = {"x": "Share Holders", "y": "Average Amount per Flat"}
-    fig_shareholder_avg.update_traces(
-        textangle=-90, textposition="outside", cliponaxis=False
-    )
-    fig_shareholder_avg.update_layout(
-        title={"font_size": 24, "xanchor": "center", "x": 0.5}, barmode="group"
-    )
+    # fig_shareholder_avg.update_traces(
+    #     textangle=-90, textposition="outside", cliponaxis=False
+    # )
+    # fig_shareholder_avg.update_layout(
+    #     title={"font_size": 24, "xanchor": "center", "x": 0.5}, barmode="group"
+    # )
 
-    fig_shareholder.update_traces(textinfo="label+percent", textposition="outside")
-    fig_shareholder.update_layout(
-        showlegend=False, title={"font_size": 24, "xanchor": "auto", "x": 0.5}
-    )
+    # fig_shareholder.update_traces(textinfo="label+percent", textposition="outside")
+    # fig_shareholder.update_layout(
+    #     showlegend=False, title={"font_size": 24, "xanchor": "auto", "x": 0.5}
+    # )
 
-    chart_shareholder = fig_shareholder.to_html()
-    chart_shareholder_avg = fig_shareholder_avg.to_html()
-    print(qs_data)
+    # chart_shareholder = fig_shareholder.to_html()
+    # chart_shareholder_avg = fig_shareholder_avg.to_html()
+    #! Contractor Bill Payment Status ==================
+    qs_contractor_bill_status = ContractorBillSubmission.objects.values("id").annotate(
+        sum_amount=Sum(F("bill_submission__amount")),
+        submission_date=F("dateOfBillSubmission"),
+        amount=F("amount"),
+        contractor=F("contractor__contractor"),
+    )
+    qs_contractor_bill_status = (
+        qs_contractor_bill_status.annotate(
+            submission_date=F("submission_date"),
+            amount=F("amount"),
+            rest_amount=(
+                Coalesce(
+                    (F("amount") - Coalesce(F("sum_amount"), 0)),
+                    0,
+                    output_field=IntegerField(),
+                )
+            ),
+            contractor=F("contractor"),
+        )
+        .filter(rest_amount__gt=0)
+        .order_by("contractor")
+    )
+    qs_contractor_bill_status_sum = qs_contractor_bill_status.aggregate(
+        Sum(F("rest_amount"))
+    )
+    #! Contractor Bill Payment Status End ==================
+
+    #! Credit Purchase Payment Status ==================
+    qs_credit_purchase_payment_status = CreditPurchase.objects.values("id").annotate(
+        sum_amount=Sum(F("Seller__amount")),
+        purchase_date=F("dateOfPurchase"),
+        amount=F("amount"),
+        seller=F("seller"),
+    )
+    qs_credit_purchase_payment_status = (
+        qs_credit_purchase_payment_status.annotate(
+            purchase_date=F("purchase_date"),
+            amount=F("amount"),
+            rest_amount=(
+                Coalesce(
+                    (F("amount") - Coalesce(F("sum_amount"), 0)),
+                    0,
+                    output_field=IntegerField(),
+                )
+            ),
+            seller=F("seller"),
+        )
+        .filter(rest_amount__gt=0)
+        .order_by("seller")
+    )
+    qs_credit_purchase_payment_status_sum = qs_credit_purchase_payment_status.aggregate(
+        Sum(F("rest_amount"))
+    )
+    #! Credit Purchase Payment Status End ==================
     # targeted_amount_per_share = targeted_amount[0]
     context = {
-        "chart_shareholder": chart_shareholder,
-        "chart_shareholder_avg": chart_shareholder_avg,
+        # "chart_shareholder": chart_shareholder,
+        # "chart_shareholder_avg": chart_shareholder_avg,
         "fig_pie_chart": fig_pie_chart,
-        "fig_bar_chart": fig_bar_chart,
+        # "fig_bar_chart": fig_bar_chart,
         "chart_deposit_target": chart_deposit_target,
         "total_deposited": total_deposited,
         "total_Expenditure": total_Expenditure,
         "targeted_amount": int(targeted_amount[0]),
         "qs_data": qs_data,
+        "qs_contractor_bill_status": qs_contractor_bill_status,
+        "qs_contractor_bill_status_sum": qs_contractor_bill_status_sum,
+        "qs_credit_purchase_payment_status": qs_credit_purchase_payment_status,
+        "qs_credit_purchase_payment_status_sum": qs_credit_purchase_payment_status_sum,
     }  # "fig_bar_chart": fig_bar_chart
     return render(request, "accounts/dashboard.html", context)
 
@@ -1034,12 +1008,36 @@ def get_credit_purchase_rest_amount(request, seller_id):
     return HttpResponse(info)
 
 
+@login_required
+def get_contractor_bill_rest_amount(request, bill_id):
+    query_set = (
+        ContractorBillSubmission.objects.filter(id=bill_id)
+        .values("id")
+        .annotate(
+            sum_amount=Sum(F("bill_submission__amount")),
+            amount=F("amount"),
+        )
+    )
+    query_set = query_set.annotate(
+        rest_amount=(
+            Coalesce(
+                (F("amount") - Coalesce(F("sum_amount"), 0)),
+                0,
+                output_field=IntegerField(),
+            )
+        )
+    )
+    rest_amount = {"rest_amount": str(query_set[0]["rest_amount"])}
+
+    info = json.dumps(rest_amount)
+    return HttpResponse(info)
+
+
 #! Reports =================================================
 class ExpenditureSummary(LoginRequiredMixin, ListView):
     model = Expenditure
     template_name = "accounts/report_templates/expenditure_summary.html"
     context_object_name = "expenditure"
-    # paginate_by = 30
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -1062,11 +1060,6 @@ class ExpenditureSummary(LoginRequiredMixin, ListView):
                 )
             )
         )
-        # subquery_unit = Item.objects.values("unit", "itemName").filter(
-        #     itemName=OuterRef("item__itemName")
-        # )
-
-        # qs = qs.annotate(unit=Subquery(subquery_unit.values("unit")))
         qs = qs.annotate(
             worksector_sum=Subquery(subquery_work_sector_sum.values("worksector_sum")),
         )
@@ -1083,7 +1076,6 @@ class ExpenditureDetailsList(LoginRequiredMixin, ListView):
     model = Expenditure
     template_name = "accounts/report_templates/expenditure_detail_list.html"
     context_object_name = "expenditure"
-    # paginate_by = 30
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -1147,7 +1139,6 @@ def plot_chart(request):
     targeted_amount = TargetedAmount.objects.values_list("amount").order_by(
         "-inputDate"
     )[0]
-    # print(company_info["total_number_of_flat"],"|",targeted_amount_per_share)
     targeted_amount_per_flat = targeted_amount[0] / company_info["no_of_flat_per_share"]
     qs_data = qs_shareholder.annotate(
         deposited_sum=qs_deposit_subquery.values("deposited_amount_sum"),
@@ -1163,7 +1154,6 @@ def plot_chart(request):
         for x in qs_data
     ]
 
-    print(data_deposit_target)
     # Create a DataFrame
     df_deposit_target = pd.DataFrame(
         data_deposit_target,

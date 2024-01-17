@@ -117,12 +117,12 @@ class ContractorBillSubmission(models.Model):
         Contractor,
         blank=False,
         null=False,
-        related_name="ContractorBillSubmission",
+        related_name="contractor_bill",
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
-        return f"{self.contractor}, Amount: {intcomma_bd(self.amount)}, Date: {self.dateOfBillSubmission.strftime('%d %b %Y')}"
+        return f"{self.contractor}, {self.description}, Bill No.{self.pk}, Bill Amount: {intcomma_bd(self.amount)}, Date: {self.dateOfBillSubmission.strftime('%d %b %Y')}"
 
 
 class ContractorBillPayment(models.Model):
@@ -131,16 +131,16 @@ class ContractorBillPayment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
     remarks = models.CharField(max_length=200, blank=False, null=False, default="")
-    contractor = models.ForeignKey(
-        Contractor,
+    bill = models.ForeignKey(
+        ContractorBillSubmission,
         blank=False,
         null=False,
-        related_name="ContractorBill",
+        related_name="bill_submission",
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
-        return f"{self.contractor}, Amount: {intcomma_bd(self.amount)}, Date: {self.dateOfTransaction.strftime('%d-%b-%Y')}"
+        return f"{self.bill}, Paid Amount: {intcomma_bd(self.amount)}, Date: {self.dateOfTransaction.strftime('%d-%b-%Y')}"
 
 
 class CreditPurchase(models.Model):
@@ -160,7 +160,7 @@ class CreditPurchase(models.Model):
         return f"/credit_purchase_update/{str(self.id)}"  #! Done Pending ==========
 
     def __str__(self):
-        return f"Seller: {self.seller}, Date: {(self.dateOfPurchase).strftime('%d-%b-%Y')}, Amount: {self.amount}/- Tk"
+        return f"{self.seller}, {self.description}, Date: {(self.dateOfPurchase).strftime('%d-%b-%Y')}, Amount: {intcomma_bd(self.amount)}"
 
 
 class CreditPurchasePayment(models.Model):
@@ -191,7 +191,7 @@ class CreditPurchasePayment(models.Model):
         return f"/credit_purchase_payment_update/{str(self.id)}"  #! Done Pending ==========
 
     def __str__(self):
-        return f"Seller: {self.seller}, Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, Amount: {self.amount}/- Tk"
+        return f"{self.seller}, Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, Amount: {intcomma_bd(self.amount)}"
 
 
 class Expenditure(models.Model):
@@ -209,14 +209,14 @@ class Expenditure(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
     voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    contractor = models.ForeignKey(
-        Contractor,
+    contractor_bill_payment = models.ForeignKey(
+        ContractorBillPayment,
         blank=True,
         null=True,
-        related_name="Contractor",
+        related_name="contractor_bill",
         on_delete=models.CASCADE,
     )
-    seller = models.ForeignKey(
+    credit_purchase_payment = models.ForeignKey(
         CreditPurchasePayment,
         blank=True,
         null=True,
@@ -232,7 +232,7 @@ class Expenditure(models.Model):
         return f"/expenditure_update/{str(self.id)}"
 
     def __str__(self):
-        return f"Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, {self.description}, Sector: {self.item}, Quantity:{self.quantity} {self.unit}, Amount: {self.amount}/- Tk"
+        return f"Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, {self.description}, Sector: {self.item}, Quantity:{self.quantity} {self.unit}, Amount: {intcomma_bd(self.amount)}"
 
 
 class Shareholder(models.Model):
@@ -294,9 +294,7 @@ class ShareholderDeposit(models.Model):
         ordering = ("-dateOfTransaction",)
 
     def __str__(self):
-        return (
-            f"{self.shareholder}: Amount:{self.amount}, Date:{self.dateOfTransaction}"
-        )
+        return f"{self.shareholder}: Amount:{intcomma_bd(self.amount)}, Date:{self.dateOfTransaction}"
 
     def get_absolute_url(self):
         return f"/get_shareholder_deposit_info/{str(self.shareholder)}"
@@ -350,7 +348,7 @@ class OfficeExpenditure(models.Model):
         ordering = ("-dateOfTransaction",)
 
     def __str__(self):
-        return f"{self.item}, Quantity:{self.quantity}{self.unit}, Ampunt:{self.amount}"
+        return f"{self.item}, Quantity:{self.quantity}{self.unit}, Amount:{intcomma_bd(self.amount)}"
 
 
 class UserLoggedinRecord(models.Model):

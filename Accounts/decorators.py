@@ -17,15 +17,10 @@ def unauthenticated_user(view_func):
 def allowed_users(allowed_roles=[]):
     def decorator(view_func):
         def wrapper_func(request, *args, **kwargs):
-            # group = []
             if request.user.groups.exists():
                 flag = False
-                # print('Exist: ',group)
                 for group_name in request.user.groups.all():
-                    # print('Allowed Roles: ', group)
-                    # print(group_name)
                     for allowed_roles_name in allowed_roles:
-                        print(allowed_roles_name)
                         if group_name.name == allowed_roles_name:
                             flag = True
                             break

@@ -31,5 +31,23 @@
         </ul>
     </div>
     <br>
-
+ 
     {% endblock %}
+    {% block script %}
+    <script>
+
+    // ======= Populate Rest Amount.========
+    $('#id_amount').focus(function () {
+        let id_bill = document.getElementById("id_bill").value;
+        $.ajax({
+            url: '/get_contractor_bill_rest_amount/' + id_bill,
+            success: function (data) {
+                let item = JSON.parse(data);
+                $('#id_amount').val(item['rest_amount'])
+            }
+        });
+    })
+    // ===================================================================
+</script>
+
+{% endblock script %}

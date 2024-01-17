@@ -188,63 +188,6 @@ class ContractorForm(forms.ModelForm):
         }
 
 
-class ContractorBillPaymentModelForm(forms.ModelForm):
-    class Meta:
-        model = ContractorBillPayment
-        fields = "__all__"
-        labels = {
-            "contractor": "Contractor:",
-            "dateOfTransaction": "Date:",
-            "amount": "Amount:",
-            "labor_fooding": "Labor Fooding:",
-            "voucherNo": "Voucher No:",
-            "remarks": "Remarks:",
-        }
-        widgets = {
-            "dateOfTransaction": forms.DateInput(
-                format=("%Y-%m-%d"),
-                attrs={"class": "", "placeholder": "Select Date", "type": "date"},
-            ),
-        }
-
-
-class ContractorBillPaymentForm(ContractorBillPaymentModelForm):
-    qrySetItem = Item.objects.only("itemName").filter(ItemCode_id=8).distinct()
-    item = forms.ModelChoiceField(
-        queryset=qrySetItem,
-        label="Item:",
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(ContractorBillPaymentForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.attrs["autocomplete"] = "off"
-        self.helper.layout = Layout(
-            Row(
-                Column("contractor", css_class="form-group col-3 me-4 mb-0"),
-                Column(
-                    "dateOfTransaction", css_class="form-group col-2 ms-3 me-2 mb-0"
-                ),
-                Column("item", css_class="form-group col-1 ms-2 me-4 mb-0"),
-                Column("amount", css_class="form-group col-1 ms-3 me-2 mb-0"),
-                Column("labor_fooding", css_class="form-group col ms-2 me-4 mb-0"),
-                css_class="form-row",
-            ),
-            Row(
-                Column(
-                    "voucherNo", css_class="form-group col-3 ms-2 ps-1 pe-3 me-4 mb-0"
-                ),
-                Column("remarks", css_class="form-group col ms-2 me-4 mb-0"),
-                css_class="form-row",
-            ),
-            HTML("<div class='d-flex justify-content-end mb-1' id ='button_div'>"),
-            Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
-            Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
-            HTML("</div>"),
-        )
-
-
 class ContractorBillSubmissionForm(forms.ModelForm):
     class Meta:
         model = ContractorBillSubmission
@@ -284,6 +227,74 @@ class ContractorBillSubmissionForm(forms.ModelForm):
                 css_class="form-row",
             ),
             HTML("<div class='d-flex justify-content-end mb-1'>"),
+            Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
+            Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
+            HTML("</div>"),
+        )
+
+
+class ContractorBillPaymentModelForm(forms.ModelForm):
+    class Meta:
+        model = ContractorBillPayment
+        fields = "__all__"
+        labels = {
+            "bill": "Bill:",
+            "dateOfTransaction": "Date:",
+            "amount": "Amount:",
+            "labor_fooding": "Labor Fooding:",
+            "voucherNo": "Voucher No:",
+            "remarks": "Remarks:",
+        }
+        widgets = {
+            "dateOfTransaction": forms.DateInput(
+                format=("%Y-%m-%d"),
+                attrs={"class": "", "placeholder": "Select Date", "type": "date"},
+            ),
+        }
+
+
+class ContractorBillPaymentForm(ContractorBillPaymentModelForm):
+    qrySetItem = Item.objects.only("itemName").filter(ItemCode_id=8).distinct()
+    item = forms.ModelChoiceField(
+        queryset=qrySetItem,
+        label="Item:",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(ContractorBillPaymentForm, self).__init__(*args, **kwargs)
+        qs = ContractorBillSubmission.objects.values("id").annotate(
+            sum_amount=Sum(F("bill_submission__amount")),
+            amount=F("amount"),
+        )
+        query_set = ContractorBillSubmission.objects.filter(
+            id__in=(
+                qs.filter(amount__gt=Coalesce(F("sum_amount"), 0)).values_list("id")
+            )
+        )
+
+        self.fields["bill"].queryset = query_set
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.attrs["autocomplete"] = "off"
+        self.helper.layout = Layout(
+            Row(
+                Column("bill", css_class="form-group col-3 me-4 mb-0"),
+                Column(
+                    "dateOfTransaction", css_class="form-group col-2 ms-3 me-2 mb-0"
+                ),
+                Column("item", css_class="form-group col-1 ms-2 me-4 mb-0"),
+                Column("amount", css_class="form-group col-1 ms-3 me-2 mb-0"),
+                Column("labor_fooding", css_class="form-group col ms-2 me-4 mb-0"),
+                css_class="form-row",
+            ),
+            Row(
+                Column(
+                    "voucherNo", css_class="form-group col-3 ms-2 ps-1 pe-3 me-4 mb-0"
+                ),
+                Column("remarks", css_class="form-group col ms-2 me-4 mb-0"),
+                css_class="form-row",
+            ),
+            HTML("<div class='d-flex justify-content-end mb-1' id ='button_div'>"),
             Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
             Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
             HTML("</div>"),

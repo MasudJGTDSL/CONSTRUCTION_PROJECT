@@ -8,15 +8,35 @@
 
 <div class="container pt-3">
     <div class="row">
-        <div class="col-6">
-            <h4 class="text-danger">{{shareholder_deposit.0.shareholderName}}</h4>
-            <p>Number of Flats: {{shareholder_deposit.0.numberOfFlat|floatformat:"1"}} <br>
+        <div class="col-lg-4">
+            <div class="card mb-3">
+            <h4 class="card-header text-danger">{{shareholder_deposit.0.shareholderName}}</h4>
+            <div class="card-body">
+            <table>
+                <tr>
+                    <td class="text-start pe-1">Number of Flats</td>
+                    <td class="text-start">: {{shareholder_deposit.0.numberOfFlat|floatformat:"1"}}</td>
+                </tr>
+                    <tr>
+                        <td class="text-start pe-1">Targeted Amount</td>
+                        <td class="text-start">: {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|intcomma_bd}}/-</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start pe-1">Amount Deposited</td>
+                        <td class="text-start">: Tk. {{shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start pe-1">Amount to Deposit</td>
+                        <td class="text-start">: Tk. {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|subtract:shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-</td>
+                    </tr>
+            </table></div></div>
+            <!-- <p>Number of Flats: {{shareholder_deposit.0.numberOfFlat|floatformat:"1"}} <br>
                 Targeted Amount: Tk.
                 {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|intcomma_bd}}/- <br>
                 Amount Deposited: Tk. {{shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/- <br>
                 Amount to Deposit: Tk.
                 {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|subtract:shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
-            </p>
+            </p> -->
         </div>
         <div class="col text-end pt-3">
             <img src="/media/{{shareholder_deposit.0.image}}" class="card-img-top" alt="shareholder"

@@ -196,7 +196,12 @@ a.c_link:active {
   text-decoration: underline;
 }
 /*! Link style End */
-
+.isDisabled {
+  color: currentColor;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
  /* 
 div {
   font-family: "FontsNikosh2", Times, serif;

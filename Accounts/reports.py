@@ -56,7 +56,6 @@ def contractorDetails(request, pk):
     data = {}
     data = data | contractor_table
     data = data | company_info_settings(request)
-    print(data)
     # For Data End -------------
     html_string = render_to_string(
         "accounts/reports/contractor_details.html", {"data": data}

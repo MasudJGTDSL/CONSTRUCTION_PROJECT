@@ -26,78 +26,83 @@
 <div class="container">
     <div class="row row-cols-1 row-cols-lg-2 p-0 m-0 mt-0">
         <div class="col p-0 m-0" style="border: thin; border-color: brown;">
-            <div class="card m-1">
+            <div class="card m-1 mb-0">
                 {{ fig_pie_chart|safe }}
             </div>
         </div>
         <div class="col p-0 m-0" style="border: thin; border-color: brown;">
-            <div class="card m-1">
+            <div class="card m-1 mb-0">
                 {{ chart_deposit_target|safe }}
             </div>
         </div>
     </div>
-    <div class="d-flex justify-content-center m-1 mt-0">
-        <div class="card text-start" style="width: 33%;">
-            <!-- <img class="card-img-top" src="holder.js/100px180/" alt="Title" /> -->
-            <div class="card-header ps-2 py-0 me-0 text-muted" style="background-color: #E3E3E3;">
-                <h5 class="p-0">Amount Deposited:</h5>
-            </div>
-            <div class="card-body">
-                <h5 class="card-text text-center">Taka: {{total_deposited.amount__sum|intcomma_bd}}</h5>
-            </div>
-        </div>
-        <div class="card text-start ms-1" style="width: 33%;">
-            <!-- <img class="card-img-top bg-light" src="holder.js/100px180/" alt="Title" /> -->
-            <div class="card-header ps-2 py-0 me-0 text-muted" style="background-color: #E3E3E3;">
-                <h5 class="p-0">Total Expenditure:</h5>
-            </div>
-            <div class="card-body">
-                <h5 class="card-text text-center">Taka: {{total_deposited.amount__sum|intcomma_bd}}</h5>
+    <br>
+    <div class="row row-cols-1 row-cols-lg-3 p-0 m-0 mt-0">
+        <div class="col-lg-4 p-0 m-0">
+            <div class="card text-start m-1">
+                <!-- <img class="card-img-top" src="holder.js/100px180/" alt="Title" /> -->
+                <div class="card-header text-muted p-0 m-0" style="background-color: #E3E3E3;">
+                    <h5 class="p-0 ps-2 pt-1">Amount Deposited:</h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-text text-center">Taka: {{total_deposited.amount__sum|intcomma_bd}}</h5>
+                </div>
             </div>
         </div>
-        <div class="card text-start ms-1" style="width: 33%;">
-            <!-- <img class="card-img-top bg-light" src="holder.js/100px180/" alt="Title" /> -->
-            <div class="card-header ps-2 py-0 me-0 text-muted" style="background-color: #E3E3E3;">
-                <h5 class="p-0">Amount Available:</h5>
+        <div class="col p-0 m-0">
+            <div class="card text-start m-1">
+                <!-- <img class="card-img-top bg-light" src="holder.js/100px180/" alt="Title" /> -->
+                <div class="card-header p-0 m-0 text-muted" style="background-color: #E3E3E3;">
+                    <h5 class="p-0 ps-2 pt-1">Total Expenditure:</h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-text text-center">Taka: {{total_deposited.amount__sum|intcomma_bd}}</h5>
+                </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-text text-center">Taka:
-                    {{total_deposited.amount__sum|subtract:total_Expenditure.amount__sum|intcomma_bd}}</h5>
+        </div>
+        <div class="col-lg-4 p-0 m-0">
+            <div class="card text-start m-1">
+                <!-- <img class="card-img-top bg-light" src="holder.js/100px180/" alt="Title" /> -->
+                <div class="card-header p-0 m-0 ps-2 text-muted" style="background-color: #E3E3E3;">
+                    <h5 class="p-0 ps-1 pt-1">Amount Available:</h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-text text-center">Taka:
+                        {{total_deposited.amount__sum|subtract:total_Expenditure.amount__sum|intcomma_bd}}</h5>
+                </div>
             </div>
         </div>
     </div>
     <br>
-    <br>
     <div class="row row-cols-1 row-cols-lg-2 ms-1 me-1">
-        <div class="col p-0 m-0" style="border: thin; border-color: brown;">
+        <div class="col-lg-6 p-0 m-0" style="border: thin; border-color: brown;">
             <div class="card">
-            <div class="card-header ps-2 py-0 me-0 text-muted" style="background-color: #E3E3E3;">
-            <h5>Flat Distribution</h5>
-            </div>
-            <div class="text-center me-0">
-                    <img src="{% static 'images/FlatDistribution.PNG' %}" class="card-img-top" alt="shareholder"
+                <div class="card-header ps-2 py-0 me-0 text-muted" style="background-color: #E3E3E3;">
+                    <h5 class="p-0 ps-1 pt-1">Flat Distribution</h5>
+                </div>
+                <div class="text-center me-0">
+                    <img src="{% static 'images/FlatDistribution.PNG' %}" class="card-img-top pt-3 mt-1" alt="shareholder"
                         style="width: 498px; height: 367px;">
 
-                {% comment %} <!-- {{ chart_shareholder|safe }} --> {% endcomment %}
+                    {% comment %} <!-- {{ chart_shareholder|safe }} --> {% endcomment %}
 
+                </div>
+                <br>
             </div>
-            <br>
-            <br>
-        </div>
         </div>
         <div class="col p-0 m-0" style="border: thin; border-color: brown;">
             <div class="card ms-1">
                 <div class="card-header ps-2 py-0 me-0 text-muted" style="background-color: #E3E3E3;">
-                    <h5>Shareholders Deposit Information</h5>
-                    </div>
+                    <h5 class="p-0 ps-1 pt-1">Shareholders Deposit Information</h5>
+                </div>
                 <div class="table table-active mb-0 pb-0">
-                    <table class="table table-sm align-middle table-responsive">
+                    <table class="table table-sm align-middle table-responsive mb-0">
                         <tr>
                             <th>#</th>
                             <th>Sahreholder</th>
                             <th>Nos. of Flat</th>
-                            <th>Deposited Amnt</th>
-                            <th>Amnt to Deposit</th>
+                            <th>Deposited Amount</th>
+                            <th>Amount to Deposit</th>
                         </tr>
                         {% for x in qs_data %}
                         <tr>
@@ -125,25 +130,88 @@
 
                     </table>
                 </div>
-                <div class="text-center py-0 m-0 text-success">
-                    <h5 class="m-0 p-0">Trargeted Amount Per Share: Tk. {{targeted_amount|intcomma_bd}}</h5>
+                <div class="text-center p-0 m-0 text-success">
+                    <h5 class="p-0 ps-1 pt-1">Trargeted Amount Per Share: Tk. {{targeted_amount|intcomma_bd}}</h5>
                 </div>
             </div>
         </div>
     </div>
     <br>
-    <div class="row row-cols-1 row-cols-lg-2 p-0 m-0">
+    
+    <div class="row row-cols-1 ps-2 pe-2 row-cols-lg-2">
+        <div class="col-lg-6 m-0 p-0">
+            <div class="card text-start m-1">
+                <div class="card-header p-0 m-0 ps-2 text-muted" style="background-color: #E3E3E3;">
+                    <h5 class="p-0 ps-1 pt-1">Contractor Bill Payment Status: <small class="text-danger fs-6">(Dumy Data)</small></h5>
+                </div>
+                <div class="table table-active mb-0 pb-0">
+                    <table class="table table-sm align-middle table-responsive mb-0">
+                        <tr>
+                            <th>#</th>
+                            <th>Contractor</th>
+                            <th>Bill Date</th>
+                            <th>Amount</th>
+                            <th>Paid Amnt</th>
+                            <th>Amnt to Pay</th>
+                        </tr>
+                        {% for x in qs_contractor_bill_status %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{x.contractor}}</td>
+                            <td class="text-center">{{x.submission_date}}</td>
+                            <td class="text-end">{{x.amount|intcomma_bd}}</td>
+                            <td class="text-end pe-2">{{x.sum_amount|intcomma_bd}}</td>
+                            <td class="text-end pe-2">{{x.rest_amount|intcomma_bd}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr><th colspan="5" class="text-end pe-2">Total Amount to Pay =</th><th  class="text-end pe-2">{{qs_contractor_bill_status_sum.rest_amount__sum|intcomma_bd}}</th></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col m-0 p-0">
+            <div class="card text-start m-1">
+                <div class="card-header p-0 m-0 ps-2 text-muted" style="background-color: #E3E3E3;">
+                    <h5 class="p-0 ps-1 pt-1">Credit Purchase Payment: <small class="text-danger fs-6">(Dumy Data)</small></h5>
+                </div>
+                <div class="table table-active mb-0 pb-0">
+                    <table class="table table-sm align-middle table-responsive mb-0">
+                        <tr>
+                            <th>#</th>
+                            <th>Seller</th>
+                            <th>Purchase Date</th>
+                            <th>Amount</th>
+                            <th>Paid Amnt</th>
+                            <th>Amnt to Pay</th>
+                        </tr>
+                        {% for x in qs_credit_purchase_payment_status %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{x.seller}}</td>
+                            <td class="text-center">{{x.purchase_date}}</td>
+                            <td class="text-end">{{x.amount|intcomma_bd}}</td>
+                            <td class="text-end pe-2">{{x.sum_amount|intcomma_bd}}</td>
+                            <td class="text-end pe-2">{{x.rest_amount|intcomma_bd}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr><th colspan="5" class="text-end pe-2">Total Amount to Pay =</th><th  class="text-end pe-2">{{qs_credit_purchase_payment_status_sum.rest_amount__sum|intcomma_bd}}</th></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="row row-cols-1 row-cols-lg-2 p-0 m-0">
         <div class="col p-0 m-0" style="border: thin; border-color: brown;">
-    <div class="card p-0 m-0">
-        {{ chart_shareholder|safe }}
-    </div>
-</div>
-<div class="col p-0 m-0" style="border: thin; border-color: brown;">
-    <div class="card p-0 m-0">
-        {{ fig_bar_chart|safe }}
-    </div>
-</div>
-</div>
-<br>
+            <div class="card p-0 m-0">
+                {{ chart_shareholder|safe }}
+            </div>
+        </div>
+        <div class="col p-0 m-0" style="border: thin; border-color: brown;">
+            <div class="card p-0 m-0">
+                {{ fig_bar_chart|safe }}
+            </div>
+        </div>
+    </div> -->
+    <br>
 </div>
 {% endblock %}
