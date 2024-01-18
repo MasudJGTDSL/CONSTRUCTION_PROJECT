@@ -7,9 +7,9 @@ INSTALLED_APPS += [
 ALLOWED_HOSTS = [
     "192.168.0.101",
     "118.179.146.204",
-    "fdr.mahimsoft.com.bd",
-    "mahimsoft.com.bd",
-    "18.143.78.181",
+    "aerosky.mahimsoft.com.bd",
+    # "mahimsoft.com.bd",
+    # "18.143.78.181",
 ]
 
 DATABASES = {

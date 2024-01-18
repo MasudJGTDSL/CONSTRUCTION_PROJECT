@@ -106,6 +106,10 @@ class TargetedAmountPosting(LoginRequiredMixin, generic.edit.FormView):
 
 
 class ContractorTypeView(LoginRequiredMixin, generic.edit.FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_single_column.html"
     form_class = ContractorTypeForm
     success_url = "/"
@@ -129,6 +133,10 @@ class ContractorTypeView(LoginRequiredMixin, generic.edit.FormView):
 
 
 class ContractorView(LoginRequiredMixin, generic.edit.FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_single_column.html"
     form_class = ContractorForm
     success_url = "/"
@@ -218,6 +226,10 @@ class ShareholderDetailView(LoginRequiredMixin, DetailView):
 
 
 class ItemCodeView(LoginRequiredMixin, generic.edit.FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_single_column.html"
     form_class = ItemCodeForm
     success_url = "/"
@@ -241,6 +253,10 @@ class ItemCodeView(LoginRequiredMixin, generic.edit.FormView):
 
 
 class ItemView(LoginRequiredMixin, generic.edit.FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_item_add.html"
     form_class = ItemForm
     success_url = "/"
@@ -264,6 +280,10 @@ class ItemView(LoginRequiredMixin, generic.edit.FormView):
 
 
 class ExpenditureView(LoginRequiredMixin, generic.edit.FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_expenditure.html"
     form_class = ExpenditureForm
     success_url = "/"
@@ -300,6 +320,10 @@ class ExpenditureView(LoginRequiredMixin, generic.edit.FormView):
 
 
 class ContractorBillSubmissionView(LoginRequiredMixin, generic.edit.FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_contractor_bill_submission.html"
     form_class = ContractorBillSubmissionForm
     success_url = "./"
@@ -325,6 +349,10 @@ class ContractorBillSubmissionView(LoginRequiredMixin, generic.edit.FormView):
 
 
 class ContractorBillPaymentView(LoginRequiredMixin, CreateView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_contractor_bill_payment.html"
     form_class = ContractorBillPaymentForm
     success_url = "./"
@@ -365,6 +393,10 @@ class ContractorBillPaymentView(LoginRequiredMixin, CreateView):
 
 
 class CreditPurchaseView(LoginRequiredMixin, CreateView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_credit_purchase.html"
     form_class = CreditPurchaseForm
     success_url = "./"
@@ -387,6 +419,10 @@ class CreditPurchaseView(LoginRequiredMixin, CreateView):
 
 
 class CreditPurchasePaymentView(LoginRequiredMixin, CreateView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_credit_purchase_payment.html"
     form_class = CreditPurchasePaymentForm
     success_url = "./"
@@ -477,6 +513,10 @@ class ShareholderDepositList(LoginRequiredMixin, ListView):
 
 
 class ShareholderDepositView(LoginRequiredMixin, generic.edit.FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_shareholder_deposit.html"
     form_class = ShareholderDepositForm
     success_url = "./"
@@ -513,6 +553,10 @@ class ShareholderDepositView(LoginRequiredMixin, generic.edit.FormView):
 
 
 class ShareholderView(LoginRequiredMixin, generic.edit.FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = "accounts/forms/form_shareholder.html"
     form_class = ShareholderForm
     success_url = "/"
@@ -1188,6 +1232,10 @@ def plot_chart(request):
 
 
 class ContractorUpdate(UpdateView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     model = Contractor
     form_class = ContractorForm
     template_name = "accounts/forms/form_single_column.html"
@@ -1209,6 +1257,10 @@ class ContractorUpdate(UpdateView):
 
 
 class ExpenditureUpdate(UpdateView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     model = Expenditure
     form_class = ExpenditureForm
     template_name = "accounts/forms/form_expenditure.html"
@@ -1228,6 +1280,10 @@ class ExpenditureUpdate(UpdateView):
 
 
 class ShareholderUpdate(UpdateView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     model = Shareholder
     form_class = ShareholderForm
     template_name = "accounts/forms/form_shareholder.html"
@@ -1249,6 +1305,10 @@ class ShareholderUpdate(UpdateView):
 
 
 class ShareholderDepositUpdate(UpdateView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     model = ShareholderDeposit
     form_class = ShareholderDepositForm
     template_name = "accounts/forms/form_shareholder_deposit.html"
