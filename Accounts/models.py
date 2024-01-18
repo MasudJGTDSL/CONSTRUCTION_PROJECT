@@ -127,7 +127,7 @@ class ContractorBillSubmission(models.Model):
 
 class ContractorBillPayment(models.Model):
     dateOfTransaction = models.DateField(default=datetime.now)
-    labor_fooding = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
+    labor_fooding = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
     remarks = models.CharField(max_length=200, blank=False, null=False, default="")
@@ -205,8 +205,8 @@ class Expenditure(models.Model):
     )
     description = models.CharField(max_length=200, blank=True, null=True, default="")
     unit = models.CharField(max_length=100, blank=False, null=False, default="LS")
-    rate = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2, db_default=0)
+    rate = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     contractor_bill_payment = models.ForeignKey(
