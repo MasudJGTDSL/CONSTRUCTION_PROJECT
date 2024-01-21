@@ -42,6 +42,7 @@
 
   {% include 'navbar.html' %}
 
+
   {% include 'messages.html' %}
 <div class="container">
   {% block content %}
@@ -51,7 +52,7 @@
   {% endif %} --> {% endcomment %}
 </div>
 	
-
+{% include 'footer.html' %}
   {% block extend_footer %}{%endblock%}
   <!-- ================================
     Start Scripts

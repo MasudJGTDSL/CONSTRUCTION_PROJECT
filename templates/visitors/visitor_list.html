@@ -1,0 +1,81 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<div>
+    <section class="pt-0 pb-0 mb-0">
+        <div class="innerPageBannerCol pt-2 mt-1 pb-0 mb-0">
+            <div class="row g-4 g-md-3 pb-0 mb-0 align-items-center">
+                <div class="col-md-6 pb-0 mb-0">
+                    <div class="bannerContent pb-0 mb-0">
+                        <h1 class="xlTitle  ps-3 pb-md-3 pb-0 mb-0"><span class="text-success"><i
+                                    class="bu bi-people-fill"></i></span>
+                            Visitor List</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="d-flex justify-content-between pt-0">
+        <div class="d-flex align-items-start pt-0">
+            <div class="ps-3 pt-0 mt-0"><span class="text-danger"><i class="bu bi-stop-fill"></i></span> Total Visitor:
+                {{visitor_count}}</div>
+            <div class="ps-3 pt-0 mt-0"><span class="text-success"><i class="bu bi-stop-fill"></i></span> Total Unique
+                Visitor: {{unique_visitor_count}}</div>
+        </div>
+        {% comment %} <!-- <div data-aos="fade-up" class="pe-3">
+            <a href="{% url 'main:VisitorContact' %}">
+                <button type="button" class="btn btn-primary btn-sm px-2 py-1  mt-0 mb-3" style="font-size: 11px;">Visitor Contacts</button></a>
+                <!-- border-radius: 20%; -->
+        </div> --> {% endcomment %}
+    </div>
+
+    <table style="width: 100%; font-size:x-small" class="table table-sm table-striped table-hover table-responsive">
+        <thead class="table-secondary align-middle text-center">
+            <tr>
+                <th>#</th>
+                <th>Visitor IP</th>
+                <th>User</th>
+                <th>Country</th>
+                <th>Country Code</th>
+                <th>Continent</th>
+                <th>Continent Code</th>
+                <th>City</th>
+                <th>County</th>
+                <th>Region</th>
+                <th>Region Code</th>
+                <th>Timezone</th>
+                <th>Owner</th>
+                <th>Latitude,Longitude</th>
+                <th>Currency</th>
+                <th>Languages</th>
+                <th>Visit Count</th>
+                <th>Visit Date</th>
+            </tr>
+        </thead>
+        <tbody class="align-middle">
+            {% for rec in visitors %}
+            <tr>
+                <td class="table-secondary text-center">{{forloop.counter}}</td>
+                <td>{{ rec.visitorIP}}</td>
+                <td>{{ rec.user}}</td>
+                <td>{{ rec.country}}</td>
+                <td>{{ rec.country_code}}</td>
+                <td>{{ rec.continent}}</td>
+                <td>{{ rec.continent_code}}</td>
+                <td>{{ rec.city}}</td>
+                <td>{{ rec.county}}</td>
+                <td>{{ rec.region}}</td>
+                <td>{{ rec.region_code}}</td>
+                <td>{{ rec.timezone}}</td>
+                <td>{{ rec.owner}}</td>
+                <td>{{ rec.latitude}},{{ rec.longitude}}</td>
+                <td>{{ rec.currency}}</td>
+                <td>{{ rec.languages}}</td>
+                <td>{{ rec.visitCount}}</td>
+                <td>{{ rec.visitDateTime}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

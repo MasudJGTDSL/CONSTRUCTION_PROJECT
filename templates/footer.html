@@ -1,0 +1,35 @@
+{% load static %}
+<!-- ================================
+Start Footer
+================================= -->
+<footer>
+    <div class="footerCol">
+        <div class="container">
+            {% comment %} <!-- <ul class="socialCol">
+                <li><a href="https://www.facebook.com/mahimsoft"><img src="{% static 'images/fb.svg' %}" alt="..."></a>
+                </li>
+                <li><a href="javascript:void(0)"><img src="{% static 'images/insta.svg' %}" alt="..."></a>
+                </li>
+                <li><a href="javascript:void(0)"><img src="{% static 'images/twitter.svg' %}" alt="..."></a></li>
+                <li><a href="https://www.linkedin.com/in/masud-zaman-8b828749" target="_blank"><img
+                            src="{% static 'images/linkedin.svg' %}" alt="..."></a></li>
+                <li><a href="https://github.com/masudJGTDSL" target="_blank"><img src="{% static 'images/git.png' %}"
+                            alt="..."></a></li>
+
+            </ul> --> {% endcomment %} 
+            <div class="copyrightCol">
+                <div class="d-flex justify-content-center p-0 ps-2 ms-2 me-0 bg-light" style="width:100%;">
+                    <div class="footer1 footer2 p-2">&copy; {% now 'Y' %} 
+                        <a href="https://mahimsoft.com.bd/" target="_blank">Mahim Soft</a>
+                    </div>
+                    <div class="p-2"><i class="bu bi-people-fill"></i> {{visitor_count}} | {{unique_visitor_count}}
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+</footer>
+<!-- ================================
+End Footer
+================================= -->

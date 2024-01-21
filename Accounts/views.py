@@ -17,8 +17,8 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.views.generic.edit import FormView
 from django.contrib import messages
-from django.views import generic
 from django.db import transaction
 from django.db.models import (
     Case,
@@ -72,13 +72,14 @@ from .models import (
     TargetedAmount,
     CreditPurchase,
     CreditPurchasePayment,
+    UserLoggedinRecord,
 )
 from CONSTRUCTION_PROJECT.settings.context_processors import company_info_settings
 
 company_info = company_info_settings("request")
 
 
-class TargetedAmountPosting(LoginRequiredMixin, generic.edit.FormView):
+class TargetedAmountPosting(LoginRequiredMixin, FormView):
     @method_decorator(allowed_users(["Admin", "Manager"]))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -105,7 +106,7 @@ class TargetedAmountPosting(LoginRequiredMixin, generic.edit.FormView):
         return context
 
 
-class ContractorTypeView(LoginRequiredMixin, generic.edit.FormView):
+class ContractorTypeView(LoginRequiredMixin, FormView):
     @method_decorator(allowed_users(["Admin", "Manager"]))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -132,7 +133,7 @@ class ContractorTypeView(LoginRequiredMixin, generic.edit.FormView):
         return context
 
 
-class ContractorView(LoginRequiredMixin, generic.edit.FormView):
+class ContractorView(LoginRequiredMixin, FormView):
     @method_decorator(allowed_users(["Admin", "Manager"]))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -225,7 +226,7 @@ class ShareholderDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class ItemCodeView(LoginRequiredMixin, generic.edit.FormView):
+class ItemCodeView(LoginRequiredMixin, FormView):
     @method_decorator(allowed_users(["Admin", "Manager"]))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -252,7 +253,7 @@ class ItemCodeView(LoginRequiredMixin, generic.edit.FormView):
         return context
 
 
-class ItemView(LoginRequiredMixin, generic.edit.FormView):
+class ItemView(LoginRequiredMixin, FormView):
     @method_decorator(allowed_users(["Admin", "Manager"]))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -279,7 +280,7 @@ class ItemView(LoginRequiredMixin, generic.edit.FormView):
         return context
 
 
-class ExpenditureView(LoginRequiredMixin, generic.edit.FormView):
+class ExpenditureView(LoginRequiredMixin, FormView):
     @method_decorator(allowed_users(["Admin", "Manager"]))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -319,7 +320,7 @@ class ExpenditureView(LoginRequiredMixin, generic.edit.FormView):
         return context
 
 
-class ContractorBillSubmissionView(LoginRequiredMixin, generic.edit.FormView):
+class ContractorBillSubmissionView(LoginRequiredMixin, FormView):
     @method_decorator(allowed_users(["Admin", "Manager"]))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -512,7 +513,7 @@ class ShareholderDepositList(LoginRequiredMixin, ListView):
         return context
 
 
-class ShareholderDepositView(LoginRequiredMixin, generic.edit.FormView):
+class ShareholderDepositView(LoginRequiredMixin, FormView):
     @method_decorator(allowed_users(["Admin", "Manager"]))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -552,7 +553,7 @@ class ShareholderDepositView(LoginRequiredMixin, generic.edit.FormView):
         return context
 
 
-class ShareholderView(LoginRequiredMixin, generic.edit.FormView):
+class ShareholderView(LoginRequiredMixin, FormView):
     @method_decorator(allowed_users(["Admin", "Manager"]))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -1331,3 +1332,26 @@ class ShareholderDepositUpdate(UpdateView):
     #! form_valid() – the method is called once the form is posted successfully.
     #! In this example, we create a flash message and
     #! return the result of the form_valid() method of the superclass.
+
+
+class VisitorList(LoginRequiredMixin, ListView):
+    login_url = "/admin/login/"
+    # redirect_field_name = "../VisitorList/"
+    model = UserLoggedinRecord
+    template_name = "visitors/visitor_list.html"
+    context_object_name = "visitors"
+    # paginate_by = 10
+
+    def get_queryset(self):
+        data = super().get_queryset().order_by("-id")
+        return data
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class VisitorDetails(DetailView):
+    model = UserLoggedinRecord
+    context_object_name = "visitors_data"
+    template_name = "visitors/visitor_details.html"

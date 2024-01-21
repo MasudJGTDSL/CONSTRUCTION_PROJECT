@@ -65,6 +65,7 @@ def login_success(sender, request, user, **kwargs):
         visitor.latitude = client["latitude"]
         visitor.currency = client["currency"]
         visitor.languages = client["languages"]
+        visitor.user = user
 
         query_result = UserLoggedinRecord.objects.filter(
             Q(visitorIP__icontains=client["ip_address"])

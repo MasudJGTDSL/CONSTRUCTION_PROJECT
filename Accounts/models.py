@@ -369,6 +369,7 @@ class UserLoggedinRecord(models.Model):
     currency = models.CharField(max_length=200, blank=True, null=True)
     languages = models.CharField(max_length=200, blank=True, null=True)
     visitCount = models.IntegerField("Visitor Count", default=0, blank=True, null=True)
+    user = models.CharField(max_length=200, default="")
     visitDateTime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

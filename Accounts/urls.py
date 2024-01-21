@@ -6,6 +6,8 @@ app_name = "Accounts"
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("VisitorList/", views.VisitorList.as_view(), name="VisitorList"),
+    path("VisitorList/<int:pk>", views.VisitorDetails.as_view(), name="VisitorDetails"),
     path("send_mail/", views.send_mail, name="send_mail"),
     path(
         "contractor/<int:pk>",

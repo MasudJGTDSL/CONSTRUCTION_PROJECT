@@ -202,6 +202,20 @@ a.c_link:active {
   opacity: 0.5;
   text-decoration: none;
 }
+
+.footer1 a {
+  font-size: 18px;
+  display: inline-block;
+  color: rgba(0, 0, 0, 0.7);
+  text-decoration: none;
+}
+
+.footer2 a:hover {
+  /* background: #1bbd36; */
+  color: #1bbd36;
+  text-decoration: none;
+}
+
  /* 
 div {
   font-family: "FontsNikosh2", Times, serif;

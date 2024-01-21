@@ -1,4 +1,6 @@
 from datetime import date, datetime, time, timedelta
+from django.contrib.auth.models import User
+from Accounts.models import UserLoggedinRecord
 
 from django.utils import timezone
 
@@ -89,4 +91,6 @@ def company_info_settings(request):
         "time": time,
         "total_number_of_flat": total_number_of_flat,
         "no_of_flat_per_share": no_of_flat_per_share,
+        "visitor_count": UserLoggedinRecord.objects.all().count(),
+        "unique_visitor_count": UserLoggedinRecord.objects.values("visitorIP").distinct().count(),
     }
