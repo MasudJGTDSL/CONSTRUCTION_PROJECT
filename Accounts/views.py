@@ -175,6 +175,11 @@ class ContractorListView(LoginRequiredMixin, ListView):
     template_name = "accounts/report_templates/contractor_list.html"
     context_object_name = "contractor"
 
+    # def get_queryset(self):
+    #     qs = super().get_queryset()
+    #     qs= qs.filter(IsArchive=False)
+    #     return qs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["heading"] = "Contractors List"
@@ -1335,7 +1340,7 @@ class ShareholderDepositUpdate(UpdateView):
 
 
 class VisitorList(LoginRequiredMixin, ListView):
-    login_url = "/admin/login/"
+    login_url = "/accounts/login/"
     # redirect_field_name = "../VisitorList/"
     model = UserLoggedinRecord
     template_name = "visitors/visitor_list.html"

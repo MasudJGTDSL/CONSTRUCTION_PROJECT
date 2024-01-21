@@ -7,11 +7,14 @@ from django.db.models import Max
 from django.db.models import Q
 import datetime
 from django.contrib.auth.models import User
-from .models import UserLoggedinRecord,UserLoggedinFailed
+from .models import UserLoggedinRecord, UserLoggedinFailed
 from django.dispatch import receiver
 from ipware import get_client_ip
 import json
 import urllib.request
+
+# from django.utils.timezone import UTC
+# import pytz
 
 
 ##### FOR IP ADRESS ####
@@ -76,12 +79,27 @@ def login_success(sender, request, user, **kwargs):
             presentDate = int(datetime.datetime.now().strftime("%Y%m%d"))
             lastVisitDate = int(query_result["visitDateTime__max"].strftime("%Y%m%d"))
 
+            query_user = UserLoggedinRecord.objects.filter(
+                user=user,
+                visitDateTime__year=query_result["visitDateTime__max"].strftime("%Y"),
+                visitDateTime__month=query_result["visitDateTime__max"].strftime("%m"),
+                visitDateTime__day=query_result["visitDateTime__max"].strftime("%d"),
+            ).values()
+
+            # print(
+            #     query_user.query,
+            #     user,
+            #     query_result["visitDateTime__max"].strftime("%Y-%m-%d"),
+            # )
             if presentDate > lastVisitDate:
+                visitor.visitCount = 1
+                visitor.save()
+            elif len(query_user) == 0:
                 visitor.visitCount = 1
                 visitor.save()
             else:
                 query_for_update = UserLoggedinRecord.objects.filter(
-                    Q(visitorIP__icontains=client["ip_address"])
+                    Q(visitorIP__icontains=client["ip_address"]) & Q(user = user)
                 ).order_by("-id")
                 query_for_update.filter(id=query_for_update[0].id).update(
                     visitCount=query_for_update[0].visitCount + 1
@@ -135,4 +153,6 @@ def login_failed(sender, credentials, request, **kwargs):
     # print("Credentials User:", credentials["username"])
     # print("Credentials Password:", credentials["password"])
     # print("kwargs:", kwargs)
+
+
 # Credentials: {'username': 'sdfgshju', 'password': '********************'}

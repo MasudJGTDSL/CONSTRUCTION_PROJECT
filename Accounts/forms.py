@@ -210,6 +210,7 @@ class ContractorBillSubmissionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ContractorBillSubmissionForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.fields["contractor"].queryset = Contractor.objects.filter(IsArchive=False)
         self.helper.form_method = "post"
         self.helper.attrs["autocomplete"] = "off"
         self.helper.layout = Layout(

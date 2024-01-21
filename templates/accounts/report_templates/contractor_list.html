@@ -54,7 +54,9 @@
                 <td><img src="/media/{{dt.image}}" class="card-img-top" alt="masud"
                         style="border-radius: 15%; width: 80px; height: 80px;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                 </td>
-                <td>{{dt.contractor}}</td>
+                <td {% if dt.IsArchive == True %} class="text-muted text-decoration-line-through" {% endif %}>
+                    {{dt.contractor}}
+                </td>
                 <td class="text-center">{{dt.contractorType}}</td>
                 <td>{{dt.Mobile}}</td>
                 <td>{{dt.Email}}</td>
@@ -63,7 +65,8 @@
                         <i class="bi bi-file-earmark-text-fill"></a></i></td>
                 {% if request.user|has_group:"Admin"%}
                 <td class="text-center"><a class="b_link" href="#"><i class="bi bi-trash"></i></a></td>
-                <td class="text-center"><a class="c_link" href="/contractor_update/{{dt.id}}"><i class="bi bi-pencil-square"></i></a>
+                <td class="text-center"><a class="c_link" href="/contractor_update/{{dt.id}}"><i
+                            class="bi bi-pencil-square"></i></a>
                     </a></td>
                 {% endif %}
             </tr>

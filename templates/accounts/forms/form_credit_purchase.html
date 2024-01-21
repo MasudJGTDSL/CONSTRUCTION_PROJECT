@@ -7,8 +7,8 @@
 
 <div class="container pt-3">
     <div class="card">
-        <div class="card-header p-2 me-0 text-white bg-secondary">
-            <h3>{{heading}}</h3>
+        <div class="card-header ps-2 py-1 text-white bg-secondary">
+            <h4>{{heading}}</h4>
         </div>
         <div class="card-body">
             {% crispy form %}
@@ -17,8 +17,8 @@
     <br>
 
     <div class="card">
-        <div class="card-header p-2 me-0 text-white bg-secondary">
-            <h3>{{data_heading}}</h3>
+        <div class="card-header ps-2 py-1 text-white bg-secondary">
+            <h4>{{data_heading}}</h4>
         </div>
         <ul class="list-group list-group-flush">
             {% for dt in data %}
