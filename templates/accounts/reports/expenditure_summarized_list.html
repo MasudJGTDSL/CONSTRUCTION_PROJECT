@@ -1,0 +1,71 @@
+{% extends "accounts/reports/reportbase.html" %}
+{% load static %}
+{% load mahimsoft_tags %}
+{% block title %}<title>{{data.company_abr}}</title>{% endblock title %}
+
+{% block style %}
+<style>
+  th,
+  td {
+    font-size: small;
+  }
+
+  @page {
+    size: a4 portrait;
+    margin: 5mm 5mm 10mm 10mm;
+    counter-increment: page;
+
+    @bottom-right {
+      font-family: 'Times New Roman';
+      content: '\00A9 {{data.copy_right}} Page No : ' counter(page);
+      white-space: pre;
+      color: grey;
+    }
+  }
+</style>
+{% endblock style %}
+{% block contents %}
+<p class="text-end" style="margin:0;">Date: {{data.time|date:'d-b-Y'}}</p>
+<div class="container pt-3">
+  <div class="card p-1 mb-3 text-center">
+    <h2 class="text-muted m-1">Project Extenditure Summary</h2>
+  </div>
+  {% regroup data.expenditure by item__ItemCode__workSector as work_sector %}
+  {% for items in work_sector %}
+  <h5 class="p-1"><i class="bi bi-back"></i> {{ items.grouper }}</h5>
+  <div class="table-responsive-sm">
+    <table class="table table-bordered table-sm">
+      <thead>
+        <tr>
+          <th class="text-center" style="width: 5%;">#</th>
+          <th class="text-center" style="width: 30%;">Item Name</th>
+          <th class="text-center" style="width: 20%;">Quantity</th>
+          <th class="text-center" style="width: 10%;">Unit</th>
+          <th class="text-end  pe-5 me-5" style="width: 20%;">Amount (Taka)</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for item in items.list %}
+        <tr>
+          <td class="text-center">{{forloop.counter}}</td>
+          <td>{{item.item__itemName}}</td>
+          <td class="text-end pe-5 me-5">{{item.sum_quantity|intcomma_bd}}</td>
+          <td class="text-center">{{item.unit}}</td>
+          <td class="text-end pe-5 me-5">{{item.sum_amount|intcomma_bd}}/=</td>
+        </tr>
+        {% endfor %}
+        <th colspan="4" class="text-end">Total =</th>
+        <th class="text-end pe-5 me-5">{{items.list.0.worksector_sum|intcomma_bd}}/=</th>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+  <div class="d-flex justify-content-start">
+    <h5 class="text-danger">Total Expenditure: Tk. {{data.grand_total.amount__sum|intcomma_bd}}</h5>
+  </div>
+</div>
+
+{% endblock contents %}

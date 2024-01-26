@@ -11,14 +11,16 @@
     <div class="card p-2 my-2 text-center">
         <h3 class="text-muted">Extenditure Details</h3>
     </div>
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-between mb-2">
         <h5 class="text-danger">Total Expenditure: Tk. {{grand_total.amount__sum|intcomma_bd}}</h5>
+        <a href="/expenditureDetailsReport/" target="_blank" class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-filetype-pdf"></i> Print</a>
     </div>
     {% regroup expenditure by work_sector as sectors %}
     {% for sector in sectors %}
     <div class="card bg-secondary">
         <div class="d-flex justify-content-between">
-            <h5 class="text-white p-0 pt-1 ps-2">{{ sector.grouper }}</h5>
+            <h5 class="text-white p-0 pt-1 ps-2"><i class="bi bi-back"></i> {{ sector.grouper }}</h5>
             <p class="text-white pt-1 pe-2 mb-0">Total: Tk. {{sector.list.0.worksector_sum|intcomma_bd}}</p>
         </div>
     </div>

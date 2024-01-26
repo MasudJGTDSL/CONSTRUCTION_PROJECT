@@ -55,8 +55,16 @@ urlpatterns = [
 #! Datast  =========================
 Get_Dataset_URLs = [
     path("get_item/<str:itemCode_id>", views.get_item, name="get_item"),
-    path("get_credit_purchase_rest_amount/<int:seller_id>", views.get_credit_purchase_rest_amount, name="get_credit_purchase_rest_amount"),
-    path("get_contractor_bill_rest_amount/<int:bill_id>", views.get_contractor_bill_rest_amount, name="get_contractor_bill_rest_amount"),
+    path(
+        "get_credit_purchase_rest_amount/<int:seller_id>",
+        views.get_credit_purchase_rest_amount,
+        name="get_credit_purchase_rest_amount",
+    ),
+    path(
+        "get_contractor_bill_rest_amount/<int:bill_id>",
+        views.get_contractor_bill_rest_amount,
+        name="get_contractor_bill_rest_amount",
+    ),
 ]
 
 Forms_URLs = [
@@ -112,7 +120,9 @@ Forms_URLs = [
         "credit_purchase/", views.CreditPurchaseView.as_view(), name="credit_purchase"
     ),
     path(
-        "credit_purchase_payment/", views.CreditPurchasePaymentView.as_view(), name="credit_purchase_payment"
+        "credit_purchase_payment/",
+        views.CreditPurchasePaymentView.as_view(),
+        name="credit_purchase_payment",
     ),
 ]
 
@@ -122,6 +132,21 @@ Report_URLs = [
         "contractorDetails/<int:pk>",
         reports.contractorDetails,
         name="contractorDetails",
+    ),
+    path(
+        "shareholderDetails/<int:pk>",
+        reports.shareholderDetails,
+        name="shareholderDetails",
+    ),
+    path(
+        "expenditureSummaryReport/",
+        reports.expenditureSummaryReport,
+        name="expenditureSummaryReport",
+    ),
+    path(
+        "expenditureDetailsReport/",
+        reports.expenditureDetailsReport,
+        name="expenditureDetailsReport",
     ),
 ]
 

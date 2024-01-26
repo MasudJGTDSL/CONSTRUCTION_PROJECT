@@ -48,10 +48,10 @@ def company_info_settings(request):
         company_logo_lg = "anonymous_logo_lg.png"
     else:
         if language == "en":
-            copy_right = "Mahim Soft | "
+            copy_right = "AeroSky Tower | "
             company_name = "AeroSky Tower"
-            company_abr = "SK.Tower"
-            company_address = "AeroSky Tower, Bawnia, Turag, Dhaka-1231"
+            company_abr = "AeroSky Tower"
+            company_address = "Hazi Sona Miya Road, Bawnia, Turag, Dhaka-1231"
             company_head_office = ""
             #! Font asigning ================
             font_banner = font_en_banner

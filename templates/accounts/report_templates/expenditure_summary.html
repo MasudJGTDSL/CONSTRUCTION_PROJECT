@@ -9,13 +9,16 @@
 
 <div class="container pt-3">
     <div class="card p-2 my-2 text-center">
-        <h3 class="text-muted">Extenditure Summary</h3>
+        <h3 class="text-muted">Project Extenditure Summary</h3>
     </div>
-    <div class="d-flex justify-content-end"><h5 class="text-danger">Total Expenditure: Tk. {{grand_total.amount__sum|intcomma_bd}}</h5></div>
+    <div class="d-flex justify-content-between mb-2">
+        <h5 class="text-danger">Total Expenditure: Tk. {{grand_total.amount__sum|intcomma_bd}}</h5>
+            <a href="/expenditureSummaryReport/" target="_blank" class="btn btn-sm btn-outline-danger"><i class="bi bi-filetype-pdf"></i> Print</a>
+    </div>
 {% regroup expenditure by item__ItemCode__workSector as work_sector %}
 {% for items in work_sector %}
 <div class="card bg-secondary">
-<h5 class="text-white p-1">{{ items.grouper }}</h5>
+<h5 class="text-white p-1"><i class="bi bi-back"></i> {{ items.grouper }}</h5>
 </div>
 <div class="table-responsive-sm" >
     <table class="table table-bordered table-striped table-sm">
@@ -31,22 +34,13 @@
         <tbody>
 
 {% for item in items.list  %}
-<tr class="">
+<tr>
     <td class = "text-center">{{forloop.counter}}</td>
-    <td>{{item.item__itemName}}</td>
-    
-    {% comment %} {% if item.item__itemName == "Brick" or item.item__itemName == "Rod"%} {% endcomment %}
- <!-- {% comment %}Take a closer look at the widthratio template tag. Given {% widthratio a b c %} it computes (a/b)*c {% endcomment %}--> 
-   <!-- {% comment %} <td class="text-end pe-5 me-5">{% widthratio item.sum_quantity 1000 1 %}</td> {% endcomment %} -->
-    {% comment %} {% else %} {% endcomment %}
-    <td class="text-end pe-5 me-5">{{item.sum_quantity|intcomma_bd}}</td>
-    {% comment %} {% endif %} {% endcomment %}
-        
-    <td>{{item.unit}}</td>
+    <td>{{item.item__itemName}}</td> 
+    <td class="text-end pe-5 me-5">{{item.sum_quantity|intcomma_bd}}</td>       
+    <td class="text-center">{{item.unit}}</td>
     <td class="text-end pe-5 me-5">{{item.sum_amount|intcomma_bd}}/=</td>
-
 </tr>
-
 {% endfor %}
 <th colspan="4" class="text-end">Total =</th>
 <th class="text-end pe-5 me-5">{{items.list.0.worksector_sum|intcomma_bd}}/=</th>

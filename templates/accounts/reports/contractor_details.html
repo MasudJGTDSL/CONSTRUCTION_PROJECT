@@ -27,16 +27,20 @@
 {% block contents %}
 <p class="text-end" style="margin:0;">Date: {{data.time|date:'d-b-Y'}}</p>
 <div class="container pt-3">
+  <div class="d-flex justify-content-center pb-3">
+    <img src="/media/{{data.image}}" alt="masud" style="border-radius: 15%; width: 100px; height: 100px;">
+  </div>
+  <h5 class="card card-title text-danger bg-light py-1">
+    <div class="row pe-1">
+      <div class="col-3 fw-bold text-end ps-2">Contractor Name :</div>
+      <div class="col text-start ps-1">{{data.contractor}}</div>
+  </div>
+</h5>
   <div class="card">
-    <div class="d-flex justify-content-center">
-      <img src="/media/{{data.image}}" class="card-img-top" alt="masud" style="width: 100px; height: 100px;">
-    </div>
-    <div class="card-body">
-      <h3 class="bg-light p-3">Sub:&nbsp;<u>Details information of<span class="text-danger fw-bold">&nbsp;"M/S.
-            {{data.contractor}}</u>"</span></h3>
+    <div class="card-body py-1">
       <div class="row mb-3">
         <div class="col-3 fw-bold">
-          <p class="card-text text-end">Date of Join:</p>
+          <p class="card-text text-end">Date of Join :</p>
         </div>
         <div class="col">
           <p class="card-text text-start">&nbsp;{{data.dateOfJoin|date:'d-b-Y'}}</p>
@@ -44,7 +48,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-3 fw-bold">
-          <p class="card-text text-end">Contractor Type:</p>
+          <p class="card-text text-end">Contractor Type :</p>
         </div>
         <div class="col">
           <p class="card-text text-start">&nbsp;{{data.contractorType__contractorType}}</p>
@@ -52,7 +56,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-3 fw-bold">
-          <p class="card-text text-end">Address:</p>
+          <p class="card-text text-end">Address :</p>
         </div>
         <div class="col">
           <p class="card-text text-start">&nbsp;{{data.address}}</p>
@@ -60,7 +64,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-3 fw-bold">
-          <p class="card-text text-end">Email:</p>
+          <p class="card-text text-end">Email :</p>
         </div>
         <div class="col">
           <p class="card-text text-start">&nbsp;{{data.Email}}</p>
@@ -68,7 +72,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-3 fw-bold">
-          <p class="card-text text-end">NID:</p>
+          <p class="card-text text-end">NID :</p>
         </div>
         <div class="col">
           <p class="card-text text-start">&nbsp;{{data.NID}}</p>
@@ -76,7 +80,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-3 fw-bold">
-          <p class="card-text text-end">TIN:</p>
+          <p class="card-text text-end">TIN :</p>
         </div>
         <div class="col">
           <p class="card-text text-start">&nbsp;{{data.TIN}}</p>
@@ -84,7 +88,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-3 fw-bold">
-          <p class="card-text text-end">Telephone No:</p>
+          <p class="card-text text-end">Telephone No :</p>
         </div>
         <div class="col">
           <p class="card-text text-start">&nbsp;{{data.TelephoneNo}}</p>
@@ -92,7 +96,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-3 fw-bold">
-          <p class="card-text text-end">Mobile No:</p>
+          <p class="card-text text-end">Mobile No :</p>
         </div>
         <div class="col">
           <p class="card-text text-start">&nbsp;{{data.Mobile}}</p>
