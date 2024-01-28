@@ -29,7 +29,7 @@ from django.core.mail import EmailMessage
 
 from Accounts.forms import SendMailForm, ChartForm
 import plotly.express as px
-from Accounts.models import Item, ItemCode, Shareholder, ShareholderDeposit
+from Accounts.models import Item, ItemCode, Shareholder, ShareholderDeposit, Expenditure
 
 # ANSI Color Code
 RESET = "\033[0m"
@@ -67,6 +67,7 @@ TXT_BOLD = "\033[1m"
 
 def index(request):
     return render(request, "accounts/dashboard.html", {"data": "This is Data"})
+
 
 # py manage.py runscript test
 def send_mail(request):
@@ -172,8 +173,38 @@ def chart():
     return context
 
 
+def expenditure():
+    qs = (
+        Expenditure.objects.select_related("item")
+        .select_related("item__ItemCode")
+        .all()
+    )
+    subquery_item_sum = (
+        Expenditure.objects.values("item__ItemCode__workSector", "item__itemName")
+        .filter(item=OuterRef("item__id"))
+        .annotate(
+            item_sum=Sum(F("amount")),
+            quantity_sum=Sum(F("quantity")),
+        )
+    )
+    subquery_work_sector_sum = (
+        Expenditure.objects.values("item__ItemCode__workSector")
+        .filter(item__ItemCode=OuterRef("item__ItemCode__id"))
+        .annotate(
+            work_sector_sum=Sum(F("amount")),
+        )
+    )
+    qs = qs.annotate(
+        item_sum=Subquery(subquery_item_sum.values("item_sum")),
+        quantity_sum=Subquery(subquery_item_sum.values("quantity_sum")),
+        worksector_sum=Subquery(subquery_work_sector_sum.values("work_sector_sum")),
+    ).order_by("item__ItemCode", "item", "-dateOfTransaction")
+
+    return {"qs": qs}
+
+
 def run():
-    query_set = chart()["qs"]
+    query_set = expenditure()["qs"]
 
     print("My Print", (" \u26BD\uFE0B ").join("\U0001F3F5" * 15))
 

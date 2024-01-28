@@ -14,6 +14,7 @@
     size: a4 portrait;
     margin: 5mm 5mm 10mm 10mm;
     counter-increment: page;
+
     /* @bottom-left {
       bottom:100px;
       content: attr(hr);
@@ -31,70 +32,93 @@
 <p class="text-end" style="margin:0;">Date: {{data.time|date:'d-b-Y'}}</p>
 <div class="container pt-3">
   <div class="d-flex justify-content-center pb-3">
-  <img src="/media/{{data.image}}" 
-  class="card-img-top" 
-  alt="masud"
-  style="border-radius: 15%; width: 100px; height: 100px;">
+    <img src="/media/{{data.image}}" class="card-img-top" alt="masud"
+      style="border-radius: 15%; width: 100px; height: 100px;">
   </div>
-  <h5 class="card card-title text-danger bg-light py-1">
-    <div class="row pe-1">
-      <div class="col-3 fw-bold ps-3">Shareholder Name :</div>
-      <div class="col text-start">{{data.shareholderName}}</div>
-  </div>
-</h5>
+  <h5 class="card card-title fw-bold text-danger bg-light ps-3 py-1">
+    Shareholder Name: {{data.shareholderName}}>
+  </h5>
   <div class="card">
     <div class="card-body">
 
-    <div class="row mb-3">
-        <div class="col-3 fw-bold"><p class="card-text text-end">Date of Join :</p></div>
-        <div class="col"><p class="card-text text-start ps-3">{{data.dateOfJoin|date:'d-b-Y'}}</p></div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-3 fw-bold"><p class="card-text text-end">Number of Flats :</p></div>
-        <div class="col"><p class="card-text text-start ps-3">{{data.numberOfFlat}}</p></div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-3 fw-bold"><p class="card-text text-end">Address :</p></div>
-        <div class="col"><p class="card-text text-start ps-3">
-            {% if  data.address == None%}
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Date of Join :</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start ps-3">{{data.dateOfJoin|date:'d-b-Y'}}</p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Number of Flats :</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start ps-3">{{data.numberOfFlat}}</p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Address :</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start ps-3">
+            {% if data.address == None%}
             ---
             {% else %}
             {{data.address}}
             {% endif %}
-        </p></div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-3 fw-bold"><p class="card-text text-end">Email :</p></div>
-        <div class="col"><p class="card-text text-start ps-3">{{data.email}}</p></div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-3 fw-bold"><p class="card-text text-end">NID :</p></div>
-        <div class="col"><p class="card-text text-start ps-3">
-            {% if  data.nid == None%}
+          </p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Email :</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start ps-3">{{data.email}}</p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">NID :</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start ps-3">
+            {% if data.nid == None%}
             ---
             {% else %}
             {{data.nid}}
             {% endif %}
-        </p></div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-3 fw-bold"><p class="card-text text-end">TIN :</p></div>
-        <div class="col"><p class="card-text text-start ps-3">
-            
-            {% if  data.TIN == None%}
-                ---
-                {% else %}
-                {{data.TIN}}
-                {% endif %}
-        </p></div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-3 fw-bold"><p class="card-text text-end">Mobile No :</p></div>
-        <div class="col"><p class="card-text text-start ps-3">{{data.mobile}}</p></div>
+          </p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">TIN :</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start ps-3">
 
+            {% if data.TIN == None%}
+            ---
+            {% else %}
+            {{data.TIN}}
+            {% endif %}
+          </p>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3 fw-bold">
+          <p class="card-text text-end">Mobile No :</p>
+        </div>
+        <div class="col">
+          <p class="card-text text-start ps-3">{{data.mobile}}</p>
+        </div>
+
+      </div>
+    </div>
   </div>
-</div>
-</div>
   <br>
 </div>
 

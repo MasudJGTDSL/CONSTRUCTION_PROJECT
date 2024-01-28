@@ -168,22 +168,24 @@ def expenditureDetailsReport(request):
     response["Content-Transfer-Encoding"] = "binary"
 
     # For Data -------------
-    qs = Expenditure.objects.all()
+    qs = Expenditure.objects.select_related("item__ItemCode").all()
+
     subquery_sum = (
-    Expenditure.objects.filter(
-        item_id=OuterRef("item__id"),
-        item__ItemCode=OuterRef("item__ItemCode__id"),
+        Expenditure.objects.filter(
+            item_id=OuterRef("item__id"),
+            item__ItemCode=OuterRef("item__ItemCode__id"),
+        )
+        .values(
+            "item__ItemCode__workSector",
+            "item__itemName",
+        )
+        .annotate(
+            sum_amount=Round(Sum(F("amount")), 0),
+            sum_quantity=Round(Sum(F("quantity")), 0),
+            units=F("item__unit"),
+        )
     )
-    .values(
-        "item__ItemCode__workSector",
-        "item__itemName",
-    )
-    .annotate(
-        sum_amount=Round(Sum(F("amount")), 0),
-        sum_quantity=Round(Sum(F("quantity")), 0),
-        units=F("item__unit"),
-    )
-    )
+
     qs = qs.annotate(
         work_sector=Subquery(subquery_sum.values("item__ItemCode__workSector")),
         item_name=Subquery(subquery_sum.values("item__itemName")),
@@ -191,28 +193,29 @@ def expenditureDetailsReport(request):
         sum_quantity=Subquery(subquery_sum.values("sum_quantity")),
         units=Subquery(subquery_sum.values("units")),
     )
+
     subquery_work_sector_sum = (
         Expenditure.objects.filter(
             item__ItemCode__workSector=OuterRef("item__ItemCode__workSector")
         )
         .values("item__ItemCode__workSector")
         .annotate(
-            worksector_sum=Coalesce(
-                Sum(F("amount")), 0, output_field=DecimalField()
-            )
+            worksector_sum=Coalesce(Sum(F("amount")), 0, output_field=DecimalField())
         )
     )
+
     qs = qs.annotate(
         worksector_sum=Subquery(subquery_work_sector_sum.values("worksector_sum")),
     ).order_by("work_sector", "item_name", "-dateOfTransaction")
+
     #! --------------------------------------
     data = {}
     data = data | {"expenditure": qs}
     data = data | company_info_settings(request)
     grand_total = Expenditure.objects.aggregate(Sum("amount"))
     data["grand_total"] = grand_total
-
     # For Data End -------------
+
     html_string = render_to_string(
         "accounts/reports/expenditure_details_list.html", {"data": data}
     )
