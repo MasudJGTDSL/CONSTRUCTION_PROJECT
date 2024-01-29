@@ -1,4 +1,7 @@
 from django import forms
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+import calendar
 from django.db.models import (
     Case,
     CharField,
@@ -125,10 +128,10 @@ class ShareholderForm(forms.ModelForm):
             "shareholderName": "Name:",
             "address": "Address:",
             "mobile": "Mobile:",
-            "Email": "Email:",
+            "email": "Email:",
             "nid": "NID:",
-            "numberOfFlat": "Numbers of Flat:",
-            "image": "Photo:",
+            "numberOfFlat": "Nos. of Flat:",
+            "image": "Shareholder's Photo:",
         }
         widgets = {
             "dateOfJoin": forms.DateInput(
@@ -146,13 +149,15 @@ class ShareholderForm(forms.ModelForm):
             Row(
                 Column("dateOfJoin", css_class="form-group col-2 me-2 mb-0"),
                 Column("shareholderName", css_class="form-group col-2 mb-0"),
-                Column("address", css_class="form-group col ms-2 me-4 mb-0"),
+                Column("address", css_class="form-group col ms-2 me-2 mb-0"),
+                Column("mobile", css_class="form-group col-2 me-4 mb-0"),
                 css_class="form-row",
             ),
             Row(
-                Column("mobile", css_class="form-group col-1 me-2 mb-0"),
-                Column("nid", css_class="form-group col-1 me-2 mb-0"),
-                Column("numberOfFlat", css_class="form-group col-2 me-2 mb-0"),
+
+                Column("email", css_class="form-group col-2 me-2 mb-0"),
+                Column("nid", css_class="form-group col-2 me-2 mb-0"),
+                Column("numberOfFlat", css_class="form-group col-1 me-2 mb-0"),
                 Column("image", css_class="form-group col me-4 mb-0"),
                 css_class="form-row",
             ),

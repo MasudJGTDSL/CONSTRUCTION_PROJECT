@@ -43,8 +43,18 @@ urlpatterns = [
     ),
     path(
         "expenditure_details_list/",
-        views.ExpenditureDetailsList.as_view(),
+        views.DateRangeExpenditure.as_view(),
         name="expenditure_details_list",
+    ),
+    # path(
+    #     "expenditure_details_list/",
+    #     views.ExpenditureDetailsList.as_view(),
+    #     name="expenditure_details_list",
+    # ),
+    path(
+        "date_range_expenditure/",
+        views.DateRangeExpenditure.as_view(),
+        name="date_range_expenditure",
     ),
     path(
         "get_shareholder_deposit_info/<str:shareholder_id>",

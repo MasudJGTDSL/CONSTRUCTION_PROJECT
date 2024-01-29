@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from django import forms
+from django.urls import reverse
 import pandas as pd
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -1122,56 +1123,58 @@ class ExpenditureSummary(LoginRequiredMixin, ListView):
         return context
 
 
-class ExpenditureDetailsList(LoginRequiredMixin, ListView):
-    model = Expenditure
-    template_name = "accounts/report_templates/expenditure_detail_list.html"
-    context_object_name = "expenditure"
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        subquery_sum = (
-            Expenditure.objects.filter(
-                item_id=OuterRef("item__id"),
-                item__ItemCode=OuterRef("item__ItemCode__id"),
-            )
-            .values(
-                "item__ItemCode__workSector",
-                "item__itemName",
-            )
-            .annotate(
-                sum_amount=Round(Sum(F("amount")), 0),
-                sum_quantity=Round(Sum(F("quantity")), 0),
-                units=F("item__unit"),
-            )
-        )
-        qs = qs.annotate(
-            work_sector=Subquery(subquery_sum.values("item__ItemCode__workSector")),
-            item_name=Subquery(subquery_sum.values("item__itemName")),
-            sum_amount=Subquery(subquery_sum.values("sum_amount")),
-            sum_quantity=Subquery(subquery_sum.values("sum_quantity")),
-            units=Subquery(subquery_sum.values("units")),
-        )
-        subquery_work_sector_sum = (
-            Expenditure.objects.filter(
-                item__ItemCode__workSector=OuterRef("item__ItemCode__workSector")
-            )
-            .values("item__ItemCode__workSector")
-            .annotate(
-                worksector_sum=Coalesce(
-                    Sum(F("amount")), 0, output_field=DecimalField()
-                )
-            )
-        )
-        qs = qs.annotate(
-            worksector_sum=Subquery(subquery_work_sector_sum.values("worksector_sum")),
-        ).order_by("work_sector", "item_name", "-dateOfTransaction")
-        return qs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        grand_total = Expenditure.objects.aggregate(Sum("amount"))
-        context["grand_total"] = grand_total
-        return context
+#!
+#! class ExpenditureDetailsList(LoginRequiredMixin, ListView):
+#!     model = Expenditure
+#!     template_name = "accounts/report_templates/expenditure_detail_list.html"
+#!     context_object_name = "expenditure"
+#!
+#!     def get_queryset(self):
+#!         qs = super().get_queryset()
+#!         subquery_sum = (
+#!             Expenditure.objects.filter(
+#!                 item_id=OuterRef("item__id"),
+#!                 item__ItemCode=OuterRef("item__ItemCode__id"),
+#!             )
+#!             .values(
+#!                 "item__ItemCode__workSector",
+#!                 "item__itemName",
+#!             )
+#!             .annotate(
+#!                 sum_amount=Round(Sum(F("amount")), 0),
+#!                 sum_quantity=Round(Sum(F("quantity")), 0),
+#!                 units=F("item__unit"),
+#!             )
+#!         )
+#!         qs = qs.annotate(
+#!             work_sector=Subquery(subquery_sum.values("item__ItemCode__workSector")),
+#!             item_name=Subquery(subquery_sum.values("item__itemName")),
+#!             sum_amount=Subquery(subquery_sum.values("sum_amount")),
+#!             sum_quantity=Subquery(subquery_sum.values("sum_quantity")),
+#!             units=Subquery(subquery_sum.values("units")),
+#!         )
+#!         subquery_work_sector_sum = (
+#!             Expenditure.objects.filter(
+#!                 item__ItemCode__workSector=OuterRef("item__ItemCode__workSector")
+#!             )
+#!             .values("item__ItemCode__workSector")
+#!             .annotate(
+#!                 worksector_sum=Coalesce(
+#!                     Sum(F("amount")), 0, output_field=DecimalField()
+#!                 )
+#!             )
+#!         )
+#!         qs = qs.annotate(
+#!             worksector_sum=Subquery(subquery_work_sector_sum.values("worksector_sum")),
+#!         ).order_by("work_sector", "item_name", "-dateOfTransaction")
+#!         return qs
+#!
+#!     def get_context_data(self, **kwargs):
+#!         context = super().get_context_data(**kwargs)
+#!         grand_total = Expenditure.objects.aggregate(Sum("amount"))
+#!         context["grand_total"] = grand_total
+#!         return context
+#!
 
 
 def plot_chart(request):
@@ -1337,6 +1340,96 @@ class ShareholderDepositUpdate(UpdateView):
     #! form_valid() – the method is called once the form is posted successfully.
     #! In this example, we create a flash message and
     #! return the result of the form_valid() method of the superclass.
+
+
+class DateRangeExpenditure(LoginRequiredMixin, ListView):
+    model = Expenditure
+    template_details_list = "accounts/report_templates/expenditure_detail_list.html"
+    template_date_range = "accounts/report_templates/date_range_expenditure_detail.html"
+    context_object_name = "expenditure"
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.path == reverse("Accounts:expenditure_details_list"):
+            return [self.template_details_list]
+        return [self.template_date_range]
+
+    def get_queryset(self):
+        from_date = self.request.GET.get("fromdate")
+        to_date = self.request.GET.get("todate")
+        qs = super().get_queryset()
+        if from_date:
+            qs = qs.filter(dateOfTransaction__gte=from_date)
+
+        if to_date:
+            qs = qs.filter(dateOfTransaction__lte=to_date)
+
+        subquery_sum = (
+            qs.filter(
+                item_id=OuterRef("item__id"),
+                item__ItemCode=OuterRef("item__ItemCode__id"),
+            )
+            .values(
+                "item__ItemCode__workSector",
+                "item__itemName",
+            )
+            .annotate(
+                sum_amount=Round(Sum(F("amount")), 0),
+                sum_quantity=Round(Sum(F("quantity")), 0),
+                units=F("item__unit"),
+            )
+        )
+        subquery_work_sector_sum = (
+            qs.filter(item__ItemCode__workSector=OuterRef("item__ItemCode__workSector"))
+            .values("item__ItemCode__workSector")
+            .annotate(
+                worksector_sum=Coalesce(
+                    Sum(F("amount")), 0, output_field=DecimalField()
+                )
+            )
+        )
+
+        qs = qs.annotate(
+            work_sector=Subquery(subquery_sum.values("item__ItemCode__workSector")),
+            item_name=Subquery(subquery_sum.values("item__itemName")),
+            sum_amount=Subquery(subquery_sum.values("sum_amount")),
+            sum_quantity=Subquery(subquery_sum.values("sum_quantity")),
+            units=Subquery(subquery_sum.values("units")),
+        )
+        if from_date or to_date:
+            qs = qs.annotate(
+                worksector_sum=Subquery(
+                    subquery_work_sector_sum.values("worksector_sum")
+                ),
+            ).order_by("work_sector", "dateOfTransaction")
+        else:
+            qs = qs.annotate(
+                worksector_sum=Subquery(
+                    subquery_work_sector_sum.values("worksector_sum")
+                ),
+            ).order_by("work_sector", "item_name", "-dateOfTransaction")
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        from_date = self.request.GET.get("fromdate")
+        to_date = self.request.GET.get("todate")
+
+        qs = Expenditure.objects.all()
+        if from_date:
+            qs = qs.filter(dateOfTransaction__gte=from_date)
+
+        if to_date:
+            qs = qs.filter(dateOfTransaction__lte=to_date)
+
+        grand_total = qs.aggregate(Sum("amount"))
+
+        context = super().get_context_data(**kwargs)
+        context["grand_total"] = grand_total
+        if from_date:
+            context["fromdate"] = datetime.strptime(from_date, "%Y-%m-%d")
+        if to_date:
+            context["todate"] = datetime.strptime(to_date, "%Y-%m-%d")
+        return context
 
 
 class VisitorList(LoginRequiredMixin, ListView):

@@ -81,6 +81,7 @@
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
           <li><a class="dropdown-item" href="{% url 'Accounts:expenditure_summary' %}">Expenditure Summary</a></li>
           <li><a class="dropdown-item" href="{% url 'Accounts:expenditure_details_list' %}">Expenditure Details</a>
+          <li><a class="dropdown-item" href="{% url 'Accounts:date_range_expenditure' %}">Date Range Expenditure</a>
           </li>
           <li>
             <hr class="dropdown-divider">
@@ -91,20 +92,16 @@
         </ul>
       </li>
 
-
-
-
       </ul>
-      <span class="navbar-text fs-5">
+      <span class="navbar-text">
         {% if user.is_authenticated %}
 
-        <span class="hello-msg nav-item">Hello, {{request.user|title}}</span>
-        <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'registration:logoutUser' %}">
-            {% trans "Logout" %}</a>|
-          <a class="hello-msg" href="{% url 'password_change' %}"> {% trans "Change password" %}</a></span>
+        <span class="hello-msg nav-item"><span class="Lobster {{font_size_banner}}" style="color:#6CA6CD;">Hello,</span> {{request.user|title}}</span>
+        <span class="hello-msg nav-item"><a class="hello-msg fs-6 m-0" href="{% url 'registration:logoutUser' %}">
+            {% trans "Logout" %}</a> |<a class="hello-msg fs-6" href="{% url 'password_change' %}"> {% trans "Change password" %}</a></span>
         {% if request.user|has_group:"Admin"%}
-        <span class="hello-msg nav-item"><a class="hello-msg" href="{% url 'registration:registerPage' %}">
-            {% trans "Add User" %}</a></span>
+        <span class="hello-msg nav-item"><a class="hello-msg text-warning" href="{% url 'registration:registerPage' %}">
+            {% trans '<i class="bi bi-person-fill-add"></i>' %}</a></span>
         {% endif %}
 
         {% else %}
