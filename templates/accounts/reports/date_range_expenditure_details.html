@@ -1,0 +1,83 @@
+{% extends "accounts/reports/reportbase.html" %}
+{% load static %}
+{% load mahimsoft_tags %}
+{% block title %}<title>{{data.company_abr}}</title>{% endblock title %}
+
+{% block style %}
+<style>
+  th,
+  td {
+    font-size: small;
+  }
+
+  @page {
+    size: a4 portrait;
+    margin: 5mm 5mm 5mm 5mm;
+    counter-increment: page;
+
+    @bottom-right {
+      font-family: 'Times New Roman';
+      content: '\00A9 {{data.copy_right}} Page No : ' counter(page);
+      white-space: pre;
+      color: grey;
+    }
+  }
+</style>
+{% endblock style %}
+{% block contents %}
+<p class="text-end" style="margin:0;">Date: {{data.time|date:'d-b-Y'|title}}</p>
+<div class="container pt-1">
+  <h3 class="fs-3">Sub: Expenditure Details Report <span class="text-success fs-6">[Date Range:
+      {{data.fromdate|date:"d-b-Y"|title}}
+      to {{data.todate|date:"d-b-Y"|title}}]</span></h3>
+
+  {% regroup data.expenditure by work_sector as sectors %}
+  {% for sector in sectors %}
+  <h4 class="text-success p-0 pt-2 ps-2"><i class="bi bi-x-diamond-fill"></i> {{ sector.grouper }}</h4>
+
+  <div class="table-responsive-sm">
+    <table class="table table-bordered table-striped table-sm mb-0 pb-0">
+      <thead>
+        <tr>
+          <th class="text-center" style="width: 5%;">#</th>
+          <th class="text-center" style="width: 15%;">Date</th>
+          <th class="text-center" style="width: 30%;">Description</th>
+          <th class="text-center" style="width: 10%;">Quantity</th>
+          <th class="text-center" style="width: 10%;">Unit</th>
+          <th class="text-center" style="width: 15%;">Voucher No.</th>
+          <th class="text-end pe-4" style="width: 15%;">Amount (Tk)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dt in sector.list %}
+        <tr>
+          <td class="text-center">{{forloop.counter}}</td>
+          <td class="text-center">
+            {% ifchanged dt.dateOfTransaction %}
+            {{ dt.dateOfTransaction|date:"d-b-Y"|title }}
+            {% else %}
+            <sup>,,</sup>
+            {% endifchanged %}
+          </td>
+          <td>{{dt.description}}</td>
+          <td class="text-end pe-4">{{dt.quantity|intcomma_bd}}</td>
+          <td>{{dt.units}}</td>
+          <td class="text-center">{{dt.voucherNo}}</td>
+          <td class="text-end pe-4">{{dt.amount|intcomma_bd}}/-</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <th colspan="6" class="text-end">Total Amount =</th>
+          <th class="text-end pe-4">{{sector.list.0.worksector_sum|intcomma_bd}}/-</th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  {% endfor %}
+
+  <h5 class="text-danger mt-3 ps-1">Total Expenditure: Tk. {{data.grand_total.amount__sum|intcomma_bd}}</h5>
+</div>
+
+{% endblock %}

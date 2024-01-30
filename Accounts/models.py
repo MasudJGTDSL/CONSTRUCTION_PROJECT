@@ -6,7 +6,6 @@ from . import choices
 from uuid import uuid4
 
 # from . import views
-from django.urls import reverse
 from .templatetags.mahimsoft_tags import intcomma_bd
 
 

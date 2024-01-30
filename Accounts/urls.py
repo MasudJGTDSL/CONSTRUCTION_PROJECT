@@ -158,6 +158,16 @@ Report_URLs = [
         reports.expenditureDetailsReport,
         name="expenditureDetailsReport",
     ),
+    path(
+        "dateRangeExpenditureReport/",
+        reports.expenditureDetailsReport,
+        name="dateRangeExpenditureReport",
+    ),
+    path(
+        "shareholderListReport/",
+        reports.shareholderListReport,
+        name="shareholderListReport",
+    ),
 ]
 
 urlpatterns += Forms_URLs

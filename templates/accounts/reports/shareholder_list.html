@@ -1,0 +1,74 @@
+{% extends "accounts/reports/reportbase.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load mahimsoft_tags %}
+{% block style %}
+<style>
+  th,
+  td {
+    font-size: small;
+  }
+
+  @page {
+    size: a4 landscape;
+    margin: 5mm 5mm 5mm 5mm;
+    counter-increment: page;
+
+    /* @bottom-left {
+      bottom:100px;
+      content: attr(hr);
+    } */
+    @bottom-right {
+      font-family: 'Times New Roman';
+      content: '\00A9 {{data.copy_right}} Page No : ' counter(page);
+      white-space: pre;
+      color: grey;
+    }
+  }
+</style>
+{% endblock style %}
+{% block contents %}
+
+    <p class="text-end" style="margin:0;">Date: {{data.time|date:'d-b-Y'|title}}</p>
+        <h3 class="card card-title text-muted text-center mb-2 py-1">{{data.heading}}</h3>
+    <div class="table table-active my-1">
+        <table class="table table-sm align-middle table-bordered table-striped table-hover table-responsive mt-1 mb-0">
+            <tr>
+                <th class="text-center">#</th>
+                <th class="text-center">Photo</th>
+                <th class="text-center">Name</th>
+                <th class="text-center">NID</th>
+                <th class="text-center">Mobile & Email</th>
+                <th class="text-center">Nos. of Flat</th>
+                <th class="text-center">Deposited Amnt</th>
+                <th class="text-center">Rest Amnt to Pay</th>
+            </tr>
+            {% for dt in data.shareholder %}
+            <tr>
+                <td class="text-center">{{forloop.counter}}</td>
+                <td class="text-center"><img src="/media/{{dt.image}}" class="card-img-top" alt="masud"
+                        style="width: 50px; height: 50px;">
+                </td>
+                <td class="ps-2" style="vertical-align: middle;">{{dt.shareholderName}}</td>
+                
+                {% if dt.nid == None %}
+                <td class="ps-2 text-center" style="vertical-align: middle;">---</td>
+                {% else %}
+                <td class="ps-2" style="vertical-align: middle;">{{dt.nid}}</td>
+                {% endif %}
+                <td class="ps-2" style="vertical-align: middle;"><i class="bi bi-telephone"></i> {{dt.mobile}}
+                    <br><i class="bi bi-envelope-at"></i> {{dt.email}}</td>
+                <td class="text-center">{{dt.numberOfFlat|floatformat:"1"}}</td>
+                <td class="text-end pe-1">{{dt.sum_amount|intcomma_bd}}/-</td>
+                <td class="text-end pe-1">
+                    {{dt.numberOfFlat|number_product:data.targeted_amount_per_flat|subtract:dt.sum_amount|intcomma_bd}}/-
+                </td>
+
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <p class="text-danger">NB: Rest amount to pay calculated as per targeted amount per share as Taka:
+        {{3|number_product:data.targeted_amount_per_flat|intcomma_bd}}/-</p>
+{% endblock %}
