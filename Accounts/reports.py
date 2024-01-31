@@ -34,6 +34,7 @@ from CONSTRUCTION_PROJECT.settings.context_processors import company_info_settin
 
 company_info = company_info_settings("request")
 
+
 @login_required
 def contractorDetails(request, pk):
     response = HttpResponse(content_type="application/pdf")
@@ -75,6 +76,7 @@ def contractorDetails(request, pk):
         response.write(output.read())
     return response
 
+
 @login_required
 def shareholderDetails(request, pk):
     response = HttpResponse(content_type="application/pdf")
@@ -104,6 +106,7 @@ def shareholderDetails(request, pk):
         output.seek(0)
         response.write(output.read())
     return response
+
 
 @login_required
 def expenditureSummaryReport(request):
@@ -160,6 +163,7 @@ def expenditureSummaryReport(request):
         output.seek(0)
         response.write(output.read())
     return response
+
 
 @login_required
 def expenditureDetailsReport(request):
@@ -253,6 +257,7 @@ def expenditureDetailsReport(request):
         response.write(output.read())
     return response
 
+
 @login_required
 def shareholderListReport(request):
     response = HttpResponse(content_type="application/pdf")
@@ -301,6 +306,75 @@ def shareholderListReport(request):
 
     html_string = render_to_string(
         "accounts/reports/shareholder_list.html", {"data": data}
+    )
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+
+    resultfile = html.write_pdf()
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(resultfile)
+        output.flush()
+        output.seek(0)
+        response.write(output.read())
+    return response
+
+
+@login_required
+def shareholderDepositReport(request, shareholder):
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = (
+        "inline; attachment; filename=shareholder_list"
+        + str(datetime.now().strftime("%Y%m%d"))
+        + ".pdf"
+    )
+    response["Content-Transfer-Encoding"] = "binary"
+
+    # For Data -------------
+    qs = ShareholderDeposit.objects.filter(shareholder_id=shareholder)
+
+    subquery_deposit_amount_sum = (
+        Shareholder.objects.filter(id=OuterRef("shareholder_id"))
+        .values("id")
+        .annotate(
+            deposit_amount_sum=Coalesce(
+                Sum(F("ShareholderDeposit__amount")), 0, output_field=DecimalField()
+            ),
+            shareholderName=F("shareholderName"),
+            numberOfFlat=F("numberOfFlat"),
+            image=F("image"),
+        )
+    )
+
+    qs = qs.annotate(
+        deposit_amount_sum=Subquery(
+            subquery_deposit_amount_sum.values("deposit_amount_sum"),
+        ),
+        shareholderName=Subquery(
+            subquery_deposit_amount_sum.values("shareholderName"),
+        ),
+        numberOfFlat=Subquery(
+            subquery_deposit_amount_sum.values("numberOfFlat"),
+        ),
+        image=Subquery(
+            subquery_deposit_amount_sum.values("image"),
+        ),
+    )
+
+    targeted_amount = TargetedAmount.objects.values_list("amount").order_by(
+        "-inputDate"
+    )[0]
+    #! --------------------------------------
+    data = {}
+    data = data | {"shareholder_deposit": qs}
+    data = data | {"heading": "Details information of Deposited amount:"}
+    data = data | company_info_settings(request)
+    data["targeted_amount_per_flat"] = (
+        targeted_amount[0] / company_info["no_of_flat_per_share"]
+    )
+    # For Data End -------------
+
+    html_string = render_to_string(
+        "accounts/reports/shareholder_deposit.html", {"data": data}
     )
     html = HTML(string=html_string, base_url=request.build_absolute_uri())
 

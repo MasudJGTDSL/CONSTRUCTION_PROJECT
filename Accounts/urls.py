@@ -168,6 +168,11 @@ Report_URLs = [
         reports.shareholderListReport,
         name="shareholderListReport",
     ),
+    path(
+        "shareholderDepositReport/<int:shareholder>",
+        reports.shareholderDepositReport,
+        name="shareholderDepositReport",
+    ),
 ]
 
 urlpatterns += Forms_URLs

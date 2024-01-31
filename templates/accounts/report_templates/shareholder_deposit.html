@@ -5,88 +5,87 @@
 {% comment %} {% load i18n %} {% endcomment %}
 {% block title %}Samprity Tower{%endblock %}
 {% block content %}
-
-<div class="container pt-3">
+<div class="card mb-2">
+    <h4 class="card-header text-danger">{{shareholder_deposit.0.shareholderName}}</h4>
     <div class="row">
-        <div class="col-7 col-lg-4">
-            <div class="card mb-3">
-            <h4 class="card-header text-danger">{{shareholder_deposit.0.shareholderName}}</h4>
-            <div class="card-body">
-            <table>
-                <tr>
-                    <td class="text-start pe-1">Number of Flats</td>
-                    <td class="text-start">: {{shareholder_deposit.0.numberOfFlat|floatformat:"1"}}</td>
-                </tr>
-                    <tr>
-                        <td class="text-start pe-1">Targeted Amount</td>
-                        <td class="text-start">: {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|intcomma_bd}}/-</td>
-                    </tr>
-                    <tr>
-                        <td class="text-start pe-1">Amount Deposited</td>
-                        <td class="text-start">: Tk. {{shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-</td>
-                    </tr>
-                    <tr>
-                        <td class="text-start pe-1">Amount to Deposit</td>
-                        <td class="text-start">: Tk. {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|subtract:shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-</td>
-                    </tr>
-            </table></div></div>
-            <!-- <p>Number of Flats: {{shareholder_deposit.0.numberOfFlat|floatformat:"1"}} <br>
-                Targeted Amount: Tk.
-                {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|intcomma_bd}}/- <br>
-                Amount Deposited: Tk. {{shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/- <br>
-                Amount to Deposit: Tk.
-                {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|subtract:shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
-            </p> -->
+        <div class="col">
+            <div class="card-body p-0">
+                <div class="table table-active p-0 m-0">
+                    <table class="table table-sm align-middle table-bordered table-striped table-responsive p-0 m-0">
+                        <tbody class="p-0 m-0">
+                            <tr>
+                                <td class="text-start pe-1">Number of Flats</td>
+                                <td class="text-start">: {{shareholder_deposit.0.numberOfFlat|floatformat:"1"}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start pe-1">Targeted Amount</td>
+                                <td class="text-start">:
+                                    {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|intcomma_bd}}/-
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-start pe-1">Amount Deposited</td>
+                                <td class="text-start">: Tk. {{shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-start pe-1">Amount to Deposit</td>
+                                <td class="text-start">: Tk.
+                                    {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|subtract:shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="col text-end pt-3">
+        <div class="col text-end">
             <img src="/media/{{shareholder_deposit.0.image}}" class="card-img-top" alt="shareholder"
                 style="border-radius: 15%; width: 100px; height: 100px;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
         </div>
     </div>
-    <div class="card">
+</div>
 
-        <div class="card-header p-0 ps-2 me-0 text-white bg-secondary">
-            <h3 class="p-0">{{heading}}</h3>
-        </div>
+<div class="d-flex justify-content-between mb-2">
+<h5>{{heading}}</h5> <a href="/shareholderDepositReport/{{shareholder_deposit.0.shareholder_id}}" target="_blank" class="btn btn-sm btn-outline-danger"><i class="bi bi-download"></i> PDF</a>
+</div>
+<!-- shareholderDepositReport -->
+<div class="table table-active">
+    <table class="table table-sm align-middle table-bordered table-striped table-hover table-responsive">
+        <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Date</th>
+            <th class="text-center">Mode of Deposit</th>
+            <th class="text-center">Amount (Taka)</th>
+            <th class="text-center">Remarks</th>
+            {% if request.user|has_group:"Admin"%}
+            <th class="text-center">Edit</th>
+            {% endif %}
+        </tr>
+        {% for item in shareholder_deposit %}
+        <tr>
+            <td class="text-center">{{forloop.counter}}</td>
+            <td class="text-start ps-2">{{item.dateOfTransaction|date:"d b Y"|title}}</td>
+            <td class="text-start ps-2">{{item.modeOfDeposit}}</td>
+            <td class="text-end pe-4">{{item.amount|intcomma_bd}}</td>
+            {% if item.remarks == None %}
+            <td class="text-center">
+                ----
+            </td>
+            {% else %}
+            <td>
+                {{item.remarks}}
+            </td>
+            {% endif %}
+            {% if request.user|has_group:"Admin"%}
+            <td class="text-center"><a class="c_link" href="/shareholder_deposit_update/{{item.id}}"><i
+                        class="bi bi-pencil-square"></i></a></td>
+            {% endif %}
 
-    </div>
-    <br>
-    <div class="table table-active">
-        <table class="table table-sm align-middle table-bordered table-striped table-hover table-responsive">
-            <tr>
-                <th class="text-center">#</th>
-                <th class="text-center">Date</th>
-                <th class="text-center">Mode of Deposit</th>
-                <th class="text-center">Amount (Taka)</th>
-                <th class="text-center">Remarks</th>
-                {% if request.user|has_group:"Admin"%}
-                <th class="text-center">Edit</th>
-                {% endif %}
-            </tr>
-            {% for item in shareholder_deposit %}
-            <tr>
-                <td class="text-center">{{forloop.counter}}</td>
-                <td class="text-start ps-2">{{item.dateOfTransaction|date:"d b Y"}}</td>
-                <td class="text-start ps-2">{{item.modeOfDeposit}}</td>
-                <td class="text-end pe-4">{{item.amount|intcomma_bd}}</td>
-                {% if item.remarks == None %}
-                <td class="text-center">
-                    ----
-                </td>
-                {% else %}
-                <td>
-                    {{item.remarks}}
-                </td>
-                {% endif %}
-                {% if request.user|has_group:"Admin"%}
-                <td class="text-center"><a class="c_link" href="/shareholder_deposit_update/{{item.id}}"><i
-                    class="bi bi-pencil-square"></i></a></td>
-                {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<br>
 
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-    <br>
-
-    {% endblock %}
+{% endblock %}
