@@ -40,7 +40,7 @@
         <h5 class="text-danger ps-2">Total Expenditure during the period: Tk. {{grand_total.amount__sum|intcomma_bd}}
         </h5>
         <a href="/dateRangeExpenditureReport/?fromdate={{fromdate|date:'Y-m-d'}}&todate={{todate|date:'Y-m-d'}}" target="_blank" class="btn btn-sm btn-outline-danger">
-            <i class="bi bi-filetype-pdf"></i> PDF</a>
+            <i class="bi bi-download"></i> PDF</a>
     </div>
     {% regroup expenditure by work_sector as sectors %}
     {% for sector in sectors %}

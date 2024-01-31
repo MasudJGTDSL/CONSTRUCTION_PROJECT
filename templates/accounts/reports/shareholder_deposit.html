@@ -4,77 +4,83 @@
 {% block title %}<title>{{data.company_abr}}</title>{% endblock title %}
 {% block style %}
 <style>
-  th,
-  td {
-    font-size: small;
-  }
+    th,
+    td {
+        font-size: small;
+    }
 
-  @page {
-    size: a4 portrait; 
-    /* landscape */
-    margin: 5mm 5mm 10mm 5mm;
-    counter-increment: page;
+    @page {
+        size: a4 portrait;
+        /* landscape */
+        margin: 5mm 5mm 10mm 5mm;
+        counter-increment: page;
 
-    /* @bottom-left {
+        /* @bottom-left {
       bottom:100px;
       content: attr(hr);
     } */
-    @bottom-right {
-      font-family: 'Times New Roman';
-      content: '\00A9 {{data.copy_right}} Page No : ' counter(page);
-      white-space: pre;
-      color: grey;
+        @bottom-right {
+            font-family: 'Times New Roman';
+            content: '\00A9 {{data.copy_right}} Page No : ' counter(page);
+            white-space: pre;
+            color: grey;
+        }
     }
-  }
 </style>
 {% endblock style %}
 {% block contents %}
-<p class="text-end" style="margin:0;">Date: {{data.time|date:'d-b-Y'|title}}</p>
-            <div class="card p-0 mb-2">
-                <h3 class="card-header">Shareholder Name: <span class="text-danger">{{data.shareholder_deposit.0.shareholderName}}</span></h3>
-                <div class="card-body p-2 pb-0 m-0">
-                    <div class="row p-0 m-0">
-                        <div class="col-7 m-0 p-0">
-                    <div class="table table-active p-0 m-0">
+<p class="text-end m-0">Date: {{data.time|date:'d-b-Y'|title}}</p>
+<div class="card p-0 mb-2">
+    <div class="card-header p-0 m-0">
+    <h3 class="m-1 ps-1">Shareholder Name: 
+        <span class="text-danger">
+        {{data.shareholder_deposit.0.shareholderName}}</span></h3>
+    </div>
+    <div class="card-body p-2 pb-0 m-0">
+        <div class="row p-0 m-0">
+            <div class="col-7 m-0 p-0">
+                <div class="table table-active p-0 m-0">
                     <table class="table table-sm align-middle table-bordered table-striped table-responsive p-0 m-0">
                         <tbody class="p-0 m-0">
-                        <tr>
-                            <td class="text-start pe-1">Number of Flats</td>
-                            <td class="text-start">: {{data.shareholder_deposit.0.numberOfFlat|floatformat:"1"}}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-start pe-1">Targeted Amount</td>
-                            <td class="text-start">:
-                                {{data.shareholder_deposit.0.numberOfFlat|number_product:data.targeted_amount_per_flat|intcomma_bd}}/-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-start pe-1">Amount Deposited</td>
-                            <td class="text-start">: Tk. {{data.shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
-                            </td>
-                        </tr>
-                        <tr class="p-0">
-                            <td class="text-start pe-1">Amount to Deposit</td>
-                            <td class="text-start">: Tk.
-                                {{data.shareholder_deposit.0.numberOfFlat|number_product:data.targeted_amount_per_flat|subtract:data.shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
-                            </td>
-                        </tr>
-                    </tbody>
+                            <tr>
+                                <td class="text-start pe-1">Number of Flats</td>
+                                <td class="text-start">: {{data.shareholder_deposit.0.numberOfFlat|floatformat:"1"}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-start pe-1">Targeted Amount</td>
+                                <td class="text-start">:
+                                    {{data.shareholder_deposit.0.numberOfFlat|number_product:data.targeted_amount_per_flat|intcomma_bd}}/-
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-start pe-1">Amount Deposited</td>
+                                <td class="text-start">: Tk.
+                                    {{data.shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
+                                </td>
+                            </tr>
+                            <tr class="p-0">
+                                <td class="text-start pe-1">Amount to Deposit</td>
+                                <td class="text-start">: Tk.
+                                    {{data.shareholder_deposit.0.numberOfFlat|number_product:data.targeted_amount_per_flat|subtract:data.shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
-                </div>
+            </div>
 
-        <div class="col text-end m-0 p-0">
-            <img src="/media/{{data.shareholder_deposit.0.image}}" class="p-0 m-0" alt="shareholder"
-                style="width: 80px; height: 80px;">
+            <div class="col pt-3 text-center">
+                <img src="/media/{{data.shareholder_deposit.0.image}}" class="p-0 m-0" alt="shareholder"
+                    style="width: 87px; height: 87px;">
+            </div>
         </div>
     </div>
-    </div>
-    </div>
-            <h3 class="card card-header p-1 ps-2 mb-2 bg-light">{{data.heading}}</h3>
-    <div class="table table-active">
-        <table class="table table-sm align-middle table-bordered table-striped table-responsive">
-            <thead>
+</div>
+<h3 class="card card-header bg-light text-success p-1 ps-2 mb-2">{{data.heading}}</h3>
+<div class="table table-active">
+    <table class="table table-sm align-middle table-bordered table-striped table-responsive">
+        <thead>
             <tr>
                 <th class="text-center">#</th>
                 <th class="text-center" style="width: 13%;">Date</th>
@@ -84,8 +90,8 @@
 
             </tr>
         </thead>
-            {% for item in data.shareholder_deposit %}
-            <tbody>
+        {% for item in data.shareholder_deposit %}
+        <tbody>
             <tr>
                 <td class="text-center">{{forloop.counter}}</td>
                 <td class="text-start ps-2">{{item.dateOfTransaction|date:"d b Y"|title}}</td>
@@ -103,6 +109,6 @@
             </tr>
             {% endfor %}
         </tbody>
-        </table>
+    </table>
 
     {% endblock %}
