@@ -692,11 +692,30 @@ def chart(request):
 
 @login_required
 def send_mail(request):
-    qs = Shareholder.objects.aggregate(nos_of_shareholders=Count("id"))
-    qs1 = Shareholder.objects.values_list("email")
-    email_list = ""
-    for x in qs1:
-        email_list += f"{x[0]},"
+    total_receipent = (
+        Shareholder.objects.exclude(email__isnull=True)
+        .exclude(email__exact="")
+        .aggregate(nos_of_shareholders=Count("id"))
+    )
+    email_address_list_qs = (
+        Shareholder.objects.exclude(email__isnull=True)
+        .exclude(email__exact="")
+        .values_list("shareholderName", "email")
+    )
+    receipent_name_dic = {email: name for name, email in email_address_list_qs}
+    # receipent_name = (
+    #     receipent_name_dic.get("tmd.faruqamin@yahoo.com")
+    #     if receipent_name_dic.get("tmd.faruqamin@yahoo.com") != None
+    #     else ""
+    # )
+    email_addresses = ""
+    for address in email_address_list_qs:
+        email_addresses += f"{address[1]},"
+    # email_addresses_list = email_addresses_text.split(",")
+    # email_addresses = [add for add in email_addresses_list if add != ""]
+    # email_dic = {email: email for email in email_addresses.split(",")}
+
+    print(total_receipent, email_address_list_qs)
 
     if request.method == "POST":
         fm = SendMailForm(request.POST or None, request.FILES or None)
@@ -704,32 +723,42 @@ def send_mail(request):
             subject = fm.cleaned_data["subject"]
             message = fm.cleaned_data["msg"]
             from_mail = request.user.email
-            to_mail = fm.cleaned_data["email_id"]
+            to_mail = fm.cleaned_data["email_id"].split(",")
             to_cc = fm.cleaned_data["email_cc"]
             to_bcc = fm.cleaned_data["email_bcc"]
             attach = fm.cleaned_data["attachment"]
+            attach_name = attach.name
+            attach_content_type = attach.content_type
+            attach_content = attach.read()
+
             if from_mail and to_mail:
-                try:
-                    mail = EmailMessage(
-                        subject=subject,
-                        body=message,
-                        from_email=from_mail,
-                        to=[to_mail],
-                        bcc=[to_bcc],
-                        cc=[to_cc],
+                for x in to_mail:
+                    receipent_name = (
+                        receipent_name_dic.get(x)
+                        if receipent_name_dic.get(x) != None
+                        else ""
                     )
-                    mail.attach(attach.name, attach.read(), attach.content_type)
-                    mail.send()
-                # except Exception as ex:
-                except ArithmeticError as aex:
-                    return HttpResponse("Invalid header found")
+                    try:
+                        mail = EmailMessage(
+                            subject=subject,
+                            body=message,
+                            from_email=from_mail,
+                            to=[receipent_name, x],
+                            bcc=[to_bcc],
+                            cc=[to_cc],
+                        )
+                        mail.attach(attach_name, attach_content, attach_content_type)
+                        mail.send()
+                    # except Exception as ex:
+                    except ArithmeticError as aex:
+                        return HttpResponse("Invalid header found")
                 return HttpResponseRedirect("/")
             else:
                 return HttpResponse("Make sure all fields are entered and valid.")
     else:
-        fm = SendMailForm(initial={"email_id": email_list})
+        fm = SendMailForm(initial={"email_id": email_addresses})
         # fm.initial
-    return render(request, "accounts/send_mail.html", {"fm": fm, "qs": qs})
+    return render(request, "accounts/send_mail.html", {"fm": fm, "qs": total_receipent})
 
 
 @login_required

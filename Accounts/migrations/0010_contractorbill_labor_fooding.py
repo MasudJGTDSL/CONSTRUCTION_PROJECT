@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='contractorbill',
             name='labor_fooding',
-            field=models.DecimalField(db_default=models.Value(0), decimal_places=2, max_digits=10),
+            field=models.DecimalField(default=models.Value(0), decimal_places=2, max_digits=10),
         ),
     ]

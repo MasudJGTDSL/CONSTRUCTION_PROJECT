@@ -154,7 +154,6 @@ class ShareholderForm(forms.ModelForm):
                 css_class="form-row",
             ),
             Row(
-
                 Column("email", css_class="form-group col-2 me-2 mb-0"),
                 Column("nid", css_class="form-group col-2 me-2 mb-0"),
                 Column("numberOfFlat", css_class="form-group col-1 me-2 mb-0"),
@@ -487,7 +486,7 @@ class ExpenditureForm(ExpenditureModelForm):
 
 
 class SendMailForm(forms.Form):
-    email_id = forms.EmailField()
+    email_id = forms.CharField(required=False)
     email_cc = forms.EmailField(required=False)
     email_bcc = forms.EmailField(required=False)
     subject = forms.CharField(

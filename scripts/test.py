@@ -203,8 +203,48 @@ def expenditure():
     return {"qs": qs}
 
 
+def email():
+    qs = (
+        Shareholder.objects.exclude(email__isnull=True)
+        .exclude(email__exact="")
+        .aggregate(nos_of_shareholders=Count("id"))
+    )
+    email_address_list = (
+        Shareholder.objects.exclude(email__isnull=True)
+        .exclude(email__exact="")
+        .values_list("shareholderName", "email")
+    )
+    email_addresses = ""
+    for address in email_address_list:
+        email_addresses += f"{address[1]},"
+    mail_list = email_addresses.split(",")
+    mail_list = [add for add in mail_list if add != ""]
+
+    email_dic = {email: email for email in mail_list}
+    receipent_name_dic = {email:name for name, email in email_address_list}
+
+    exist_value = receipent_name_dic.get("tmd.faruqamin@yahoo.com")
+    receipent_name = (receipent_name_dic.get("tmd.faruqamin@yahoo.com") if receipent_name_dic.get("tmd.faruqamin@yahoo.com")!=None else "")
+
+    print(
+        # email_addresses,
+        # "List:",
+        # mail_list,
+        # "Dictionary:",
+        # email_dic,
+        "exist_value:",
+        exist_value,
+        "none_value:",
+        # none_value,
+        "receipent_name_dic:",
+        receipent_name_dic
+
+    )
+    return email_address_list
+
+
 def run():
-    query_set = expenditure()["qs"]
+    query_set = email()
 
     print("My Print", (" \u26BD\uFE0B ").join("\U0001F3F5" * 15))
 
