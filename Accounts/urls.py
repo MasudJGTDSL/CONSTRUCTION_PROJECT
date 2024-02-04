@@ -173,6 +173,11 @@ Report_URLs = [
         reports.shareholderDepositReport,
         name="shareholderDepositReport",
     ),
+    path(
+        "sendMailshareholderDepositReport/",
+        reports.sendMailshareholderDepositReport,
+        name="sendMailshareholderDepositReport",
+    ),
 ]
 
 urlpatterns += Forms_URLs

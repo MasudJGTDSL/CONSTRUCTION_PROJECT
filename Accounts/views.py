@@ -703,19 +703,10 @@ def send_mail(request):
         .values_list("shareholderName", "email")
     )
     receipent_name_dic = {email: name for name, email in email_address_list_qs}
-    # receipent_name = (
-    #     receipent_name_dic.get("tmd.faruqamin@yahoo.com")
-    #     if receipent_name_dic.get("tmd.faruqamin@yahoo.com") != None
-    #     else ""
-    # )
+
     email_addresses = ""
     for address in email_address_list_qs:
         email_addresses += f"{address[1]},"
-    # email_addresses_list = email_addresses_text.split(",")
-    # email_addresses = [add for add in email_addresses_list if add != ""]
-    # email_dic = {email: email for email in email_addresses.split(",")}
-
-    print(total_receipent, email_address_list_qs)
 
     if request.method == "POST":
         fm = SendMailForm(request.POST or None, request.FILES or None)
@@ -752,6 +743,11 @@ def send_mail(request):
                     # except Exception as ex:
                     except ArithmeticError as aex:
                         return HttpResponse("Invalid header found")
+                receipent_list = ""
+                for x in email_address_list_qs:
+                    receipent_list += f"{x[0]}, " 
+
+                messages.success(request, f"Thank you.\nEmail sent to {receipent_list}.")
                 return HttpResponseRedirect("/")
             else:
                 return HttpResponse("Make sure all fields are entered and valid.")

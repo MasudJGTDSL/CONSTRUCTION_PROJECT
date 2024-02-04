@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.contrib import messages
+from django.core.mail import EmailMessage
 from django.db.models import (
     F,
     Sum,
@@ -22,7 +24,8 @@ from django.db.models import (
     FloatField,
 )
 from django.db.models.functions import Cast, Round, Concat, Coalesce, Extract, Trunc
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.template.loader import render_to_string
 from weasyprint import HTML, CSS
@@ -60,7 +63,7 @@ def contractorDetails(request, pk):
 
     data = {}
     data = data | contractor_table
-    data = data | company_info_settings(request)
+    data = data | company_info
     # For Data End -------------
     html_string = render_to_string(
         "accounts/reports/contractor_details.html", {"data": data}
@@ -91,7 +94,7 @@ def shareholderDetails(request, pk):
 
     data = {}
     data = data | shareholder_table
-    data = data | company_info_settings(request)
+    data = data | company_info
     # For Data End -------------
     html_string = render_to_string(
         "accounts/reports/shareholder_details.html", {"data": data}
@@ -144,7 +147,7 @@ def expenditureSummaryReport(request):
         )
         data = {}
         data = data | {"expenditure": qs}
-        data = data | company_info_settings(request)
+        data = data | company_info
         grand_total = Expenditure.objects.aggregate(Sum("amount"))
         data["grand_total"] = grand_total
         return {"data": data}
@@ -230,7 +233,7 @@ def expenditureDetailsReport(request):
     #! --------------------------------------
     data = {}
     data = data | {"expenditure": qs}
-    data = data | company_info_settings(request)
+    data = data | company_info
 
     if from_date:
         data["fromdate"] = datetime.strptime(from_date, "%Y-%m-%d")
@@ -295,7 +298,7 @@ def shareholderListReport(request):
     data = {}
     data = data | {"shareholder": qs}
     data = data | {"heading": "Shareholders List"}
-    data = data | company_info_settings(request)
+    data = data | company_info
     data["targeted_amount_per_flat"] = (
         targeted_amount[0] / company_info["no_of_flat_per_share"]
     )
@@ -319,11 +322,82 @@ def shareholderListReport(request):
     return response
 
 
+# @login_required
+# def shareholderDepositReport(request, shareholder):
+#     response = HttpResponse(content_type="application/pdf")
+#     response["Content-Disposition"] = (
+#         "inline; attachment; filename=shareholder_list"
+#         + str(datetime.now().strftime("%Y%m%d"))
+#         + ".pdf"
+#     )
+#     response["Content-Transfer-Encoding"] = "binary"
+
+#     # For Data -------------
+#     qs = ShareholderDeposit.objects.filter(shareholder_id=shareholder)
+
+#     subquery_deposit_amount_sum = (
+#         Shareholder.objects.filter(id=OuterRef("shareholder_id"))
+#         .values("id")
+#         .annotate(
+#             deposit_amount_sum=Coalesce(
+#                 Sum(F("ShareholderDeposit__amount")), 0, output_field=DecimalField()
+#             ),
+#             shareholderName=F("shareholderName"),
+#             numberOfFlat=F("numberOfFlat"),
+#             image=F("image"),
+#         )
+#     )
+
+#     qs = qs.annotate(
+#         deposit_amount_sum=Subquery(
+#             subquery_deposit_amount_sum.values("deposit_amount_sum"),
+#         ),
+#         shareholderName=Subquery(
+#             subquery_deposit_amount_sum.values("shareholderName"),
+#         ),
+#         numberOfFlat=Subquery(
+#             subquery_deposit_amount_sum.values("numberOfFlat"),
+#         ),
+#         image=Subquery(
+#             subquery_deposit_amount_sum.values("image"),
+#         ),
+#     )
+
+#     targeted_amount = TargetedAmount.objects.values_list("amount").order_by(
+#         "-inputDate"
+#     )[0]
+#     #! --------------------------------------
+#     data = {}
+#     data = data | {"shareholder_deposit": qs}
+#     data = data | {"heading": "Details information of Deposited amount:"}
+#     data = data | company_info
+#     data["targeted_amount_per_flat"] = (
+#         targeted_amount[0] / company_info["no_of_flat_per_share"]
+#     )
+#     # For Data End -------------
+
+#     html_string = render_to_string(
+#         "accounts/reports/shareholder_deposit.html", {"data": data}
+#     )
+#     base_url=request.build_absolute_uri()
+#     html = HTML(string=html_string, base_url=base_url)
+
+#     resultfile = html.write_pdf()
+
+#     with tempfile.NamedTemporaryFile(delete=True) as output:
+#         output.write(resultfile)
+#         output.flush()
+#         output.seek(0)
+#         response.write(output.read())
+#     return response
+
+
 @login_required
-def shareholderDepositReport(request, shareholder):
+def pdfReport(request, filename, shareholder):
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = (
-        "inline; attachment; filename=shareholder_list"
+        "inline; attachment; filename="
+        + filename
         + str(datetime.now().strftime("%Y%m%d"))
         + ".pdf"
     )
@@ -367,7 +441,7 @@ def shareholderDepositReport(request, shareholder):
     data = {}
     data = data | {"shareholder_deposit": qs}
     data = data | {"heading": "Details information of Deposited amount:"}
-    data = data | company_info_settings(request)
+    data = data | company_info
     data["targeted_amount_per_flat"] = (
         targeted_amount[0] / company_info["no_of_flat_per_share"]
     )
@@ -376,13 +450,120 @@ def shareholderDepositReport(request, shareholder):
     html_string = render_to_string(
         "accounts/reports/shareholder_deposit.html", {"data": data}
     )
-    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+    base_url = request.build_absolute_uri()
+    html = HTML(string=html_string, base_url=base_url)
 
     resultfile = html.write_pdf()
+    return {"resultfile": resultfile, "response": response}
+
+
+@login_required
+def shareholderDepositReport(request, shareholder):
+    resultfile = pdfReport(request, "Shareholder Deposit info", shareholder)
 
     with tempfile.NamedTemporaryFile(delete=True) as output:
-        output.write(resultfile)
+        output.write(resultfile["resultfile"])
         output.flush()
         output.seek(0)
-        response.write(output.read())
-    return response
+        resultfile["response"].write(output.read())
+    return resultfile["response"]
+
+
+email_body_text = """Date: {}
+To,
+Mr. {}
+Shareholder, AeroSky Tower
+Bownia, Dhaka.
+
+Dear Sir,
+As-Salamu Alaikum,
+We have accumulated your deposited amount upto the date mentioned above. If there are any errors in the account, we request you to kindly inform the management of Aerosky Tower for necessary corrections.
+
+Thank you.
+
+Sincerely,
+Manager
+Aerosky Tower
+Bawnia, Turag, Dhaka."""
+
+html_code = """
+<ol>{}</ol>
+        <div class="d-flex justify-container-between">
+            <form class="row g-3 p-2">
+                <div class="col-auto">
+                    <input type="hidden" id="status_ok" name="status_ok" value=1 />
+                </div>
+                <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-danger px-4 mt-0">Yes</button>
+                </div>
+            </form>
+            <form class="row g-3 p-2">
+                <div class="col-auto">
+                <input type="hidden" name="status_cancel" value=2>
+                <button type="submit" class="btn btn-sm btn-success mt-0">Cancel</button>
+                </div>
+            </form>
+        </div>
+"""
+
+
+@login_required
+def sendMailshareholderDepositReport(request):
+    email_address_list_qs = (
+        Shareholder.objects.exclude(email__isnull=True)
+        .exclude(email__exact="")
+        .values_list("shareholderName", "email", "id")
+    )
+    receipent_name_tupple_list = [
+        (name, email, id) for name, email, id in email_address_list_qs
+    ]
+
+    if (
+        request.GET.get("status_ok") == None
+        and request.GET.get("status_cancel") == None
+    ):
+        y = ""
+        for x in email_address_list_qs:
+            y += "<li>" + x[0] + ": <span class='text-primary'>" + x[1] + "</span></li>"
+        template_name = "template_response.html"
+        heading = "Are you sure you want to send eMail to:"
+        context = {
+            "heading": heading,
+            "html_code": html_code.format(y),
+            # "img_file": "matir-bank.svg",
+            # "scripts": scripts,
+        }
+        return TemplateResponse(request, template_name, context)
+
+    if request.GET.get("status_cancel") == "2":
+        return HttpResponseRedirect("/")
+
+    subject = "AeroSky Tower shareholder's deposit information."
+    from_mail = request.user.email
+    to_cc = ""
+    to_bcc = ""
+    for x in receipent_name_tupple_list:
+        try:
+            attachedFile = pdfReport(request, "Shareholder Deposit info", int(x[2]))
+            mail = EmailMessage(
+                subject=subject,
+                body=email_body_text.format(datetime.now().strftime("%d %B %Y"), x[0]),
+                from_email=from_mail,
+                to=[x[0], x[1]],
+                bcc=[to_bcc],
+                cc=[to_cc],
+            )
+            mail.attach(
+                f'Deposit Information of {x[0]} {datetime.now().strftime("%Y-%m-%d")}.pdf',
+                attachedFile["resultfile"],
+                "application/pdf",
+            )
+            mail.send()
+            # except Exception as ex:
+        except ArithmeticError as aex:
+            return HttpResponse("Invalid header found")
+    receipent_list = ""
+    for x in receipent_name_tupple_list:
+        receipent_list += f"{x[0]}, "
+    messages.success(request, f"Thank you.\nEmail sent to {receipent_list}.")
+    return HttpResponseRedirect("/")

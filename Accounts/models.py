@@ -410,3 +410,118 @@ class TargetedAmount(models.Model):
 
     def __str__(self):
         return f"Targeted Amount: {intcomma_bd(self.amount)} | Date: {self.inputDate.strftime('%d %b %Y')}"
+
+# class CreditSale(models.Model):
+#     dateOfPurchase = models.DateField(default=datetime.now)
+#     buyer = models.CharField(max_length=150, blank=False, null=False, default="")
+#     address = models.CharField(max_length=250, blank=False, null=False, default="")
+#     description = models.CharField(max_length=250, blank=False, null=False, default="")
+#     mobile = models.CharField(max_length=20, blank=True, null=True)
+#     email = models.CharField(max_length=100, blank=True, null=True)
+#     amount = models.DecimalField(max_digits=10, decimal_places=2)
+#     remarks = models.CharField(max_length=250, blank=False, null=False, default="")
+
+#     class Meta:
+#         ordering = ("-dateOfPurchase",)
+
+#     def get_absolute_url(self):
+#         return f"/credit_purchase_update/{str(self.id)}"  #! Done Pending ==========
+
+#     def __str__(self):
+#         return f"{self.seller}, {self.description}, Date: {(self.dateOfPurchase).strftime('%d-%b-%Y')}, Amount: {intcomma_bd(self.amount)}"
+
+
+# class CreditSaleReceived(models.Model):
+#     dateOfTransaction = models.DateField(default=datetime.now)
+#     buyer = models.ForeignKey(
+#         CreditSale,
+#         blank=False,
+#         null=False,
+#         related_name="Seller",
+#         on_delete=models.CASCADE,
+#     )
+#     item = models.ForeignKey(
+#         Item,
+#         blank=False,
+#         null=False,
+#         related_name="Item",
+#         on_delete=models.CASCADE,
+#     )
+#     description = models.CharField(max_length=250, blank=False, null=False, default="")
+#     amount = models.DecimalField(max_digits=10, decimal_places=2)
+#     voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
+#     remarks = models.CharField(max_length=250, blank=False, null=False, default="")
+
+#     class Meta:
+#         ordering = ("-dateOfTransaction",)
+
+#     def get_absolute_url(self):
+#         return f"/credit_purchase_payment_update/{str(self.id)}"  #! Done Pending ==========
+
+#     def __str__(self):
+#         return f"{self.seller}, Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, Amount: {intcomma_bd(self.amount)}"
+
+# class IncomeCode(models.Model):
+#     incomeSector = models.CharField(max_length=100, blank=False, null=False)
+
+#     class Meta:
+#         ordering = ("workSector",)
+
+#     def __str__(self):
+#         return self.workSector
+
+
+# class IncomeItem(models.Model):
+#     itemName = models.CharField(max_length=100, blank=False, null=False)
+#     unit = models.CharField(max_length=20, blank=False, null=False)
+#     ItemCode = models.ForeignKey(
+#         ItemCode,
+#         blank=False,
+#         null=False,
+#         on_delete=models.CASCADE,
+#         related_name="ItemCode",
+#     )
+
+#     class Meta:
+#         ordering = (
+#             "ItemCode",
+#             "itemName",
+#         )
+
+#     def __str__(self):
+#         return f"{self.itemName} [Unit: {self.unit}]"
+
+
+
+# class Income(models.Model):
+#     dateOfTransaction = models.DateField(default=datetime.now)
+#     incomeItem = models.ForeignKey(
+#         IncomeItem,
+#         blank=False,
+#         null=False,
+#         related_name="Income_Item",
+#         on_delete=models.CASCADE,
+#     )
+#     description = models.CharField(max_length=200, blank=True, null=True, default="")
+#     unit = models.CharField(max_length=100, blank=False, null=False, default="LS")
+#     rate = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+#     quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+#     voucherNo = models.CharField(max_length=100, blank=False, null=False, default="")
+#     amount = models.DecimalField(max_digits=10, decimal_places=2)
+#     credit_income_received = models.ForeignKey(
+#         CreditPurchasePayment,
+#         blank=True,
+#         null=True,
+#         related_name="CreditPurchasePayment",
+#         on_delete=models.CASCADE,
+#     )
+#     remarks = models.TextField(blank=True, null=True)
+
+#     class Meta:
+#         ordering = ("-dateOfTransaction",)
+
+#     def get_absolute_url(self):
+#         return f"/expenditure_update/{str(self.id)}"
+
+#     def __str__(self):
+#         return f"Date: {(self.dateOfTransaction).strftime('%d-%b-%Y')}, {self.description}, Sector: {self.item}, Quantity:{self.quantity} {self.unit}, Amount: {intcomma_bd(self.amount)}"
