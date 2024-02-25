@@ -1,13 +1,14 @@
 from datetime import date, datetime, time, timedelta
 from django.contrib.auth.models import User
 from Accounts.models import UserLoggedinRecord
-
 from django.utils import timezone
+from .base import config
 
 # from fdr.models import CurrentFiscal
 
 #! Setup ===================
-anonymous_company = False
+
+anonymous_company = int(config["ANONYMOUS"])
 language = "en"
 
 font_en_banner = "AeroSkyFont"

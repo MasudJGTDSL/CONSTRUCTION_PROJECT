@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = config["SECRET_KEY"]
 DEBUG = int(config["DEBUG"])
+ALLOWED_HOSTS = config["ALLOWED_HOSTS"].split(" ")
 # print("The SECRET_KEY is:",SECRET_KEY)
 
 INSTALLED_APPS = [
@@ -58,7 +59,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    # 'fdr.middleware.masud_for_sql_middleware',
 ]
 
 ROOT_URLCONF = "CONSTRUCTION_PROJECT.urls"
