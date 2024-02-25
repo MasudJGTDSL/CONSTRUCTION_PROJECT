@@ -134,7 +134,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 
 if DEBUG:
-    MEDIA_ROOT = BASE_DIR / "media"
+    MEDIA_ROOT = BASE_DIR / "static/media"
 else:
     MEDIA_ROOT = config["MEDIA_ROOT"]
 

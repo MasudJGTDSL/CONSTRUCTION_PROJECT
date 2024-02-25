@@ -1,6 +1,4 @@
 from .base import *
-from .middleware import masud_for_sql_middleware
-
 
 if int(config["MIDDLEWARE"]) == 1:
     MIDDLEWARE += ["CONSTRUCTION_PROJECT.settings.middleware.masud_for_sql_middleware"]

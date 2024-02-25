@@ -6,7 +6,7 @@
 {% block title %}Samprity Tower{%endblock %}
 {% block content %}
 <div class="card mb-2">
-    <h4 class="card-header text-danger">{{shareholder_deposit.0.shareholderName}}</h4>
+    <h4 class="card-header text-danger ps-2">{{shareholder_deposit.0.shareholderName}}</h4>
     <div class="row">
         <div class="col">
             <div class="card-body p-0">
@@ -14,22 +14,22 @@
                     <table class="table table-sm align-middle table-bordered table-striped table-responsive p-0 m-0">
                         <tbody class="p-0 m-0">
                             <tr>
-                                <td class="text-start pe-1">Number of Flats</td>
+                                <td class="text-start px-2">Number of Flats</td>
                                 <td class="text-start">: {{shareholder_deposit.0.numberOfFlat|floatformat:"1"}}</td>
                             </tr>
                             <tr>
-                                <td class="text-start pe-1">Targeted Amount</td>
+                                <td class="text-start px-2">Targeted Amount</td>
                                 <td class="text-start">:
                                     {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|intcomma_bd}}/-
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-start pe-1">Amount Deposited</td>
+                                <td class="text-start px-2">Amount Deposited</td>
                                 <td class="text-start">: Tk. {{shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-start pe-1">Amount to Deposit</td>
+                                <td class="text-start px-2">Amount to Deposit</td>
                                 <td class="text-start">: Tk.
                                     {{shareholder_deposit.0.numberOfFlat|number_product:targeted_amount_per_flat|subtract:shareholder_deposit.0.deposit_amount_sum|intcomma_bd}}/-
                                 </td>

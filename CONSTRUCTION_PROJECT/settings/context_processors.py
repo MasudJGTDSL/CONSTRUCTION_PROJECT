@@ -81,7 +81,7 @@ def company_info_settings(request):
         "company_address": company_address,
         "company_head_office": company_head_office,
         "copy_right": copy_right,
-        #! Font asigning ======================
+        #! Font assigning ======================
         "font_banner": font_banner,
         "font_other": font_other,
         "font_size_banner": font_size_banner,
