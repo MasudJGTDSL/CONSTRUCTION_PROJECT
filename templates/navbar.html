@@ -16,10 +16,12 @@
 <!--border-radius: 8px;-->
 <nav class="navbar sticky-top navbar-expand-lg py-0 navbar-dark bg-dark">
   <div class="container-fluid" style="vertical-align: middle;">
-    <a class="navbar-brand" href="{% url 'Accounts:index' %}"><img class="bg-secondary-subtle pt-0"
+    <a class="navbar-brand" href="{% url 'Accounts:index' %}">
+       <img class="bg-secondary-subtle pt-0"
         style="vertical-align: middle; width: 38px; height: 38px;"
         src="{% get_static_prefix %}images/{{company_logo_lg}}">
-      <span class="hello-msg {{font_banner}} {{font_size_banner}}" style="color:#6CA6CD;">{{company_name}}</span></a>
+      {% comment %}<!--<span class="hello-msg {{font_banner}} {{font_size_banner}}" style="color:#6CA6CD;">{{company_name}}</span> --> {% endcomment %}
+      <img src="{% static 'images/AeroSky_Tower07.svg' %}" style="vertical-align: middle; width: 210px; height: 24px;" alt=""></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
       aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -101,6 +103,31 @@
 
         </ul>
       </li>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          Income
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" href="{% url 'Accounts:income_add' %}">Income Posting</a></li>
+
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><a class="dropdown-item" href="{% url 'Accounts:details_income_list' %}">Details Income Report</a></li>
+          <li><a class="dropdown-item" href="{% url 'Accounts:date_range_income' %}">Date Range Income Report</a></li>
+
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><a class="dropdown-item" href="{% url 'Accounts:income_item_add' %}">Income Item Add</a></li>
+          <li><a class="dropdown-item" href="{% url 'Accounts:income_sector_add' %}">Income Sector Add</a></li>
+
+        </ul>
+      </li>
+
 
       </ul>
       <span class="navbar-text">

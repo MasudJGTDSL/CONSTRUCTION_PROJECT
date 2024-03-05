@@ -66,7 +66,9 @@ from Accounts.models import (
 def run():
     qs = Expenditure.objects.all()
     subquery_sum = (
-        Expenditure.objects.filter(item_id=OuterRef("item__id"), item__ItemCode=OuterRef("item__ItemCode__id"))
+        Expenditure.objects.filter(
+            item_id=OuterRef("item__id"), item__ItemCode=OuterRef("item__ItemCode__id")
+        )
         .values(
             "item__ItemCode__workSector",
             "item__itemName",
@@ -79,7 +81,6 @@ def run():
     )
 
     qs = qs.annotate(
-
         work_sector=Subquery(subquery_sum.values("item__ItemCode__workSector")),
         item_name=Subquery(subquery_sum.values("item__itemName")),
         sum_amount=Subquery(subquery_sum.values("sum_amount")),

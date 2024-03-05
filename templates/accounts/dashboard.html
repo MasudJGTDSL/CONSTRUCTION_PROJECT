@@ -39,36 +39,39 @@
     <br>
     <div class="row row-cols-1 row-cols-lg-3 p-0 m-0 mt-0">
         <div class="col-lg-4 p-0 m-0">
-            <div class="card text-start m-1">
-                <!-- <img class="card-img-top" src="holder.js/100px180/" alt="Title" /> -->
+            <div class="card text-start m-1" style="height: 9rem;">
                 <div class="card-header text-muted p-0 m-0" style="background-color: #E3E3E3;">
                     <h5 class="p-0 ps-2 pt-1">Amount Deposited:</h5>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-text text-center">Taka: {{total_deposited.amount__sum|intcomma_bd}}</h5>
+                <div class="card-body p-0 m-0">
+                    <table class="table table-bordered table-sm p-0 m-0">
+                        <tr class="p-0 m-0 text-center"><th>Shareholders Deposit</th><th>Income From Project</th></tr>
+                        <tr class="p-0 m-0 text-center"><td>{{total_shareholder_deposited.amount__sum|intcomma_bd}}</td><td>{{project_income.amount__sum|intcomma_bd}}</td></tr>
+                       <tr class="p-0 m-0 text-center"><td><h5>Total =</h5></td><td><h5>{{total_deposited_amount|intcomma_bd}}</h5></td></tr>
+                    </table>
                 </div>
             </div>
         </div>
         <div class="col p-0 m-0">
-            <div class="card text-start m-1">
+            <div class="card text-start m-1" style="height: 9rem;">
                 <!-- <img class="card-img-top bg-light" src="holder.js/100px180/" alt="Title" /> -->
                 <div class="card-header p-0 m-0 text-muted" style="background-color: #E3E3E3;">
                     <h5 class="p-0 ps-2 pt-1">Total Expenditure:</h5>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-text text-center">Taka: {{total_Expenditure.amount__sum|intcomma_bd}}</h5>
+                    <h5 class="card-text text-center pt-4">Taka: {{total_Expenditure.amount__sum|intcomma_bd}}</h5>
                 </div>
             </div>
         </div>
         <div class="col-lg-4 p-0 m-0">
-            <div class="card text-start m-1">
+            <div class="card text-start m-1" style="height: 9rem;">
                 <!-- <img class="card-img-top bg-light" src="holder.js/100px180/" alt="Title" /> -->
                 <div class="card-header p-0 m-0 ps-2 text-muted" style="background-color: #E3E3E3;">
                     <h5 class="p-0 ps-1 pt-1">Amount Available:</h5>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-text text-center">Taka:
-                        {{total_deposited.amount__sum|subtract:total_Expenditure.amount__sum|intcomma_bd}}</h5>
+                    <h5 class="card-text text-center pt-4">Taka:
+                        {{total_deposited_amount|subtract:total_Expenditure.amount__sum|intcomma_bd}}</h5>
                 </div>
             </div>
         </div>

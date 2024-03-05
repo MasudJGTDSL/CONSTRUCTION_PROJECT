@@ -56,6 +56,9 @@ from .forms import (
     TargetedAmountForm,
     CreditPurchaseForm,
     CreditPurchasePaymentForm,
+    IncomeSectorForm,
+    IncomeItemForm,
+    IncomeForm,
 )
 import plotly.express as px
 from .models import (
@@ -74,6 +77,9 @@ from .models import (
     CreditPurchase,
     CreditPurchasePayment,
     UserLoggedinRecord,
+    IncomeSector,
+    IncomeItem,
+    Income,
 )
 from CONSTRUCTION_PROJECT.settings.context_processors import company_info_settings
 
@@ -304,23 +310,8 @@ class ExpenditureView(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         heading = "Expenditure"
         context["heading"] = heading
-        max_date = (
-            Expenditure.objects.values_list("dateOfTransaction")
-            .annotate(Transaction_Date_Count=Count(F("dateOfTransaction")))
-            .order_by("-dateOfTransaction")[:7]
-        )
-        data = Expenditure.objects.filter(
-            dateOfTransaction__in=[
-                str(max_date[0][0].strftime("%Y-%m-%d")),
-                str(max_date[1][0].strftime("%Y-%m-%d")),
-                str(max_date[2][0].strftime("%Y-%m-%d")),
-                str(max_date[3][0].strftime("%Y-%m-%d")),
-                str(max_date[4][0].strftime("%Y-%m-%d")),
-                str(max_date[5][0].strftime("%Y-%m-%d")),
-                str(max_date[6][0].strftime("%Y-%m-%d")),
-            ]
-        )
-        data_heading = "Last 7 Days Expenditure:"
+        data = Expenditure.objects.order_by("-dateOfTransaction")[:10]
+        data_heading = "Last 10 Expenditure Posting:"
         context["data"] = data
         context["data_heading"] = data_heading
         return context
@@ -537,23 +528,9 @@ class ShareholderDepositView(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         heading = "Shareholder Deposit"
         context["heading"] = heading
-        max_date = (
-            ShareholderDeposit.objects.values_list("dateOfTransaction")
-            .annotate(Transaction_Date_Count=Count(F("dateOfTransaction")))
-            .order_by("-dateOfTransaction")[:7]
-        )
-        data = ShareholderDeposit.objects.filter(
-            dateOfTransaction__in=[
-                str(max_date[0][0].strftime("%Y-%m-%d")),
-                str(max_date[1][0].strftime("%Y-%m-%d")),
-                str(max_date[2][0].strftime("%Y-%m-%d")),
-                str(max_date[3][0].strftime("%Y-%m-%d")),
-                str(max_date[4][0].strftime("%Y-%m-%d")),
-                str(max_date[5][0].strftime("%Y-%m-%d")),
-                str(max_date[6][0].strftime("%Y-%m-%d")),
-            ]
-        )
-        data_heading = "Last 7 Days Shareholder Deposit:"
+
+        data = ShareholderDeposit.objects.order_by("-dateOfTransaction")[:10]
+        data_heading = "Last 10 Shareholder Deposit Posting:"
         context["data"] = data
         context["data_heading"] = data_heading
         return context
@@ -745,9 +722,11 @@ def send_mail(request):
                         return HttpResponse("Invalid header found")
                 receipent_list = ""
                 for x in email_address_list_qs:
-                    receipent_list += f"{x[0]}, " 
+                    receipent_list += f"{x[0]}, "
 
-                messages.success(request, f"Thank you.\nEmail sent to {receipent_list}.")
+                messages.success(
+                    request, f"Thank you.\nEmail sent to {receipent_list}."
+                )
                 return HttpResponseRedirect("/")
             else:
                 return HttpResponse("Make sure all fields are entered and valid.")
@@ -857,77 +836,16 @@ def index(request):
     chart_deposit_target = fig_deposit_target.to_html()
     #! Bar Chart for shareholder deposit and to pay end ================
 
-    total_deposited = ShareholderDeposit.objects.aggregate(Sum("amount"))
+    total_shareholder_deposited = ShareholderDeposit.objects.aggregate(
+        Sum("amount", default=0)
+    )
+    project_income = Income.objects.aggregate(Sum("amount", default=0))
+    total_deposited_amount = total_shareholder_deposited["amount__sum"] + (
+        0 if project_income["amount__sum"] == None else project_income["amount__sum"]
+    )
+
     total_Expenditure = Expenditure.objects.aggregate(Sum("amount"))
 
-    # qs_shareholder = ShareholderDeposit.objects.values(
-    #     "shareholder__shareholderName"
-    # ).annotate(
-    #     Shareholder=F("shareholder__shareholderName"),
-    #     num_of_flat=F("shareholder__numberOfFlat"),
-    #     Amount=Sum(Coalesce(F("amount"), 0, output_field=FloatField())),
-    # )
-
-    # qs_shareholder = qs_shareholder.annotate(
-    #     Shareholder=F("shareholder__shareholderName"), Amount=F("Deposited_Amount")
-    # )
-
-    # qs_shareholder_avg = ShareholderDeposit.objects.values(
-    #     "shareholder__shareholderName"
-    # ).annotate(
-    #     Deposited_Amount=ExpressionWrapper(
-    #         Sum(Coalesce(F("amount"), 0, output_field=FloatField()))
-    #         / F("shareholder__numberOfFlat"),
-    #         output_field=FloatField(),
-    #     )
-    # )
-
-    # x_avg = qs_shareholder_avg.values_list("shareholder__shareholderName", flat=True)
-    # y_avg = qs_shareholder_avg.values_list("Deposited_Amount", flat=True)
-    # text_avg = [f"{(amnt/10**3):,.2f}K" for amnt in y_avg]
-
-    # fig_shareholder_avg = px.bar(
-    #     x=x_avg,
-    #     y=y_avg,
-    #     # text=text_avg,
-    #     text_auto=".2s",
-    #     title="Per Flat Deposited by The Shareholders",
-    #     labels={"x": "Share Holders", "y": "Average Amount per Flat"},
-    #     color=y_avg,
-    #     range_y=[10000, 3000000],
-    #     # color_discrete_map = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
-    #     color_discrete_map={
-    #         "Thur": "lightcyan",
-    #         "Fahim Amin": "cyan",
-    #         "Sat": "royalblue",
-    #         "Sun": "darkblue",
-    #     },
-    # )
-
-    # fig_shareholder = px.pie(
-    #     qs_shareholder,
-    #     values="Amount",
-    #     names="Shareholder",
-    #     title="Amount Deposited by The Shareholders",
-    #     #  color_discrete_sequence=px.colors.sequential.RdBu
-    # )
-
-    # fig_avg.title = "Amount Deposited"
-    # fig_avg.labels = {"x": "Share Holders", "y": "Average Amount per Flat"}
-    # fig_shareholder_avg.update_traces(
-    #     textangle=-90, textposition="outside", cliponaxis=False
-    # )
-    # fig_shareholder_avg.update_layout(
-    #     title={"font_size": 24, "xanchor": "center", "x": 0.5}, barmode="group"
-    # )
-
-    # fig_shareholder.update_traces(textinfo="label+percent", textposition="outside")
-    # fig_shareholder.update_layout(
-    #     showlegend=False, title={"font_size": 24, "xanchor": "auto", "x": 0.5}
-    # )
-
-    # chart_shareholder = fig_shareholder.to_html()
-    # chart_shareholder_avg = fig_shareholder_avg.to_html()
     #! Contractor Bill Payment Status ==================
     qs_contractor_bill_status = ContractorBillSubmission.objects.values("id").annotate(
         sum_amount=Sum(F("bill_submission__amount")),
@@ -990,7 +908,9 @@ def index(request):
         "fig_pie_chart": fig_pie_chart,
         # "fig_bar_chart": fig_bar_chart,
         "chart_deposit_target": chart_deposit_target,
-        "total_deposited": total_deposited,
+        "total_shareholder_deposited": total_shareholder_deposited,
+        "project_income": project_income,
+        "total_deposited_amount": total_deposited_amount,
         "total_Expenditure": total_Expenditure,
         "targeted_amount": int(targeted_amount[0]),
         "qs_data": qs_data,
@@ -1006,6 +926,13 @@ def index(request):
 def get_item(request, itemCode_id):
     item = Item.objects.filter(ItemCode_id=itemCode_id)
     data = serializers.serialize("json", item)
+    return HttpResponse(data, content_type="application/json")
+
+
+@login_required
+def get_income_item(request, IncomeSector_id):
+    incomeItem = IncomeItem.objects.filter(incomeSector_id=IncomeSector_id)
+    data = serializers.serialize("json", incomeItem)
     return HttpResponse(data, content_type="application/json")
 
 
@@ -1146,60 +1073,6 @@ class ExpenditureSummary(LoginRequiredMixin, ListView):
         grand_total = Expenditure.objects.aggregate(Sum("amount"))
         context["grand_total"] = grand_total
         return context
-
-
-#!
-#! class ExpenditureDetailsList(LoginRequiredMixin, ListView):
-#!     model = Expenditure
-#!     template_name = "accounts/report_templates/expenditure_detail_list.html"
-#!     context_object_name = "expenditure"
-#!
-#!     def get_queryset(self):
-#!         qs = super().get_queryset()
-#!         subquery_sum = (
-#!             Expenditure.objects.filter(
-#!                 item_id=OuterRef("item__id"),
-#!                 item__ItemCode=OuterRef("item__ItemCode__id"),
-#!             )
-#!             .values(
-#!                 "item__ItemCode__workSector",
-#!                 "item__itemName",
-#!             )
-#!             .annotate(
-#!                 sum_amount=Round(Sum(F("amount")), 0),
-#!                 sum_quantity=Round(Sum(F("quantity")), 0),
-#!                 units=F("item__unit"),
-#!             )
-#!         )
-#!         qs = qs.annotate(
-#!             work_sector=Subquery(subquery_sum.values("item__ItemCode__workSector")),
-#!             item_name=Subquery(subquery_sum.values("item__itemName")),
-#!             sum_amount=Subquery(subquery_sum.values("sum_amount")),
-#!             sum_quantity=Subquery(subquery_sum.values("sum_quantity")),
-#!             units=Subquery(subquery_sum.values("units")),
-#!         )
-#!         subquery_work_sector_sum = (
-#!             Expenditure.objects.filter(
-#!                 item__ItemCode__workSector=OuterRef("item__ItemCode__workSector")
-#!             )
-#!             .values("item__ItemCode__workSector")
-#!             .annotate(
-#!                 worksector_sum=Coalesce(
-#!                     Sum(F("amount")), 0, output_field=DecimalField()
-#!                 )
-#!             )
-#!         )
-#!         qs = qs.annotate(
-#!             worksector_sum=Subquery(subquery_work_sector_sum.values("worksector_sum")),
-#!         ).order_by("work_sector", "item_name", "-dateOfTransaction")
-#!         return qs
-#!
-#!     def get_context_data(self, **kwargs):
-#!         context = super().get_context_data(**kwargs)
-#!         grand_total = Expenditure.objects.aggregate(Sum("amount"))
-#!         context["grand_total"] = grand_total
-#!         return context
-#!
 
 
 def plot_chart(request):
@@ -1425,7 +1298,7 @@ class DateRangeExpenditure(LoginRequiredMixin, ListView):
                 worksector_sum=Subquery(
                     subquery_work_sector_sum.values("worksector_sum")
                 ),
-            ).order_by("work_sector", "dateOfTransaction")
+            ).order_by("work_sector", "item_name", "dateOfTransaction")
         else:
             qs = qs.annotate(
                 worksector_sum=Subquery(
@@ -1440,6 +1313,218 @@ class DateRangeExpenditure(LoginRequiredMixin, ListView):
         to_date = self.request.GET.get("todate")
 
         qs = Expenditure.objects.all()
+        if from_date:
+            qs = qs.filter(dateOfTransaction__gte=from_date)
+
+        if to_date:
+            qs = qs.filter(dateOfTransaction__lte=to_date)
+
+        grand_total = qs.aggregate(Sum("amount"))
+
+        context = super().get_context_data(**kwargs)
+        context["grand_total"] = grand_total
+        if from_date:
+            context["fromdate"] = datetime.strptime(from_date, "%Y-%m-%d")
+        if to_date:
+            context["todate"] = datetime.strptime(to_date, "%Y-%m-%d")
+        return context
+
+
+# TODO: =======================
+
+
+class IncomeSectorView(LoginRequiredMixin, FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    template_name = "accounts/forms/form_single_column.html"
+    form_class = IncomeSectorForm
+    success_url = "/"
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Thank you. A new Income Sector added.")
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        heading = "Add New Income Sector"
+        context["heading"] = heading
+        data = IncomeSector.objects.all()
+        context["data"] = data
+        data_heading = "Existing Income Sectors:"
+        context["data_heading"] = data_heading
+        detil_tag = False
+        context["detil_tag"] = detil_tag
+        return context
+
+
+class IncomeItemView(LoginRequiredMixin, FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    template_name = "accounts/forms/form_item_add.html"
+    form_class = IncomeItemForm
+    success_url = "/"
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Thank you. A new Income Item added.")
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        heading = "Add New Income Item"
+        context["heading"] = heading
+        data = IncomeItem.objects.all()
+        context["data"] = data
+        data_heading = "Existing Income Items:"
+        context["data_heading"] = data_heading
+        detil_tag = False
+        context["detil_tag"] = detil_tag
+        return context
+
+
+class IncomeView(LoginRequiredMixin, FormView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    template_name = "accounts/forms/form_income.html"
+    form_class = IncomeForm
+    success_url = "./"
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Thank you. Income posting done.")
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        heading = "Income Posting"
+        context["heading"] = heading
+        data = Income.objects.order_by("-dateOfTransaction")[:10]
+        #region data = Expenditure.objects.filter(
+        #     dateOfTransaction__in=[
+        #         str(max_date[0][0].strftime("%Y-%m-%d")),
+        #         str(max_date[1][0].strftime("%Y-%m-%d")),
+        #         str(max_date[2][0].strftime("%Y-%m-%d")),
+        #         str(max_date[3][0].strftime("%Y-%m-%d")),
+        #         str(max_date[4][0].strftime("%Y-%m-%d")),
+        #         str(max_date[5][0].strftime("%Y-%m-%d")),
+        #         str(max_date[6][0].strftime("%Y-%m-%d")),
+        #     ]
+        #endregion  )
+        data_heading = "Last 10 Income Posting:"
+        context["data"] = data
+        context["data_heading"] = data_heading
+        return context
+
+
+class IncomeUpdate(UpdateView):
+    @method_decorator(allowed_users(["Admin", "Manager"]))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    model = Income
+    form_class = IncomeForm
+    template_name = "accounts/forms/form_income.html"
+    success_url = "/expenditure_details_list/"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        headind = "Income's Information Update"
+        context["update_tag"] = False
+        context["heading"] = headind
+        context["redirect_url"] = "/expenditure_details_list/"
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, "The Income transaction updated successfully.")
+        return super(IncomeUpdate, self).form_valid(form)
+
+
+class DateRangeIncome(LoginRequiredMixin, ListView):
+    model = Income
+    template_details_list = "accounts/report_templates/income_detail_list.html"
+    template_date_range = "accounts/report_templates/date_range_income_detail.html"
+    context_object_name = "income"
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.path == reverse("Accounts:details_income_list"):
+            return [self.template_details_list]
+        return [self.template_date_range]
+
+    def get_queryset(self):
+        from_date = self.request.GET.get("fromdate")
+        to_date = self.request.GET.get("todate")
+        qs = super().get_queryset()
+        if from_date:
+            qs = qs.filter(dateOfTransaction__gte=from_date)
+
+        if to_date:
+            qs = qs.filter(dateOfTransaction__lte=to_date)
+
+        subquery_sum = (
+            qs.filter(
+                incomeItem=OuterRef("incomeItem__id"),
+                # incomeItem__incomeSector=OuterRef("incomeItem__incomeSector__id"),
+            )
+            .values(
+                # "incomeItem__incomeSector__incomeSector",
+                "incomeItem__itemName",
+            )
+            .annotate(
+                sum_amount=Round(Sum(F("amount")), 0),
+                sum_quantity=Round(Sum(F("quantity")), 0),
+                units=F("incomeItem__unit"),
+            )
+        )
+        subquery_income_sector_sum = (
+            qs.filter(
+                incomeItem__incomeSector=OuterRef(
+                    "incomeItem__incomeSector__id"
+                )
+            )
+            .values("incomeItem__incomeSector__incomeSector")
+            .annotate(
+                incomesector_sum=Coalesce(
+                    Sum(F("amount")), 0, output_field=DecimalField()
+                )
+            )
+        )
+
+        qs = qs.annotate(
+            income_sector=Subquery(
+                subquery_sum.values("incomeItem__incomeSector__incomeSector")
+            ),
+            income_item_name=Subquery(subquery_sum.values("incomeItem__itemName")),
+            sum_amount=Subquery(subquery_sum.values("sum_amount")),
+            sum_quantity=Subquery(subquery_sum.values("sum_quantity")),
+            units=Subquery(subquery_sum.values("units")),
+        )
+        if from_date or to_date:
+            qs = qs.annotate(
+                incomesector_sum=Subquery(
+                    subquery_income_sector_sum.values("incomesector_sum")
+                ),
+            ).order_by("income_sector", "income_item_name", "dateOfTransaction")
+        else:
+            qs = qs.annotate(
+                incomesector_sum=Subquery(
+                    subquery_income_sector_sum.values("incomesector_sum")
+                ),
+            ).order_by("income_sector", "income_item_name", "-dateOfTransaction")
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        from_date = self.request.GET.get("fromdate")
+        to_date = self.request.GET.get("todate")
+
+        qs = Income.objects.all()
         if from_date:
             qs = qs.filter(dateOfTransaction__gte=from_date)
 

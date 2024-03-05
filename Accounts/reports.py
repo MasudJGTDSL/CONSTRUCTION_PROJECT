@@ -190,7 +190,7 @@ def expenditureDetailsReport(request):
         qs = qs.filter(dateOfTransaction__lte=to_date)
 
     subquery_sum = (
-        Expenditure.objects.filter(
+        qs.filter(
             item_id=OuterRef("item__id"),
             item__ItemCode=OuterRef("item__ItemCode__id"),
         )
@@ -224,7 +224,7 @@ def expenditureDetailsReport(request):
     if from_date or to_date:
         qs = qs.annotate(
             worksector_sum=Subquery(subquery_work_sector_sum.values("worksector_sum")),
-        ).order_by("work_sector", "dateOfTransaction")
+        ).order_by("work_sector", "item_name", "dateOfTransaction")
     else:
         qs = qs.annotate(
             worksector_sum=Subquery(subquery_work_sector_sum.values("worksector_sum")),
@@ -247,6 +247,102 @@ def expenditureDetailsReport(request):
         template = "accounts/reports/date_range_expenditure_details.html"
     else:
         template = "accounts/reports/expenditure_details.html"
+
+    html_string = render_to_string(template, {"data": data})
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+
+    resultfile = html.write_pdf()
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(resultfile)
+        output.flush()
+        output.seek(0)
+        response.write(output.read())
+    return response
+
+
+@login_required
+def incomeDetailsReport(request):
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = (
+        "inline; attachment; filename=incomeDetailsReport"
+        + str(datetime.now().strftime("%Y%m%d"))
+        + ".pdf"
+    )
+    response["Content-Transfer-Encoding"] = "binary"
+
+    # For Data -------------
+    qs = Income.objects.all()
+    from_date = request.GET.get("fromdate")
+    to_date = request.GET.get("todate")
+    if from_date:
+        qs = qs.filter(dateOfTransaction__gte=from_date)
+
+    if to_date:
+        qs = qs.filter(dateOfTransaction__lte=to_date)
+
+    subquery_sum = (
+        qs.filter(
+            incomeItem=OuterRef("incomeItem__id"),
+            # incomeItem__incomeSector=OuterRef("incomeItem__incomeSector__id"),
+        )
+        .values(
+            # "incomeItem__incomeSector__incomeSector",
+            "incomeItem__itemName",
+        )
+        .annotate(
+            sum_amount=Round(Sum(F("amount")), 0),
+            sum_quantity=Round(Sum(F("quantity")), 0),
+            units=F("incomeItem__unit"),
+        )
+    )
+    subquery_income_sector_sum = (
+        qs.filter(incomeItem__incomeSector=OuterRef("incomeItem__incomeSector__id"))
+        .values("incomeItem__incomeSector__incomeSector")
+        .annotate(
+            incomesector_sum=Coalesce(Sum(F("amount")), 0, output_field=DecimalField())
+        )
+    )
+
+    qs = qs.annotate(
+        income_sector=Subquery(
+            subquery_sum.values("incomeItem__incomeSector__incomeSector")
+        ),
+        income_item_name=Subquery(subquery_sum.values("incomeItem__itemName")),
+        sum_amount=Subquery(subquery_sum.values("sum_amount")),
+        sum_quantity=Subquery(subquery_sum.values("sum_quantity")),
+        units=Subquery(subquery_sum.values("units")),
+    )
+    if from_date or to_date:
+        qs = qs.annotate(
+            incomesector_sum=Subquery(
+                subquery_income_sector_sum.values("incomesector_sum")
+            ),
+        ).order_by("income_sector", "income_item_name","dateOfTransaction")
+    else:
+        qs = qs.annotate(
+            incomesector_sum=Subquery(
+                subquery_income_sector_sum.values("incomesector_sum")
+            ),
+        ).order_by("income_sector", "income_item_name", "-dateOfTransaction")
+
+    #! --------------------------------------
+    data = {}
+    data = data | {"income": qs}
+    data = data | company_info
+
+    if from_date:
+        data["fromdate"] = datetime.strptime(from_date, "%Y-%m-%d")
+    if to_date:
+        data["todate"] = datetime.strptime(to_date, "%Y-%m-%d")
+
+    grand_total = qs.aggregate(Sum("amount"))
+    data["grand_total"] = grand_total
+    # For Data End -------------
+    if request.path == reverse("Accounts:dateRangeIncomeReport"):
+        template = "accounts/reports/date_range_income_details.html"
+    else:
+        template = "accounts/reports/income_details.html"
 
     html_string = render_to_string(template, {"data": data})
     html = HTML(string=html_string, base_url=request.build_absolute_uri())

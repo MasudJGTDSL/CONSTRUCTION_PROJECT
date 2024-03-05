@@ -33,6 +33,9 @@ from .models import (
     TargetedAmount,
     CreditPurchase,
     CreditPurchasePayment,
+    IncomeSector,
+    IncomeItem,
+    Income,
 )
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Reset, HTML
@@ -534,6 +537,109 @@ class ShareholderDepositForm(forms.ModelForm):
                 ),
                 Column("modeOfDeposit", css_class="form-group col-1 ms-2 me-4 mb-0"),
                 Column("amount", css_class="form-group col ms-3 me-4 mb-0"),
+                css_class="form-row",
+            ),
+            Row(
+                Column("remarks", css_class="form-group col me-4 mb-0"),
+                css_class="form-row",
+            ),
+            HTML("<div class='d-flex justify-content-end mb-1' id='button_div'>"),
+            Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
+            Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
+            HTML("</div>"),
+        )
+
+
+class IncomeSectorForm(forms.ModelForm):
+    class Meta:
+        model = IncomeSector
+        fields = "__all__"
+        labels = {
+            "incomeSector": "Income Sector:",
+        }
+
+
+class IncomeItemForm(forms.ModelForm):
+    class Meta:
+        model = IncomeItem
+        fields = "__all__"
+        labels = {
+            "incomeSector": "Income Sector:",
+            "itemName": "Item Name:",
+            "unit": "Unit:",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(IncomeItemForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.attrs["autocomplete"] = "off"
+        self.helper.layout = Layout(
+            Row(
+                Column("incomeSector", css_class="form-group col-4 me-5 mb-0"),
+                Column("itemName", css_class="form-group col-5 me-4 mb-0"),
+                Column("unit", css_class="form-group col me-4  mb-0"),
+                css_class="form-row",
+            ),
+            HTML("<div class='d-flex justify-content-end mb-1'>"),
+            Submit("submit", "Submit", css_class="btn btn-success me-2 mb-0"),
+            Reset("reset", "Reset", css_class="btn btn-danger me-0 mb-0"),
+            HTML("</div>"),
+        )
+
+
+# TODO: ============================
+class IncomeModelForm(forms.ModelForm):
+    class Meta:
+        model = Income
+        fields = [field.name for field in Income._meta.get_fields()]
+
+        widgets = {
+            "dateOfTransaction": forms.DateInput(
+                format=("%Y-%m-%d"),
+                attrs={"class": "", "placeholder": "Select Date", "type": "date"},
+            ),
+            "remarks": forms.Textarea(attrs={"rows": 1, "cols": 8}),
+        }
+        labels = {
+            "dateOfTransaction": "Date:",
+            "incomeItem": "Income Item:",
+            "description": "Description:",
+            "unit": "Unit:",
+            "quantity": "quantity:",
+            "rate": "Rate:",
+            "amount": "Amount:",
+            "voucherNo": "Voucher No:",
+            "remarks": "Remarks:",
+        }
+
+
+class IncomeForm(IncomeModelForm):
+    QrySetIncomeSector = IncomeSector.objects.only("incomeSector").distinct()
+    incomeSector = forms.ModelChoiceField(
+        queryset=QrySetIncomeSector, label="Income Sector:", required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(IncomeForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.attrs["autocomplete"] = "off"
+        self.helper.layout = Layout(
+            Row(
+                Column("dateOfTransaction", css_class="form-group col-2 me-2 mb-0"),
+                Column("incomeSector", css_class="form-group col-2 me-4 mb-0"),
+                Column("incomeItem", css_class="form-group col ms-2 me-5 mb-0"),
+                css_class="form-row",
+            ),
+            Row(
+                Column("description", css_class="form-group col-4 me-2  mb-0"),
+                Column("unit", css_class="form-group col-1 me-2 ms-0  mb-0"),
+                Column("quantity", css_class="form-group col-1 me-2 mb-0"),
+                Column("rate", css_class="form-group col-1 me-2 mb-0"),
+                Column("amount", css_class="form-group col-1 ms-0 me-2  mb-0"),
+                Column("voucherNo", css_class="form-group col me-4 ms-0  mb-0"),
+                # Column("remarks", css_class="form-group col me-4 mb-0"),
                 css_class="form-row",
             ),
             Row(

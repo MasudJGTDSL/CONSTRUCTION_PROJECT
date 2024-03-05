@@ -75,6 +75,11 @@ Get_Dataset_URLs = [
         views.get_contractor_bill_rest_amount,
         name="get_contractor_bill_rest_amount",
     ),
+    path(
+        "get_income_item/<int:IncomeSector_id>",
+        views.get_income_item,
+        name="get_income_item",
+    ),
 ]
 
 Forms_URLs = [
@@ -136,6 +141,39 @@ Forms_URLs = [
     ),
 ]
 
+Income_URLs = [
+    path(
+        "income_sector_add/",
+        views.IncomeSectorView.as_view(),
+        name="income_sector_add",
+    ),
+    path(
+        "income_item_add/",
+        views.IncomeItemView.as_view(),
+        name="income_item_add",
+    ),
+    path(
+        "income_add/",
+        views.IncomeView.as_view(),
+        name="income_add",
+    ),
+    path(
+        "income_update/<int:pk>",
+        views.IncomeUpdate.as_view(),
+        name="income_update",
+    ),
+    path(
+        "details_income_list/",
+        views.DateRangeIncome.as_view(),
+        name="details_income_list",
+    ),
+    path(
+        "date_range_income/",
+        views.DateRangeIncome.as_view(),
+        name="date_range_income",
+    ),
+]
+
 #! PDF Reports ========================
 Report_URLs = [
     path(
@@ -164,6 +202,16 @@ Report_URLs = [
         name="dateRangeExpenditureReport",
     ),
     path(
+        "incomeDetailsReport/",
+        reports.incomeDetailsReport,
+        name="incomeDetailsReport",
+    ),
+    path(
+        "dateRangeIncomeReport/",
+        reports.incomeDetailsReport,
+        name="dateRangeIncomeReport",
+    ),
+    path(
         "shareholderListReport/",
         reports.shareholderListReport,
         name="shareholderListReport",
@@ -181,5 +229,6 @@ Report_URLs = [
 ]
 
 urlpatterns += Forms_URLs
+urlpatterns += Income_URLs
 urlpatterns += Report_URLs
 urlpatterns += Get_Dataset_URLs

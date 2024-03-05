@@ -27,15 +27,15 @@
     <br>
     {% if update_tag is None %}
     <div class="card">
-        <div class="card-header ps-2 py-1 text-muted bg-light">
+        <div class="card-header ps-2 py-1 text-white bg-secondary">
             <h4>{{data_heading}}</h4>
         </div>
-        <ul>
+        <ul class="list-group list-group-flush">
             {% for dt in data %}
             {% if forloop.counter|divisibleby:2 %}
-            <li style="background: #E0E0E0;">{{dt}}</li>
+            <li class="ps-5 pe-5 list-group-item list-group-item-light"><i class="bi bi-record-fill"></i> {{dt}}</li>
             {% else %}
-            <li>{{dt}}</li>
+            <li class="ps-5 pe-5 list-group-item list-group-item-secondary"><i class="bi bi-record-fill"></i> {{dt}}</li>
             {% endif %}
             {% endfor %}
         </ul>
@@ -48,22 +48,22 @@
     {% block script %} 
     <script>
     {% if update_tag is None %}
-    $('#id_item').empty();
-    $('#id_item').append(`<option class='text-muted' value selected>------------</option>`);  
+    $('#id_incomeItem').empty();
+    $('#id_incomeItem').append(`<option class='text-muted' value selected>------------</option>`);  
     {% else %}
     button_div = document.getElementById("button_div")
 	button_div.innerHTML = `<input type="submit" name="submit" value="Update" class="btn btn-primary btn btn-success me-2 mb-0" id="submit-id-submit">
 	<a href="{%url 'Accounts:expenditure_details_list'%}" class="btn btn-danger">Cancel</a>`
     {% endif %}
-    $('#id_ItemCode').change(function() {
-        let item_code_id = $(this).val();
-        $('#id_item').empty(); 
-        $('#id_item').append(`<option class='text-muted' value selected>------------</option>`);        
+    $('#id_incomeSector').change(function() {
+        let id_IncomeItem_id = $(this).val();
+        $('#id_incomeItem').empty(); 
+        $('#id_incomeItem').append(`<option class='text-muted' value selected>------------</option>`);        
         $.ajax({
-            url: '/get_item/' + item_code_id,
+            url: '/get_income_item/' + id_IncomeItem_id,
             success: function(data) {
                 $.each(data, function(index, Item) {
-                    $('#id_item').append($('<option>', {
+                    $('#id_incomeItem').append($('<option>', {
                     value : Item.pk,
                     text : Item.fields.itemName
                     }));
